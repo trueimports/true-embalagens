@@ -238,18 +238,49 @@ function parseRows(csv, hasmo){
   const rows=parseCSV(csv);
   const result=[];
   let id=1;
-  for(let i=1;i<rows.length;i++){
+  // Acha linha de cabeçalho (contém "data" ou "kg")
+  let startRow=1;
+  for(let i=0;i<Math.min(5,rows.length);i++){
+    if(rows[i].some(c=>c.toLowerCase()==='data'||c.toLowerCase()==='kg')){
+      startRow=i+1; break;
+    }
+  }
+  for(let i=startRow;i<rows.length;i++){
     const c=rows[i];
-    if(!c[0]||!c[0].match(/\d+\/\d+/)) continue;
-    const data=c[0].trim();
-    const kg=parseKg(c[1]);
+    if(!c[0]||!c[0].trim()) continue;
+
+    // Formata data — aceita "dd/mm", "dd/mm/yyyy" e formato JS Date completo
+    let data='';
+    const raw=c[0].trim();
+    if(raw.match(/^\d{1,2}\/\d{1,2}/)){
+      // Formato original: "03/03" ou "03/03/2025"
+      data=raw.split('/').slice(0,2).map(p=>p.padStart(2,'0')).join('/');
+    } else if(raw.includes('GMT')||raw.match(/^[A-Za-z]{3}\s/)){
+      // Formato Apps Script: "Tue Mar 03 2026 00:00:00 GMT-0300..."
+      const d=new Date(raw);
+      if(!isNaN(d)){
+        data=String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0');
+      }
+    }
+    if(!data) continue;
+
+    // KG: Apps Script retorna inteiro "495000" = 495kg → divide por 1000
+    const kgRaw=String(c[1]||'').trim();
+    const kg=parseFloat(kgRaw)/1000;
+    if(!kg||isNaN(kg)) continue;
+
     const fardos=parseInt(c[2])||0;
-    const med=c[3]?c[3].trim().toUpperCase().replace(/X/,'x'):'';
-    const mil=parseMil(c[4]);
-    if(!kg||!med||!mil) continue;
+    const med=c[3]?c[3].trim().toUpperCase().replace(/X/gi,'x'):'';
+    if(!med) continue;
+
+    // Milheiros: mesma lógica — "32500" = 32.5 mil → divide por 1000
+    const milRaw=String(c[4]||'').trim();
+    const mil=parseFloat(milRaw)/1000;
+    if(!mil||isNaN(mil)) continue;
+
     let mo=0;
     if(hasmo&&c[5]){
-      const ms=c[5].replace(/[R$\s]/g,'').replace('.','').replace(',','.');
+      const ms=String(c[5]).replace(/[R$\s]/g,'').replace(',','.').replace(/\.(?=.*\.)/g,'');
       mo=parseFloat(ms)||0;
     }
     result.push({id:id++,data,kg,fardos,med,mil,mo});
