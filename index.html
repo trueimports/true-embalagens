@@ -259,8 +259,8 @@ async function syncSheets(){
     const url1=`${PUB_BASE}?gid=${GID_F1}&single=true&output=csv`;
     const url2=`${PUB_BASE}?gid=${GID_F2}&single=true&output=csv`;
     const [r1,r2]=await Promise.all([
-      fetch(url1).then(r=>{if(!r.ok)throw new Error('F1 erro '+r.status);return r.text();}),
-      fetch(url2).then(r=>{if(!r.ok)throw new Error('F2 erro '+r.status);return r.text();}),
+      fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url1)}`).then(r=>{if(!r.ok)throw new Error('F1 erro '+r.status);return r.text();}),
+      fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url2)}`).then(r=>{if(!r.ok)throw new Error('F2 erro '+r.status);return r.text();}),
     ]);
     STATE.f1=parseRows(r1,true);
     STATE.f2=parseRows(r2,false);
