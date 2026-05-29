@@ -164,9 +164,7 @@ body{min-height:100vh;padding-bottom:80px;}
 
 <script>
 // ── IDs das abas publicadas ──
-const PUB_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vStNx6kjuiJ0VDz2XPBGoJWFVV3KnBClFv4g7xjYTlmDBFmJQswml6rMB7YrRpSZ_SQ8TH--vVSsH7t/pub';
-const GID_F1 = '1301309645';
-const GID_F2 = '0';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0kRg5q4rzshc3ZQPTCIYMjC5r6S6nSnA3l1ciOqkVuf6kSt-9Hdna3FNXJe5kYBp5/exec';
 
 const ABRIL_REF={
   '12x18':29.47,'15x20':32.35,'15x25':38.17,'20x20':41.29,
@@ -259,38 +257,22 @@ function parseRows(csv, hasmo){
   return result;
 }
 
-// Busca CSV tentando múltiplos proxies em sequência
-async function fetchCSV(csvUrl) {
-  const proxies = [
-    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-    u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
-    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-  ];
-  for (const proxy of proxies) {
-    try {
-      const res = await fetch(proxy(csvUrl), {signal: AbortSignal.timeout(8000)});
-      if (!res.ok) continue;
-      const text = await res.text();
-      // Garante que veio CSV de verdade (não HTML do Google)
-      if (text.includes('<html') || text.includes('<!DOCTYPE') || text.trim().length < 10) continue;
-      return text;
-    } catch(e) { continue; }
-  }
-  throw new Error('Todos os proxies falharam. Verifique a publicação da planilha.');
-}
-
 async function syncSheets(){
   const dot=document.getElementById('syncDot');
   const msg=document.getElementById('syncMsg');
   dot.className='sync-dot loading';
   msg.textContent='Sincronizando com Google Sheets...';
   try{
-    const url1=`${PUB_BASE}?gid=${GID_F1}&single=true&output=csv`;
-    const url2=`${PUB_BASE}?gid=${GID_F2}&single=true&output=csv`;
     msg.textContent='Buscando ALP...';
-    const r1 = await fetchCSV(url1);
+    const r1 = await fetch(`${SCRIPT_URL}?aba=alp`).then(r=>{
+      if(!r.ok) throw new Error('ALP erro '+r.status);
+      return r.text();
+    });
     msg.textContent='Buscando Primícia...';
-    const r2 = await fetchCSV(url2);
+    const r2 = await fetch(`${SCRIPT_URL}?aba=primicia`).then(r=>{
+      if(!r.ok) throw new Error('Primícia erro '+r.status);
+      return r.text();
+    });
     STATE.f1=parseRows(r1,true);
     STATE.f2=parseRows(r2,false);
     buildMonths();
