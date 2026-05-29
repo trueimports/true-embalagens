@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>True Embalagens · Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0c0c;--bg2:#141414;--bg3:#1c1c1c;--bg4:#222;
+  --border:#2a2a2a;--border2:#333;
+  --orange:#E87722;--orange2:#ff9944;--orange-dim:rgba(232,119,34,0.13);--orange-glow:rgba(232,119,34,0.3);
+  --text:#f0f0f0;--text2:#aaa;--text3:#666;
+  --green:#2ecc71;--green-dim:rgba(46,204,113,0.13);
+  --red:#e74c3c;--red-dim:rgba(231,76,60,0.13);
+  --blue:#5b8af5;--blue-dim:rgba(91,138,245,0.13);
+  --yellow:#f1c40f;--yellow-dim:rgba(241,196,15,0.1);
+  --purple:#a55eea;--purple-dim:rgba(165,94,234,0.13);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:15px;}
+body{min-height:100vh;padding-bottom:80px;}
+.header{background:var(--bg2);border-bottom:2px solid var(--border2);padding:16px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;flex-wrap:wrap;gap:12px;}
+.logo{display:flex;align-items:center;gap:14px;}
+.logo-icon{width:44px;height:44px;border:2px solid var(--orange);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.logo-name{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+.logo-name em{color:var(--orange);font-style:normal;}
+.logo-sub{font-size:11px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+.header-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.ctrl-box{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:8px 14px;}
+.ctrl-label{font-size:11px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;}
+.ctrl-input{background:transparent;border:none;outline:none;font-family:'DM Mono',monospace;font-size:16px;color:var(--orange);font-weight:500;width:65px;text-align:right;}
+.btn{padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;white-space:nowrap;}
+.btn-primary{background:var(--orange);color:#fff;}
+.btn-primary:hover{background:var(--orange2);}
+.btn-ghost{background:transparent;color:var(--text3);border:1px solid var(--border2);}
+.btn-ghost:hover{border-color:var(--text2);color:var(--text);}
+.btn-sm{padding:5px 12px;font-size:11px;border-radius:6px;}
+.btn-paid{background:var(--green-dim);color:var(--green);border:1px solid rgba(46,204,113,0.3);}
+.btn-unpaid{background:var(--bg3);color:var(--text3);border:1px solid var(--border2);}
+.tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);padding:0 40px;}
+.tab{padding:15px 28px;font-size:13px;font-weight:700;color:var(--text3);cursor:pointer;letter-spacing:1px;text-transform:uppercase;border-bottom:3px solid transparent;margin-bottom:-1px;transition:all .2s;}
+.tab:hover{color:var(--text2);}
+.tab.active{color:var(--orange);border-bottom-color:var(--orange);}
+.month-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 40px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.month-btn{font-size:12px;padding:5px 16px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;font-family:'Syne',sans-serif;font-weight:600;letter-spacing:.5px;transition:all .2s;}
+.month-btn.active{background:var(--orange-dim);color:var(--orange);border-color:var(--orange-glow);}
+.sync-bar{background:var(--bg3);border-bottom:1px solid var(--border);padding:8px 40px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text3);}
+.sync-status{display:flex;align-items:center;gap:8px;}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);}
+.sync-dot.loading{background:var(--yellow);animation:pulse 1s infinite;}
+.sync-dot.error{background:var(--red);box-shadow:none;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.main{padding:28px 40px;max-width:1600px;}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:28px;}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 22px;position:relative;overflow:hidden;}
+.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--orange),var(--orange2));}
+.kpi-icon{font-size:20px;margin-bottom:8px;}
+.kpi-label{font-size:11px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
+.kpi-val{font-family:'DM Mono',monospace;font-size:24px;font-weight:500;color:var(--text);line-height:1;}
+.kpi-sub{font-size:12px;color:var(--text3);margin-top:5px;}
+.section{margin-bottom:28px;}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.section-title{font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);}
+.section-badge{font-size:11px;padding:4px 12px;border-radius:20px;background:var(--orange-dim);color:var(--orange);font-weight:600;}
+.table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.data-table{width:100%;border-collapse:collapse;font-size:14px;}
+.data-table th{padding:12px 16px;text-align:right;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);background:var(--bg3);border-bottom:1px solid var(--border);}
+.data-table th:first-child{text-align:left;}
+.data-table td{padding:10px 16px;text-align:right;border-bottom:1px solid var(--border);font-variant-numeric:tabular-nums;font-family:'DM Mono',monospace;font-size:13px;color:var(--text2);}
+.data-table td:first-child{text-align:left;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--text);}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:rgba(255,255,255,0.02);}
+.data-table .total-row td{background:var(--bg3);color:var(--text);font-weight:700;border-top:2px solid var(--border2);}
+.badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:700;font-family:'Syne',sans-serif;}
+.b-up{background:var(--red-dim);color:var(--red);}
+.b-down{background:var(--green-dim);color:var(--green);}
+.b-neu{background:var(--bg3);color:var(--text3);}
+.b-new{background:var(--blue-dim);color:var(--blue);}
+.alerts{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+.alert{display:flex;align-items:flex-start;gap:14px;padding:14px 18px;border-radius:12px;font-size:13px;}
+.alert-warn{background:var(--yellow-dim);border:1px solid rgba(241,196,15,0.25);}
+.alert-icon{font-size:18px;flex-shrink:0;}
+.alert-text{line-height:1.6;}
+.alert-text strong{display:block;font-size:14px;margin-bottom:2px;}
+.chart-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:28px;}
+.chart-bars{display:flex;align-items:flex-end;gap:8px;height:130px;margin-top:20px;}
+.bar-group{display:flex;flex-direction:column;align-items:center;flex:1;gap:5px;}
+.bar{width:100%;border-radius:5px 5px 0 0;background:var(--orange-dim);border:1px solid var(--orange-glow);transition:all .3s;min-height:4px;cursor:pointer;}
+.bar:hover{background:var(--orange);}
+.bar-lbl{font-size:10px;color:var(--text3);text-align:center;writing-mode:vertical-rl;transform:rotate(180deg);max-height:52px;}
+.boletos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:28px;}
+.boleto-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden;transition:all .2s;}
+.boleto-card.pago{border-color:rgba(46,204,113,0.35);opacity:.65;}
+.boleto-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;background:var(--orange);}
+.boleto-card.pago::before{background:var(--green);}
+.bol-data{font-size:11px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;padding-left:10px;margin-bottom:4px;}
+.bol-total{font-size:12px;color:var(--text3);padding-left:10px;margin-bottom:10px;}
+.bol-vals{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-left:10px;margin-bottom:12px;}
+.bol-item{display:flex;flex-direction:column;gap:3px;}
+.bol-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;}
+.bol-valor{font-family:'DM Mono',monospace;font-size:19px;font-weight:500;color:var(--text);}
+.bol-venc{font-size:12px;color:var(--orange);font-weight:600;margin-top:2px;}
+.bol-venc.pago{color:var(--green);}
+.bol-actions{display:flex;gap:8px;padding-left:10px;}
+.empty{text-align:center;padding:60px;color:var(--text3);font-size:14px;}
+.loading-overlay{text-align:center;padding:80px;color:var(--text3);}
+.spinner{width:36px;height:36px;border:3px solid var(--border2);border-top-color:var(--orange);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 20px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr);}.main,.header,.tabs,.month-bar,.sync-bar{padding-left:16px;padding-right:16px;}}
+@media(max-width:700px){.kpis{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <rect x="2" y="5" width="16" height="16" rx="2" stroke="#E87722" stroke-width="2"/>
+        <path d="M7 13h6M10 10v6" stroke="#E87722" stroke-width="2" stroke-linecap="round"/>
+        <path d="M10 2C10 2 13.5 0 17 2" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-name">True Embalagens<em>.</em></div>
+      <div class="logo-sub">Dashboard de Produção</div>
+    </div>
+  </div>
+  <div class="header-controls">
+    <div class="ctrl-box">
+      <span class="ctrl-label">Fator kg</span>
+      <span style="color:var(--text3);font-size:13px">R$</span>
+      <input class="ctrl-input" type="number" step="0.01" id="fatorKg" value="14.50" onchange="render()">
+    </div>
+    <div class="ctrl-box" id="moCtrl">
+      <span class="ctrl-label">MO / kg</span>
+      <span style="color:var(--text3);font-size:13px">R$</span>
+      <input class="ctrl-input" type="number" step="0.01" id="moKg" value="4.40" onchange="render()" style="width:55px;">
+    </div>
+    <button class="btn btn-primary" onclick="syncSheets()">↻ Atualizar</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="setFab(0)">ALP — Fábrica 1</div>
+  <div class="tab" onclick="setFab(1)">Primícia — Fábrica 2</div>
+  <div class="tab" onclick="setFab(2)">Consolidado</div>
+</div>
+
+<div class="month-bar" id="monthBar"></div>
+
+<div class="sync-bar">
+  <div class="sync-status">
+    <div class="sync-dot loading" id="syncDot"></div>
+    <span id="syncMsg">Conectando ao Google Sheets...</span>
+  </div>
+  <span id="syncTime"></span>
+</div>
+
+<div class="main" id="main">
+  <div class="loading-overlay"><div class="spinner"></div>Carregando dados...</div>
+</div>
+
+<script>
+// ── IDs das abas publicadas ──
+const PUB_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vStNx6kjuiJ0VDz2XPBGoJWFVV3KnBClFv4g7xjYTlmDBFmJQswml6rMB7YrRpSZ_SQ8TH--vVSsH7t/pub';
+const GID_F1 = '1301309645';
+const GID_F2 = '0';
+
+const ABRIL_REF={
+  '12x18':29.47,'15x20':32.35,'15x25':38.17,'20x20':41.29,
+  '19x25':57.52,'20x30':69.74,'26x36':109.17,'32x40':143.18,
+  '40x40':166.29,'40x50':218.42,'40x60':271.64,'50x50':223.59,
+  '50x60':322.68,'50x70':400.51,'60x50':335.01,'70x60':451.60,
+  '80x60':535.58,'100x60':669.66,
+};
+
+let STATE={
+  fab:0, f1:[], f2:[],
+  months:[], selMonth:null,
+  paid:JSON.parse(localStorage.getItem('truePaid')||'{}'),
+};
+
+function getFator(){return parseFloat(document.getElementById('fatorKg').value)||14.50;}
+function getMO(){return parseFloat(document.getElementById('moKg').value)||4.40;}
+function ceilCents(n){return Math.ceil(n*100)/100;}
+function fmt(n){return 'R$ '+n.toFixed(2).replace('.',',');}
+function fmtN(n){return n.toLocaleString('pt-BR');}
+
+// Converte "461.400" → 461.4 kg (ponto = separador decimal de kg)
+function parseKg(s){
+  if(!s) return 0;
+  return parseFloat(String(s).replace(/\s/g,''))||0;
+}
+
+function parseMil(s){
+  if(!s) return 0;
+  return parseFloat(String(s).replace(/\s/g,'').replace(',','.'))||0;
+}
+
+function extractMonth(data){
+  const p=String(data).split('/');
+  if(p.length>=2) return p[1].padStart(2,'0')+'/'+(p[2]||'2025');
+  return null;
+}
+
+function monthLabel(m){
+  if(!m) return '';
+  const [mm,yy]=m.split('/');
+  const n=['','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  return n[parseInt(mm)]+' '+yy;
+}
+
+// Parse CSV respeitando campos entre aspas
+function parseCSV(text){
+  const lines=text.split('\n').map(l=>l.trim()).filter(l=>l);
+  return lines.map(line=>{
+    const cols=[];let cur='',inq=false;
+    for(let c=0;c<line.length;c++){
+      if(line[c]==='"'){inq=!inq;}
+      else if(line[c]===','&&!inq){cols.push(cur.trim());cur='';}
+      else cur+=line[c];
+    }
+    cols.push(cur.trim());
+    return cols;
+  });
+}
+
+function parseRows(csv, hasmo){
+  const rows=parseCSV(csv);
+  const result=[];
+  let id=1;
+  for(let i=1;i<rows.length;i++){
+    const c=rows[i];
+    if(!c[0]||!c[0].match(/\d+\/\d+/)) continue;
+    const data=c[0].trim();
+    const kg=parseKg(c[1]);
+    const fardos=parseInt(c[2])||0;
+    const med=c[3]?c[3].trim().toUpperCase().replace(/X/,'x'):'';
+    const mil=parseMil(c[4]);
+    if(!kg||!med||!mil) continue;
+    let mo=0;
+    if(hasmo&&c[5]){
+      const ms=c[5].replace(/[R$\s]/g,'').replace('.','').replace(',','.');
+      mo=parseFloat(ms)||0;
+    }
+    result.push({id:id++,data,kg,fardos,med,mil,mo});
+  }
+  return result;
+}
+
+async function syncSheets(){
+  const dot=document.getElementById('syncDot');
+  const msg=document.getElementById('syncMsg');
+  dot.className='sync-dot loading';
+  msg.textContent='Sincronizando com Google Sheets...';
+  try{
+    const url1=`${PUB_BASE}?gid=${GID_F1}&single=true&output=csv`;
+    const url2=`${PUB_BASE}?gid=${GID_F2}&single=true&output=csv`;
+    const [r1,r2]=await Promise.all([
+      fetch(url1).then(r=>{if(!r.ok)throw new Error('F1 erro '+r.status);return r.text();}),
+      fetch(url2).then(r=>{if(!r.ok)throw new Error('F2 erro '+r.status);return r.text();}),
+    ]);
+    STATE.f1=parseRows(r1,true);
+    STATE.f2=parseRows(r2,false);
+    buildMonths();
+    dot.className='sync-dot';
+    msg.textContent=`✓ Conectado · ALP: ${STATE.f1.length} lotes · Primícia: ${STATE.f2.length} lotes`;
+    document.getElementById('syncTime').textContent='Atualizado às '+new Date().toLocaleTimeString('pt-BR');
+    render();
+  }catch(e){
+    dot.className='sync-dot error';
+    msg.textContent='Erro ao conectar: '+e.message;
+    console.error(e);
+  }
+}
+
+function buildMonths(){
+  const set=new Set();
+  [...STATE.f1,...STATE.f2].forEach(r=>{const m=extractMonth(r.data);if(m)set.add(m);});
+  STATE.months=Array.from(set).sort();
+  if(!STATE.selMonth||!STATE.months.includes(STATE.selMonth))
+    STATE.selMonth=STATE.months[STATE.months.length-1]||null;
+}
+
+function getRows(){
+  const src=STATE.fab===0?STATE.f1:STATE.fab===1?STATE.f2:[...STATE.f1,...STATE.f2];
+  return STATE.selMonth?src.filter(r=>extractMonth(r.data)===STATE.selMonth):src;
+}
+
+function getPrevRows(){
+  const src=STATE.fab===0?STATE.f1:STATE.fab===1?STATE.f2:[...STATE.f1,...STATE.f2];
+  const idx=STATE.months.indexOf(STATE.selMonth);
+  if(idx<=0) return [];
+  const prev=STATE.months[idx-1];
+  return src.filter(r=>extractMonth(r.data)===prev);
+}
+
+function consolidate(rows){
+  const map={};
+  rows.forEach(r=>{
+    if(!map[r.med])map[r.med]={med:r.med,kg:0,fardos:0,mil:0};
+    map[r.med].kg+=r.kg;map[r.med].fardos+=r.fardos;map[r.med].mil+=r.mil;
+  });
+  return Object.values(map).sort((a,b)=>a.med.localeCompare(b.med));
+}
+
+function calcCusto(kg,mil){
+  // kg em kg (ex: 461.4), mil em milheiros
+  // g/unidade = kg*1000/mil/1000 = kg/mil
+  // custo/mil = (kg/mil) * fator
+  return ceilCents((kg/mil)*getFator());
+}
+
+function getBoletos(rows){
+  const byDay={};
+  rows.forEach(r=>{
+    if(!byDay[r.data])byDay[r.data]={data:r.data,kg:0};
+    byDay[r.data].kg+=r.kg;
+  });
+  const moKg=getMO();
+  return Object.values(byDay).sort((a,b)=>a.data.localeCompare(b.data)).map(d=>{
+    const total=d.kg*moKg;
+    if(total<=0) return null;
+    const [dd,mm]=(d.data+'/2025').split('/').map(Number);
+    const yy=2025;
+    const base=new Date(yy,mm-1,dd);
+    const v21=new Date(base);v21.setDate(v21.getDate()+21);
+    const v28=new Date(base);v28.setDate(v28.getDate()+28);
+    const fd=dt=>`${String(dt.getDate()).padStart(2,'0')}/${String(dt.getMonth()+1).padStart(2,'0')}/${dt.getFullYear()}`;
+    const k1=d.data+'_b1',k2=d.data+'_b2';
+    return{data:d.data,total,
+      b1:{val:total/2,venc:fd(v21),key:k1,paid:!!STATE.paid[k1]},
+      b2:{val:total/2,venc:fd(v28),key:k2,paid:!!STATE.paid[k2]},
+    };
+  }).filter(Boolean);
+}
+
+function togglePaid(key){
+  if(STATE.paid[key])delete STATE.paid[key];
+  else STATE.paid[key]=true;
+  localStorage.setItem('truePaid',JSON.stringify(STATE.paid));
+  render();
+}
+
+function getAlerts(rows){
+  const cons=consolidate(rows);
+  const alerts=[];
+  cons.forEach(c=>{
+    const media=c.kg/c.mil;
+    rows.filter(r=>r.med===c.med).forEach(r=>{
+      const lote=r.kg/r.mil;
+      const dev=Math.abs((lote-media)/media);
+      if(dev>0.20)alerts.push({med:c.med,data:r.data,lote,media,dev});
+    });
+  });
+  return alerts.slice(0,5);
+}
+
+function setFab(i){
+  STATE.fab=i;
+  document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',i===j));
+  document.getElementById('moCtrl').style.display=i===0?'flex':'none';
+  render();
+}
+
+function setMonth(m){
+  STATE.selMonth=m;
+  renderMonthBar();
+  render();
+}
+
+function renderMonthBar(){
+  document.getElementById('monthBar').innerHTML=STATE.months.map(m=>
+    `<button class="month-btn${m===STATE.selMonth?' active':''}" onclick="setMonth('${m}')">${monthLabel(m)}</button>`
+  ).join('');
+}
+
+function render(){
+  renderMonthBar();
+  const rows=getRows();
+  const prevRows=getPrevRows();
+  const cons=consolidate(rows);
+  const prevMap={};consolidate(prevRows).forEach(c=>prevMap[c.med]=c);
+  const isALP=STATE.fab===0;
+  const isCons=STATE.fab===2;
+  const fabLabel=STATE.fab===0?'ALP':STATE.fab===1?'Primícia':'ALP + Primícia';
+  const prevMonthLabel=STATE.months[STATE.months.indexOf(STATE.selMonth)-1];
+
+  const totalKg=cons.reduce((s,c)=>s+c.kg,0);
+  const totalMil=cons.reduce((s,c)=>s+c.mil,0);
+  const totalFardos=cons.reduce((s,c)=>s+c.fardos,0);
+  const alerts=getAlerts(rows);
+
+  // KPIs
+  let html=`<div class="kpis">
+    <div class="kpi"><div class="kpi-icon">⚖️</div><div class="kpi-label">Peso Total</div><div class="kpi-val">${totalKg.toLocaleString('pt-BR',{maximumFractionDigits:0})} kg</div><div class="kpi-sub">${rows.length} lotes · ${monthLabel(STATE.selMonth)}</div></div>
+    <div class="kpi"><div class="kpi-icon">📦</div><div class="kpi-label">Unidades</div><div class="kpi-val">${(totalMil*1000).toLocaleString('pt-BR')}</div><div class="kpi-sub">${totalMil.toLocaleString('pt-BR')} milheiros</div></div>
+    <div class="kpi"><div class="kpi-icon">🗂️</div><div class="kpi-label">Fardos</div><div class="kpi-val">${fmtN(totalFardos)}</div><div class="kpi-sub">${cons.length} medidas</div></div>
+    <div class="kpi"><div class="kpi-icon">💰</div><div class="kpi-label">Fator kg</div><div class="kpi-val" style="color:var(--orange)">R$ ${getFator().toFixed(2).replace('.',',')}</div><div class="kpi-sub">Editável no topo</div></div>`;
+
+  if(isALP){
+    const bols=getBoletos(STATE.f1.filter(r=>extractMonth(r.data)===STATE.selMonth));
+    const pend=bols.reduce((s,b)=>s+(!b.b1.paid?b.b1.val:0)+(!b.b2.paid?b.b2.val:0),0);
+    html+=`<div class="kpi"><div class="kpi-icon">🧾</div><div class="kpi-label">MO Pendente</div><div class="kpi-val" style="color:var(--purple)">${fmt(pend)}</div><div class="kpi-sub">Total: ${fmt(totalKg*getMO())}</div></div>`;
+  }else{
+    html+=`<div class="kpi"><div class="kpi-icon">🏭</div><div class="kpi-label">Operação</div><div class="kpi-val" style="font-size:16px">${STATE.fab===1?'Própria':'Consolidado'}</div><div class="kpi-sub">${STATE.fab===1?'Sem custo MO':'ALP + Primícia'}</div></div>`;
+  }
+  html+=`</div>`;
+
+  // Alertas
+  if(alerts.length){
+    html+=`<div class="alerts">`;
+    alerts.forEach(a=>{
+      html+=`<div class="alert alert-warn"><div class="alert-icon">⚠️</div><div class="alert-text"><strong>Lote fora da média — ${a.med} · ${a.data}</strong>Peso/mil deste lote: ${(a.lote*1000).toFixed(1)}g · Média: ${(a.media*1000).toFixed(1)}g · <strong>${(a.dev*100).toFixed(0)}% ${a.lote>a.media?'acima':'abaixo'} da média</strong></div></div>`;
+    });
+    html+=`</div>`;
+  }
+
+  // Gráfico
+  const sorted=[...cons].sort((a,b)=>b.mil-a.mil).slice(0,14);
+  const maxMil=Math.max(...sorted.map(c=>c.mil),1);
+  html+=`<div class="chart-wrap"><div class="section-header"><div class="section-title">Milheiros por medida</div><div class="section-badge">${fabLabel} · ${monthLabel(STATE.selMonth)}</div></div>
+  <div class="chart-bars">${sorted.map(c=>{const h=Math.max(6,Math.round((c.mil/maxMil)*120));return`<div class="bar-group"><div class="bar" style="height:${h}px" title="${c.med}: ${c.mil.toLocaleString('pt-BR')} mil"></div><div class="bar-lbl">${c.med}</div></div>`;}).join('')}</div></div>`;
+
+  // Tabela custo
+  const prevLbl=prevMonthLabel?monthLabel(prevMonthLabel):null;
+  html+=`<div class="section"><div class="section-header"><div class="section-title">Custo por medida</div><div class="section-badge">Fator R$ ${getFator().toFixed(2).replace('.',',')} · ${monthLabel(STATE.selMonth)}</div></div>
+  <div class="table-wrap"><table class="data-table"><thead><tr>
+    <th>Medida</th><th>Peso (kg)</th><th>Fardos</th><th>Milheiros</th><th>Unidades</th><th>g / unidade</th><th>Ref. Abril</th><th>Custo / mil</th><th>${prevLbl?'vs '+prevLbl:'Variação'}</th>
+  </tr></thead><tbody>`;
+
+  cons.forEach(c=>{
+    const custo=calcCusto(c.kg,c.mil);
+    const gU=(c.kg/c.mil)*1000;
+    const refAbril=ABRIL_REF[c.med];
+    let varHtml='<span class="badge b-new">—</span>';
+    if(prevMap[c.med]){
+      const prev=calcCusto(prevMap[c.med].kg,prevMap[c.med].mil);
+      const dif=custo-prev,pct=dif/prev*100;
+      varHtml=Math.abs(dif)<0.01?`<span class="badge b-neu">Estável</span>`:
+        dif>0?`<span class="badge b-up">↑ +${pct.toFixed(1)}%</span>`:
+        `<span class="badge b-down">↓ ${pct.toFixed(1)}%</span>`;
+    }else if(prevRows.length>0){varHtml=`<span class="badge b-new">Nova</span>`;}
+
+    html+=`<tr>
+      <td>${c.med}</td>
+      <td>${c.kg.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}</td>
+      <td>${fmtN(c.fardos)}</td>
+      <td>${c.mil.toLocaleString('pt-BR')}</td>
+      <td>${fmtN(c.mil*1000)}</td>
+      <td>${gU.toFixed(2)} g</td>
+      <td>${refAbril?fmt(refAbril):'—'}</td>
+      <td style="color:var(--orange);font-weight:700">${fmt(custo)}</td>
+      <td>${varHtml}</td>
+    </tr>`;
+  });
+  html+=`<tr class="total-row"><td>TOTAL</td><td>${totalKg.toLocaleString('pt-BR',{maximumFractionDigits:1})}</td><td>${fmtN(totalFardos)}</td><td>${totalMil.toLocaleString('pt-BR')}</td><td>${fmtN(totalMil*1000)}</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>`;
+  html+=`</tbody></table></div></div>`;
+
+  // Boletos ALP
+  if(isALP){
+    const bols=getBoletos(STATE.f1.filter(r=>extractMonth(r.data)===STATE.selMonth));
+    const totPend=bols.reduce((s,b)=>s+(!b.b1.paid?b.b1.val:0)+(!b.b2.paid?b.b2.val:0),0);
+    const totPago=bols.reduce((s,b)=>s+(b.b1.paid?b.b1.val:0)+(b.b2.paid?b.b2.val:0),0);
+    html+=`<div class="section"><div class="section-header">
+      <div class="section-title">📅 Boletos Mão de Obra — ALP</div>
+      <div style="display:flex;gap:16px;align-items:center">
+        <span style="font-size:12px;color:var(--green)">✓ Pago: ${fmt(totPago)}</span>
+        <span style="font-size:12px;color:var(--purple)">Pendente: ${fmt(totPend)}</span>
+      </div>
+    </div>`;
+    if(!bols.length){html+=`<div class="empty">Nenhum boleto neste período.</div>`;}
+    else{
+      html+=`<div class="boletos-grid">`;
+      bols.forEach(b=>{
+        const allPaid=b.b1.paid&&b.b2.paid;
+        html+=`<div class="boleto-card${allPaid?' pago':''}">
+          <div class="bol-data">Recebimento ${b.data}</div>
+          <div class="bol-total">Total MO do dia: ${fmt(b.total)}</div>
+          <div class="bol-vals">
+            <div class="bol-item">
+              <div class="bol-label">Boleto 1 · 21 dias</div>
+              <div class="bol-valor">${fmt(b.b1.val)}</div>
+              <div class="bol-venc${b.b1.paid?' pago':''}">${b.b1.paid?'✓ PAGO':'Vence '+b.b1.venc}</div>
+            </div>
+            <div class="bol-item">
+              <div class="bol-label">Boleto 2 · 28 dias</div>
+              <div class="bol-valor">${fmt(b.b2.val)}</div>
+              <div class="bol-venc${b.b2.paid?' pago':''}">${b.b2.paid?'✓ PAGO':'Vence '+b.b2.venc}</div>
+            </div>
+          </div>
+          <div class="bol-actions">
+            <button class="btn btn-sm ${b.b1.paid?'btn-paid':'btn-unpaid'}" onclick="togglePaid('${b.b1.key}')">${b.b1.paid?'✓ Pago':'Marcar 1 pago'}</button>
+            <button class="btn btn-sm ${b.b2.paid?'btn-paid':'btn-unpaid'}" onclick="togglePaid('${b.b2.key}')">${b.b2.paid?'✓ Pago':'Marcar 2 pago'}</button>
+          </div>
+        </div>`;
+      });
+      html+=`</div>`;
+    }
+    html+=`</div>`;
+  }
+
+  // Lotes
+  if(!isCons){
+    html+=`<div class="section"><div class="section-header"><div class="section-title">Lotes do período</div><div class="section-badge">${rows.length} registros</div></div>
+    <div class="table-wrap"><table class="data-table"><thead><tr>
+      <th>Data</th><th>Medida</th><th>Peso (kg)</th><th>Fardos</th><th>Milheiros</th><th>g / unidade</th><th>Custo / mil</th>
+    </tr></thead><tbody>`;
+    [...rows].reverse().forEach(r=>{
+      const c=calcCusto(r.kg,r.mil);
+      const gU=(r.kg/r.mil)*1000;
+      html+=`<tr>
+        <td style="font-size:13px;color:var(--text3);font-family:'Syne',sans-serif">${r.data}</td>
+        <td>${r.med}</td>
+        <td>${r.kg.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}</td>
+        <td>${fmtN(r.fardos)}</td>
+        <td>${r.mil.toLocaleString('pt-BR')}</td>
+        <td>${gU.toFixed(2)} g</td>
+        <td style="color:var(--orange)">${fmt(c)}</td>
+      </tr>`;
+    });
+    html+=`</tbody></table></div></div>`;
+  }
+
+  document.getElementById('main').innerHTML=html;
+}
+
+document.getElementById('moCtrl').style.display='flex';
+syncSheets();
+</script>
+</body>
+</html>
