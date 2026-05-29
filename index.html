@@ -307,10 +307,19 @@ function consolidate(rows){
 }
 
 function calcCusto(kg,mil){
-  // kg em kg (ex: 461.4), mil em milheiros
-  // g/unidade = kg*1000/mil/1000 = kg/mil
+  // kg por mil unidades = kg/mil
   // custo/mil = (kg/mil) * fator
   return ceilCents((kg/mil)*getFator());
+}
+
+// ── NOVO: kg por unidade = kg total / (mil * 1000)  →  resultado em kg ──
+function kgPorUnidade(kg, mil){
+  return kg / (mil * 1000);
+}
+
+// ── NOVO: kg por milheiro = kg total / mil  →  resultado em kg ──
+function kgPorMilheiro(kg, mil){
+  return kg / mil;
 }
 
 function getBoletos(rows){
@@ -348,9 +357,10 @@ function getAlerts(rows){
   const cons=consolidate(rows);
   const alerts=[];
   cons.forEach(c=>{
-    const media=c.kg/c.mil;
+    // média em kg/unidade
+    const media=kgPorUnidade(c.kg, c.mil);
     rows.filter(r=>r.med===c.med).forEach(r=>{
-      const lote=r.kg/r.mil;
+      const lote=kgPorUnidade(r.kg, r.mil);
       const dev=Math.abs((lote-media)/media);
       if(dev>0.20)alerts.push({med:c.med,data:r.data,lote,media,dev});
     });
@@ -409,11 +419,11 @@ function render(){
   }
   html+=`</div>`;
 
-  // Alertas
+  // Alertas — mensagem agora em kg/unidade
   if(alerts.length){
     html+=`<div class="alerts">`;
     alerts.forEach(a=>{
-      html+=`<div class="alert alert-warn"><div class="alert-icon">⚠️</div><div class="alert-text"><strong>Lote fora da média — ${a.med} · ${a.data}</strong>Peso/mil deste lote: ${(a.lote*1000).toFixed(1)}g · Média: ${(a.media*1000).toFixed(1)}g · <strong>${(a.dev*100).toFixed(0)}% ${a.lote>a.media?'acima':'abaixo'} da média</strong></div></div>`;
+      html+=`<div class="alert alert-warn"><div class="alert-icon">⚠️</div><div class="alert-text"><strong>Lote fora da média — ${a.med} · ${a.data}</strong>kg/unidade deste lote: ${a.lote.toFixed(6)} kg · Média: ${a.media.toFixed(6)} kg · <strong>${(a.dev*100).toFixed(0)}% ${a.lote>a.media?'acima':'abaixo'} da média</strong></div></div>`;
     });
     html+=`</div>`;
   }
@@ -424,16 +434,17 @@ function render(){
   html+=`<div class="chart-wrap"><div class="section-header"><div class="section-title">Milheiros por medida</div><div class="section-badge">${fabLabel} · ${monthLabel(STATE.selMonth)}</div></div>
   <div class="chart-bars">${sorted.map(c=>{const h=Math.max(6,Math.round((c.mil/maxMil)*120));return`<div class="bar-group"><div class="bar" style="height:${h}px" title="${c.med}: ${c.mil.toLocaleString('pt-BR')} mil"></div><div class="bar-lbl">${c.med}</div></div>`;}).join('')}</div></div>`;
 
-  // Tabela custo
+  // Tabela custo — colunas g/unidade e g/mil → kg/unidade e kg/mil
   const prevLbl=prevMonthLabel?monthLabel(prevMonthLabel):null;
   html+=`<div class="section"><div class="section-header"><div class="section-title">Custo por medida</div><div class="section-badge">Fator R$ ${getFator().toFixed(2).replace('.',',')} · ${monthLabel(STATE.selMonth)}</div></div>
   <div class="table-wrap"><table class="data-table"><thead><tr>
-    <th>Medida</th><th>Peso (kg)</th><th>Fardos</th><th>Milheiros</th><th>Unidades</th><th>g / unidade</th><th>Ref. Abril</th><th>Custo / mil</th><th>${prevLbl?'vs '+prevLbl:'Variação'}</th>
+    <th>Medida</th><th>Peso (kg)</th><th>Fardos</th><th>Milheiros</th><th>Unidades</th><th>kg / unidade</th><th>kg / mil</th><th>Ref. Abril</th><th>Custo / mil</th><th>${prevLbl?'vs '+prevLbl:'Variação'}</th>
   </tr></thead><tbody>`;
 
   cons.forEach(c=>{
     const custo=calcCusto(c.kg,c.mil);
-    const gU=(c.kg/c.mil)*1000;
+    const kgU=kgPorUnidade(c.kg, c.mil);       // kg por unidade
+    const kgMil=kgPorMilheiro(c.kg, c.mil);    // kg por milheiro
     const refAbril=ABRIL_REF[c.med];
     let varHtml='<span class="badge b-new">—</span>';
     if(prevMap[c.med]){
@@ -450,13 +461,14 @@ function render(){
       <td>${fmtN(c.fardos)}</td>
       <td>${c.mil.toLocaleString('pt-BR')}</td>
       <td>${fmtN(c.mil*1000)}</td>
-      <td>${gU.toFixed(2)} g</td>
+      <td>${kgU.toFixed(6)} kg</td>
+      <td>${kgMil.toFixed(4)} kg</td>
       <td>${refAbril?fmt(refAbril):'—'}</td>
       <td style="color:var(--orange);font-weight:700">${fmt(custo)}</td>
       <td>${varHtml}</td>
     </tr>`;
   });
-  html+=`<tr class="total-row"><td>TOTAL</td><td>${totalKg.toLocaleString('pt-BR',{maximumFractionDigits:1})}</td><td>${fmtN(totalFardos)}</td><td>${totalMil.toLocaleString('pt-BR')}</td><td>${fmtN(totalMil*1000)}</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>`;
+  html+=`<tr class="total-row"><td>TOTAL</td><td>${totalKg.toLocaleString('pt-BR',{maximumFractionDigits:1})}</td><td>${fmtN(totalFardos)}</td><td>${totalMil.toLocaleString('pt-BR')}</td><td>${fmtN(totalMil*1000)}</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>`;
   html+=`</tbody></table></div></div>`;
 
   // Boletos ALP
@@ -502,22 +514,24 @@ function render(){
     html+=`</div>`;
   }
 
-  // Lotes
+  // Lotes — coluna g/unidade → kg/unidade
   if(!isCons){
     html+=`<div class="section"><div class="section-header"><div class="section-title">Lotes do período</div><div class="section-badge">${rows.length} registros</div></div>
     <div class="table-wrap"><table class="data-table"><thead><tr>
-      <th>Data</th><th>Medida</th><th>Peso (kg)</th><th>Fardos</th><th>Milheiros</th><th>g / unidade</th><th>Custo / mil</th>
+      <th>Data</th><th>Medida</th><th>Peso (kg)</th><th>Fardos</th><th>Milheiros</th><th>kg / unidade</th><th>kg / mil</th><th>Custo / mil</th>
     </tr></thead><tbody>`;
     [...rows].reverse().forEach(r=>{
       const c=calcCusto(r.kg,r.mil);
-      const gU=(r.kg/r.mil)*1000;
+      const kgU=kgPorUnidade(r.kg, r.mil);
+      const kgMil=kgPorMilheiro(r.kg, r.mil);
       html+=`<tr>
         <td style="font-size:13px;color:var(--text3);font-family:'Syne',sans-serif">${r.data}</td>
         <td>${r.med}</td>
         <td>${r.kg.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}</td>
         <td>${fmtN(r.fardos)}</td>
         <td>${r.mil.toLocaleString('pt-BR')}</td>
-        <td>${gU.toFixed(2)} g</td>
+        <td>${kgU.toFixed(6)} kg</td>
+        <td>${kgMil.toFixed(4)} kg</td>
         <td style="color:var(--orange)">${fmt(c)}</td>
       </tr>`;
     });
