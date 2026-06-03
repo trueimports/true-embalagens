@@ -109,6 +109,57 @@ body{min-height:100vh;padding-bottom:80px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 @media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr);}.main,.header,.tabs,.month-bar,.sync-bar{padding-left:16px;padding-right:16px;}}
 @media(max-width:700px){.kpis{grid-template-columns:repeat(2,1fr);}}
+
+/* OPERACIONAL */
+.op-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px;}
+.op-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:28px;}
+.rank-list{display:flex;flex-direction:column;gap:8px;}
+.rank-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;transition:all .2s;}
+.rank-item:hover{border-color:var(--border2);}
+.rank-pos{font-family:'DM Mono',monospace;font-size:18px;font-weight:700;width:28px;text-align:center;flex-shrink:0;}
+.rank-pos.gold{color:#FFD700;}
+.rank-pos.silver{color:#C0C0C0;}
+.rank-pos.bronze{color:#CD7F32;}
+.rank-pos.other{color:var(--text3);}
+.rank-info{flex:1;}
+.rank-name{font-size:14px;font-weight:700;color:var(--text);}
+.rank-sub{font-size:11px;color:var(--text3);margin-top:2px;font-family:'DM Mono',monospace;}
+.rank-score{text-align:right;}
+.rank-pts{font-family:'DM Mono',monospace;font-size:16px;font-weight:700;color:var(--orange);}
+.rank-pts-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;}
+.bar-h-wrap{display:flex;flex-direction:column;gap:6px;}
+.bar-h-item{display:flex;align-items:center;gap:10px;}
+.bar-h-label{font-size:12px;color:var(--text2);width:80px;flex-shrink:0;text-align:right;}
+.bar-h-track{flex:1;background:var(--bg3);border-radius:4px;height:22px;overflow:hidden;position:relative;}
+.bar-h-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;font-size:11px;font-family:'DM Mono',monospace;font-weight:700;color:#000;white-space:nowrap;transition:width .6s ease;}
+.bar-h-val{font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);width:70px;text-align:right;flex-shrink:0;}
+.alert-op{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-radius:10px;font-size:13px;margin-bottom:8px;}
+.alert-op.red{background:rgba(231,76,60,0.08);border:1px solid rgba(231,76,60,0.2);}
+.alert-op.yellow{background:var(--yellow-dim);border:1px solid rgba(241,196,15,0.2);}
+.alert-op.blue{background:var(--blue-dim);border:1px solid rgba(91,138,245,0.2);}
+.alert-op.green{background:var(--green-dim);border:1px solid rgba(46,204,113,0.2);}
+.alert-op-icon{font-size:16px;flex-shrink:0;}
+.alert-op-body{flex:1;line-height:1.5;}
+.alert-op-body strong{display:block;margin-bottom:2px;}
+.turno-compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.turno-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
+.turno-title{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:12px;}
+.turno-stat{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);}
+.turno-stat:last-child{border-bottom:none;}
+.turno-stat-label{font-size:12px;color:var(--text3);}
+.turno-stat-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:var(--text);}
+.podio{display:flex;align-items:flex-end;justify-content:center;gap:12px;padding:20px 0;}
+.podio-item{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.podio-avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.podio-avatar.gold{background:rgba(255,215,0,0.15);border:2px solid #FFD700;}
+.podio-avatar.silver{background:rgba(192,192,192,0.15);border:2px solid #C0C0C0;}
+.podio-avatar.bronze{background:rgba(205,127,50,0.15);border:2px solid #CD7F32;}
+.podio-name{font-size:13px;font-weight:700;color:var(--text);}
+.podio-pts{font-family:'DM Mono',monospace;font-size:12px;color:var(--orange);}
+.podio-base{padding:8px 16px;border-radius:8px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);}
+.podio-base.gold{background:rgba(255,215,0,0.1);height:70px;display:flex;align-items:center;}
+.podio-base.silver{background:rgba(192,192,192,0.08);height:50px;display:flex;align-items:center;}
+.podio-base.bronze{background:rgba(205,127,50,0.08);height:35px;display:flex;align-items:center;}
 </style>
 </head>
 <body>
@@ -146,6 +197,8 @@ body{min-height:100vh;padding-bottom:80px;}
   <div class="tab active" onclick="setFab(0)">ALP — Fábrica 1</div>
   <div class="tab" onclick="setFab(1)">Primícia — Fábrica 2</div>
   <div class="tab" onclick="setFab(2)">Consolidado</div>
+  <div class="tab" onclick="setFab(3)">Operacional</div>
+  <div class="tab" onclick="setFab(4)">Produtividade</div>
 </div>
 
 <div class="month-bar" id="monthBar"></div>
@@ -283,7 +336,15 @@ function parseRows(csv, hasmo){
       const ms=String(c[5]).replace(/[R$\s]/g,'').replace(',','.').replace(/\.(?=.*\.)/g,'');
       mo=parseFloat(ms)||0;
     }
-    result.push({id:id++,data,kg,fardos,med,mil,mo});
+    // Colunas extras: ALP tem MO na col 5, então maquina começa na 6
+    // Primícia NÃO tem MO, então maquina começa na 5
+    const baseIdx = hasmo ? 6 : 5;
+    const maquina = c[baseIdx]   ? String(c[baseIdx]).trim().toUpperCase() : '';
+    const turno   = c[baseIdx+1] ? String(c[baseIdx+1]).trim() : '';
+    const operador= c[baseIdx+2] ? String(c[baseIdx+2]).trim() : '';
+    const perdaRaw= c[baseIdx+3] ? String(c[baseIdx+3]).trim().replace(',','.') : '0';
+    const perda   = parseFloat(perdaRaw) || 0;
+    result.push({id:id++,data,kg,fardos,med,mil,mo,maquina,turno,operador,perda});
   }
   return result;
 }
@@ -414,6 +475,8 @@ function setFab(i){
   STATE.fab=i;
   document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',i===j));
   document.getElementById('moCtrl').style.display=i===0?'flex':'none';
+  // Esconde seletor de mês na aba operacional
+  document.getElementById('monthBar').style.display='flex';
   render();
 }
 
@@ -430,6 +493,8 @@ function renderMonthBar(){
 }
 
 function render(){
+  if(STATE.fab===3){ renderOperacional(); return; }
+  if(STATE.fab===4){ renderProdutividade(); return; }
   renderMonthBar();
   const rows=getRows();
   const prevRows=getPrevRows();
@@ -583,8 +648,711 @@ function render(){
   document.getElementById('main').innerHTML=html;
 }
 
+
+// ── Horas por lote proporcional ao kg (global — usada em Operacional, Ranking e Produtividade)
+// Ex: Erika 600kg 26x36 + 200kg 12x18 no mesmo Turno Dia (10h) → 7.5h e 2.5h
+function calcHorasProporcional(allRows, hTurno){
+  const ch = r => `${r.operador||''}|${r.turno||''}|${r.data||''}`;
+  const kgPorTurno = {};
+  allRows.forEach(r=>{ const k=ch(r); kgPorTurno[k]=(kgPorTurno[k]||0)+r.kg; });
+  return allRows.map(r=>{
+    const totalKgTurno = kgPorTurno[ch(r)] || r.kg;
+    const proporcao = totalKgTurno > 0 ? r.kg / totalKgTurno : 1;
+    return { ...r, horasLote: hTurno * proporcao };
+  });
+}
+
 document.getElementById('moCtrl').style.display='flex';
 syncSheets();
+
+// ══════════════════════════════════════════════
+//  ABA PRODUTIVIDADE — Primícia
+// ══════════════════════════════════════════════
+function renderProdutividade(){
+  const HORAS_TURNO = 10; // Dia: 07-17 / Noite: 20-06
+  // Filtra por mês selecionado
+  const allProdRows = STATE.f2.filter(r => r.operador && r.operador.trim() !== '');
+  const rows = STATE.selMonth
+    ? allProdRows.filter(r => extractMonth(r.data) === STATE.selMonth)
+    : allProdRows;
+  const main = document.getElementById('main');
+
+  if(!rows.length){
+    main.innerHTML=`<div class="empty" style="padding:80px;text-align:center;color:var(--text3)">
+      <div style="font-size:40px;margin-bottom:16px">📈</div>
+      <div style="font-size:16px;font-weight:700;color:var(--text2);margin-bottom:8px">Nenhum dado de produtividade em ${monthLabel(STATE.selMonth)}</div>
+      <div style="font-size:13px">Preencha as colunas máquina, turno, operador na planilha Primícia.</div>
+    </div>`;
+    return;
+  }
+
+  // ── Helpers ──────────────────────────────────
+  // Horas proporcional ao kg para produtividade
+  const rowsProd = calcHorasProporcional(rows, HORAS_TURNO);
+
+  function groupBy(arr, key){
+    return arr.reduce((acc,r)=>{
+      const k=r[key]||'—';
+      if(!acc[k]) acc[k]={kg:0,mil:0,perda:0,lotes:0,horas:0};
+      acc[k].kg+=r.kg; acc[k].mil+=r.mil;
+      acc[k].perda+=r.perda; acc[k].lotes++;
+      acc[k].horas+=r.horasLote; // usa horas reais do lote
+      return acc;
+    },{});
+  }
+
+  const byOp    = groupBy(rowsProd,'operador');
+  const byMaq   = groupBy(rowsProd,'maquina');
+  const byMed   = groupBy(rowsProd,'med');
+  const byTurno = groupBy(rowsProd,'turno');
+  const byData  = groupBy(rowsProd,'data');
+
+  // kg/hora e mil/hora
+  function kgh(d){ return d.horas>0 ? d.kg/d.horas : 0; }
+  function milh(d){ return d.horas>0 ? d.mil/d.horas : 0; }
+
+  // Totais
+  const totalKg   = rows.reduce((s,r)=>s+r.kg,0);
+  const totalMil  = rows.reduce((s,r)=>s+r.mil,0);
+  const totalH    = rowsProd.reduce((s,r)=>s+r.horasLote,0);
+  const totalKgH  = totalH>0 ? totalKg/totalH : 0;
+  const totalMilH = totalH>0 ? totalMil/totalH : 0;
+
+  // Melhor dia
+  const melhorDia = Object.entries(byData).sort((a,b)=>kgh(b[1])-kgh(a[1]))[0];
+  const piorDia   = Object.entries(byData).sort((a,b)=>kgh(a[1])-kgh(b[1]))[0];
+
+  const cores = ['#E87722','#5b8af5','#2ecc71','#a55eea','#f1c40f','#e74c3c','#1abc9c'];
+
+  // ── KPIs ─────────────────────────────────────
+  let html=`<div class="kpis">
+    <div class="kpi"><div class="kpi-icon">⚡</div><div class="kpi-label">kg/hora geral</div>
+      <div class="kpi-val" style="color:var(--orange)">${totalKgH.toFixed(1)}</div>
+      <div class="kpi-sub">média todas máquinas</div></div>
+    <div class="kpi"><div class="kpi-icon">📦</div><div class="kpi-label">Mil/hora geral</div>
+      <div class="kpi-val" style="color:var(--blue)">${totalMilH.toFixed(2)}</div>
+      <div class="kpi-sub">milheiros por hora</div></div>
+    <div class="kpi"><div class="kpi-icon">⏱️</div><div class="kpi-label">Horas registradas</div>
+      <div class="kpi-val">${totalH.toLocaleString('pt-BR')}</div>
+      <div class="kpi-sub">${rows.length} lotes · ${HORAS_TURNO}h/turno</div></div>
+    <div class="kpi"><div class="kpi-icon">🏆</div><div class="kpi-label">Melhor dia</div>
+      <div class="kpi-val" style="color:var(--green);font-size:18px">${melhorDia?melhorDia[0]:'—'}</div>
+      <div class="kpi-sub">${melhorDia?kgh(melhorDia[1]).toFixed(1)+' kg/h':''}</div></div>
+    <div class="kpi"><div class="kpi-icon">📉</div><div class="kpi-label">Dia mais fraco</div>
+      <div class="kpi-val" style="color:var(--red);font-size:18px">${piorDia?piorDia[0]:'—'}</div>
+      <div class="kpi-sub">${piorDia?kgh(piorDia[1]).toFixed(1)+' kg/h':''}</div></div>
+  </div>`;
+
+  // ── Gráfico evolução diária ───────────────────
+  const diasSort = Object.entries(byData).sort((a,b)=>a[0].localeCompare(b[0]));
+  const maxDiaKgH = Math.max(...diasSort.map(d=>kgh(d[1])),1);
+  html+=`<div class="chart-wrap">
+    <div class="section-header">
+      <div class="section-title">📈 Evolução diária — kg/hora</div>
+      <div class="section-badge">${HORAS_TURNO}h por turno</div>
+    </div>
+    <div class="chart-bars" style="height:150px;margin-top:16px">`;
+  diasSort.forEach(([data,d],i)=>{
+    const h=Math.max(6,Math.round((kgh(d)/maxDiaKgH)*140));
+    const cor = kgh(d)>=totalKgH ? 'var(--green)' : 'var(--orange-dim)';
+    html+=`<div class="bar-group">
+      <div class="bar" style="height:${h}px;background:${cor};border-color:${cor}" 
+           title="${data}: ${kgh(d).toFixed(1)} kg/h · ${d.kg.toFixed(0)} kg"></div>
+      <div class="bar-lbl">${data}</div>
+    </div>`;
+  });
+  html+=`</div>
+    <div style="display:flex;gap:16px;margin-top:10px;font-size:11px;color:var(--text3)">
+      <span style="color:var(--green)">■</span><span>Acima da média (${totalKgH.toFixed(1)} kg/h)</span>
+      <span style="color:var(--orange)">■</span><span>Abaixo da média</span>
+    </div>
+  </div>`;
+
+  // ── Grid: Operadores + Máquinas ───────────────
+  html+=`<div class="op-grid">`;
+
+  // kg/hora por operador
+  const opSort = Object.entries(byOp).sort((a,b)=>kgh(b[1])-kgh(a[1]));
+  const maxOpKgH = Math.max(...opSort.map(d=>kgh(d[1])),1);
+  html+=`<div class="section">
+    <div class="section-header">
+      <div class="section-title">👤 kg/hora por Operador</div>
+      <div class="section-badge">Turno = ${HORAS_TURNO}h</div>
+    </div>
+    <div class="table-wrap"><div style="padding:16px"><div class="bar-h-wrap">`;
+  opSort.forEach(([op,d],i)=>{
+    const v=kgh(d); const pct=v/maxOpKgH*100;
+    const cor=cores[i%cores.length];
+    const milHora=milh(d);
+    html+=`<div class="bar-h-item">
+      <div class="bar-h-label" style="width:70px">${op}</div>
+      <div class="bar-h-track">
+        <div class="bar-h-fill" style="width:${pct}%;background:${cor}">${v.toFixed(1)} kg/h</div>
+      </div>
+      <div class="bar-h-val" style="width:80px">${milHora.toFixed(2)} mil/h</div>
+    </div>`;
+  });
+  html+=`</div></div></div></div>`;
+
+  // kg/hora por máquina
+  const maqSort = Object.entries(byMaq).sort((a,b)=>kgh(b[1])-kgh(a[1]));
+  const maxMaqKgH = Math.max(...maqSort.map(d=>kgh(d[1])),1);
+  html+=`<div class="section">
+    <div class="section-header">
+      <div class="section-title">⚙️ kg/hora por Máquina</div>
+    </div>
+    <div class="table-wrap"><div style="padding:16px"><div class="bar-h-wrap">`;
+  maqSort.forEach(([maq,d],i)=>{
+    const v=kgh(d); const pct=v/maxMaqKgH*100;
+    const cor=cores[i%cores.length];
+    html+=`<div class="bar-h-item">
+      <div class="bar-h-label" style="width:70px">${maq}</div>
+      <div class="bar-h-track">
+        <div class="bar-h-fill" style="width:${pct}%;background:${cor}">${v.toFixed(1)} kg/h</div>
+      </div>
+      <div class="bar-h-val" style="width:80px">${milh(d).toFixed(2)} mil/h</div>
+    </div>`;
+  });
+  html+=`</div></div></div></div>`;
+  html+=`</div>`; // fim op-grid
+
+  // ── kg/hora por medida ────────────────────────
+  const medSort = Object.entries(byMed).sort((a,b)=>kgh(b[1])-kgh(a[1]));
+  const maxMedKgH = Math.max(...medSort.map(d=>kgh(d[1])),1);
+  html+=`<div class="section">
+    <div class="section-header">
+      <div class="section-title">📐 kg/hora por Medida</div>
+      <div class="section-badge">${medSort.length} medidas</div>
+    </div>
+    <div class="table-wrap"><div style="padding:16px 16px 8px"><div class="bar-h-wrap">`;
+  medSort.forEach(([med,d],i)=>{
+    const v=kgh(d); const pct=v/maxMedKgH*100;
+    const cor=v>=totalKgH?'var(--green)':'var(--orange)';
+    html+=`<div class="bar-h-item">
+      <div class="bar-h-label" style="width:70px;font-family:DM Mono,monospace;font-size:11px">${med}</div>
+      <div class="bar-h-track">
+        <div class="bar-h-fill" style="width:${pct}%;background:${cor}">${v.toFixed(1)} kg/h</div>
+      </div>
+      <div class="bar-h-val" style="width:90px">${milh(d).toFixed(2)} mil/h</div>
+    </div>`;
+  });
+  html+=`</div></div></div></div>`;
+
+  // ── Comparativo turno Dia vs Noite ────────────
+  const turnoSort = Object.entries(byTurno).sort((a,b)=>kgh(b[1])-kgh(a[1]));
+  html+=`<div class="op-grid">`;
+  html+=`<div class="section">
+    <div class="section-header"><div class="section-title">🌅 Turno Dia vs Noite — kg/hora</div></div>
+    <div class="turno-compare">`;
+  turnoSort.forEach(([turno,d])=>{
+    const icon=turno.toLowerCase().includes('dia')?'☀️':'🌙';
+    const v=kgh(d); const vm=milh(d);
+    const cor=v>=totalKgH?'var(--green)':'var(--orange)';
+    html+=`<div class="turno-card">
+      <div class="turno-title">${icon} Turno ${turno}</div>
+      <div class="turno-stat"><span class="turno-stat-label">kg/hora</span>
+        <span class="turno-stat-val" style="color:${cor};font-size:20px">${v.toFixed(1)}</span></div>
+      <div class="turno-stat"><span class="turno-stat-label">Milheiros/hora</span>
+        <span class="turno-stat-val">${vm.toFixed(2)}</span></div>
+      <div class="turno-stat"><span class="turno-stat-label">kg total</span>
+        <span class="turno-stat-val">${d.kg.toFixed(0)} kg</span></div>
+      <div class="turno-stat"><span class="turno-stat-label">Horas totais</span>
+        <span class="turno-stat-val">${d.horas}h</span></div>
+      <div class="turno-stat"><span class="turno-stat-label">Lotes</span>
+        <span class="turno-stat-val">${d.lotes}</span></div>
+    </div>`;
+  });
+  html+=`</div></div>`;
+
+  // Tabela completa operadores
+  html+=`<div class="section">
+    <div class="section-header"><div class="section-title">📊 Tabela completa — Operadores</div></div>
+    <div class="table-wrap"><table class="data-table"><thead><tr>
+      <th>Operador</th><th>Lotes</th><th>KG Total</th><th>Milheiros</th><th>Horas</th><th>kg/hora</th><th>Mil/hora</th><th>Perda kg</th><th>% Perda</th>
+    </tr></thead><tbody>`;
+  opSort.forEach(([op,d])=>{
+    const v=kgh(d); const vm=milh(d);
+    const pctP=d.kg>0?d.perda/d.kg*100:0;
+    const corKgH=v>=totalKgH?'var(--green)':'var(--orange)';
+    html+=`<tr>
+      <td style="font-weight:700">${op}</td>
+      <td>${d.lotes}</td>
+      <td>${d.kg.toFixed(0)}</td>
+      <td>${d.mil.toLocaleString('pt-BR')}</td>
+      <td>${d.horas}h</td>
+      <td style="color:${corKgH};font-weight:700">${v.toFixed(1)}</td>
+      <td>${vm.toFixed(2)}</td>
+      <td style="color:var(--red)">${d.perda.toFixed(1)}</td>
+      <td style="color:${pctP<3?'var(--green)':pctP<6?'var(--orange)':'var(--red)'}">${pctP.toFixed(1)}%</td>
+    </tr>`;
+  });
+  html+=`</tbody></table></div></div>`;
+  html+=`</div>`; // fim op-grid
+
+
+  // ── PROJEÇÃO MENSAL ──────────────────────────────────────────────────────
+  const maqAtivas = Object.keys(byMaq).length || 1;
+
+  // Passo 1: define ano/mês selecionado
+  let anoSel, mesSel;
+  if(STATE.selMonth){
+    const [_mm, _yy] = STATE.selMonth.split('/');
+    mesSel = parseInt(_mm) - 1; // 0-indexed
+    anoSel = parseInt('20' + _yy);
+  } else {
+    const _n = new Date();
+    anoSel = _n.getFullYear();
+    mesSel = _n.getMonth();
+  }
+
+  // Passo 2: "hoje" = data mais recente nos dados (não depende do relógio do PC)
+  let diaRef = 1;
+  rowsProd.forEach(r=>{
+    const [_dd] = r.data.split('/').map(Number);
+    if(_dd > diaRef) diaRef = _dd;
+  });
+
+  const ehMesAtual  = true; // sempre trata o mês selecionado como "em andamento" se há dados
+  const ultimoDia   = new Date(anoSel, mesSel+1, 0).getDate();
+
+  // Passo 3: conta dias úteis
+  function contarUteis(inicio, fim){
+    let u = 0;
+    for(let d = inicio; d <= fim; d++){
+      const dow = new Date(anoSel, mesSel, d).getDay();
+      if(dow >= 1 && dow <= 5) u++;
+    }
+    return u;
+  }
+
+  const diasPassados   = contarUteis(1, diaRef);
+  const diasRestantes  = contarUteis(diaRef + 1, ultimoDia);
+  const totalDiasUteis = diasPassados + diasRestantes;
+
+  const horasDia       = 20; // 2 turnos × 10h
+  const horasRestantes = diasRestantes * horasDia * maqAtivas;
+  const kghGeral       = totalH > 0 ? totalKg / totalH : 0;
+  const kgProjetado    = kghGeral * horasRestantes;
+  const kgTotalMes     = totalKg + kgProjetado;
+  const pctConcluido   = totalDiasUteis > 0 ? (diasPassados / totalDiasUteis) * 100 : 0;
+  const corBarra       = pctConcluido >= 80 ? 'var(--green)' : pctConcluido >= 50 ? 'var(--orange)' : 'var(--blue)';
+
+  html += `
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">🔮 Projeção Mensal — ${monthLabel(STATE.selMonth)}</div>
+      <div class="section-badge">${maqAtivas} máq. · 2 turnos · ${horasDia}h/dia</div>
+    </div>
+    <div class="table-wrap" style="margin-bottom:16px">
+      <div style="padding:20px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <span style="font-size:13px;color:var(--text2);font-weight:600">Progresso do mês</span>
+          <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--text3)">${diasPassados} de ${totalDiasUteis} dias úteis</span>
+        </div>
+        <div style="background:var(--bg3);border-radius:6px;height:28px;overflow:hidden">
+          <div style="width:${pctConcluido.toFixed(1)}%;height:100%;background:${corBarra};border-radius:6px;display:flex;align-items:center;padding-left:12px;transition:width .6s">
+            <span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:700;color:#000;white-space:nowrap">${pctConcluido.toFixed(0)}% concluído</span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">
+          <span>01/${(mesSel+1).toString().padStart(2,'0')}/${anoSel}</span>
+          <span style="color:var(--orange)">▲ dia ${diaRef}</span>
+          <span>${ultimoDia}/${(mesSel+1).toString().padStart(2,'0')}/${anoSel}</span>
+        </div>
+      </div>
+    </div>
+    <div class="kpis" style="margin-bottom:0">
+      <div class="kpi">
+        <div class="kpi-icon">✅</div>
+        <div class="kpi-label">Já produzido</div>
+        <div class="kpi-val" style="color:var(--green)">${totalKg.toLocaleString('pt-BR',{maximumFractionDigits:0})} kg</div>
+        <div class="kpi-sub">${diasPassados} dias úteis · ${totalH.toFixed(0)}h</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-icon">🔮</div>
+        <div class="kpi-label">Projeção restante</div>
+        <div class="kpi-val" style="color:var(--blue)">${kgProjetado.toLocaleString('pt-BR',{maximumFractionDigits:0})} kg</div>
+        <div class="kpi-sub">${diasRestantes} dias úteis restantes</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-icon">📊</div>
+        <div class="kpi-label">Total projetado mês</div>
+        <div class="kpi-val" style="color:var(--orange)">${kgTotalMes.toLocaleString('pt-BR',{maximumFractionDigits:0})} kg</div>
+        <div class="kpi-sub">base: ${kghGeral.toFixed(1)} kg/h médio</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-icon">⚡</div>
+        <div class="kpi-label">kg/hora atual</div>
+        <div class="kpi-val">${kghGeral.toFixed(1)}</div>
+        <div class="kpi-sub">todas as máquinas</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-icon">🏭</div>
+        <div class="kpi-label">Máquinas ativas</div>
+        <div class="kpi-val">${maqAtivas}</div>
+        <div class="kpi-sub">de 3 disponíveis</div>
+      </div>
+    </div>
+  </div>`;
+
+  main.innerHTML=html;
+}
+
+
+// ══════════════════════════════════════════════
+//  ABA OPERACIONAL — Primícia
+// ══════════════════════════════════════════════
+function renderOperacional(){
+  // Apenas dados da Primícia com operador preenchido
+  // Filtra por mês selecionado
+  const allOpRows = STATE.f2.filter(r => r.operador && r.operador.trim() !== '');
+  const rows = STATE.selMonth
+    ? allOpRows.filter(r => extractMonth(r.data) === STATE.selMonth)
+    : allOpRows;
+  const main = document.getElementById('main');
+
+  if(!rows.length){
+    main.innerHTML=`<div class="empty" style="padding:80px;text-align:center;color:var(--text3)">
+      <div style="font-size:40px;margin-bottom:16px">📋</div>
+      <div style="font-size:16px;font-weight:700;color:var(--text2);margin-bottom:8px">Nenhum dado operacional em ${monthLabel(STATE.selMonth)}</div>
+      <div style="font-size:13px">Preencha as colunas máquina, turno, operador e perda na planilha Primícia.</div>
+    </div>`;
+    return;
+  }
+
+  // ── Agrupadores ──────────────────────────────
+  function groupBy(arr, key){
+    return arr.reduce((acc,r)=>{ const k=r[key]||'—'; if(!acc[k])acc[k]={kg:0,mil:0,perda:0,lotes:0}; acc[k].kg+=r.kg; acc[k].mil+=r.mil; acc[k].perda+=r.perda; acc[k].lotes++; return acc; },{});
+  }
+
+  const byOp  = groupBy(rows,'operador');
+  const byMaq = groupBy(rows,'maquina');
+  const byTurno = groupBy(rows,'turno');
+
+  // ── KPI totais ───────────────────────────────
+  const totalKg    = rows.reduce((s,r)=>s+r.kg,0);
+  const totalMil   = rows.reduce((s,r)=>s+r.mil,0);
+  const totalPerda = rows.reduce((s,r)=>s+r.perda,0);
+  const eficiencia = totalKg>0 ? ((totalKg-totalPerda)/totalKg*100) : 0;
+
+  // ── Média kg/unidade por medida (padrão histórico) ──
+  const mediaPorMed={};
+  const consAll={};
+  [...STATE.f1,...STATE.f2].forEach(r=>{
+    if(!consAll[r.med])consAll[r.med]={kg:0,mil:0};
+    consAll[r.med].kg+=r.kg; consAll[r.med].mil+=r.mil;
+  });
+  Object.keys(consAll).forEach(med=>{
+    const c=consAll[med];
+    if(c.mil>0) mediaPorMed[med]=c.kg/(c.mil*1000);
+  });
+
+  // ── Alertas inteligentes ─────────────────────
+  const HORAS_TURNO_AL = 10;
+
+  const rowsComHoras = calcHorasProporcional(rows, HORAS_TURNO_AL);
+  const f2ComHoras   = calcHorasProporcional(STATE.f2.filter(r=>r.operador&&r.operador.trim()!==''), HORAS_TURNO_AL);
+
+  // Média histórica de kg/hora por medida (base para alertas de produtividade)
+  const mediaKgHAlerta = {};
+  const contMedAl = {};
+  f2ComHoras.forEach(r=>{
+    if(!r.med) return;
+    const kgh = r.kg / r.horasLote;
+    if(!mediaKgHAlerta[r.med]){ mediaKgHAlerta[r.med]=0; contMedAl[r.med]=0; }
+    mediaKgHAlerta[r.med] += kgh;
+    contMedAl[r.med]++;
+  });
+  Object.keys(mediaKgHAlerta).forEach(med=>{
+    mediaKgHAlerta[med] = mediaKgHAlerta[med] / contMedAl[med];
+  });
+
+  const alertas=[];
+
+  // 1. Lotes com produtividade kg/hora ACIMA da média da medida (>20%)
+  // 2. Lotes com produtividade kg/hora ABAIXO da média da medida (>20%)
+  rowsComHoras.forEach(r=>{
+    if(!r.med||!r.kg) return;
+    const kghLote = r.kg / r.horasLote;
+    const mediaMed = mediaKgHAlerta[r.med];
+    if(!mediaMed) return;
+    const desvio = (kghLote - mediaMed) / mediaMed;
+    if(desvio > 0.20){
+      // Alerta expira após 2 dias
+      const [dd2a,mm2a] = r.data.split('/').map(Number);
+      const dataLote2a = new Date(new Date().getFullYear(), mm2a-1, dd2a);
+      const diffDias2a = (new Date() - dataLote2a) / (1000*60*60*24);
+      if(diffDias2a <= 2){
+        alertas.push({
+          tipo:'green', icon:'🟢',
+          titulo:`Lote acima da média — ${r.med} · ${r.data}`,
+          msg:`${r.operador||'—'} na ${r.maquina||'—'} (Turno ${r.turno||'—'}): ${kghLote.toFixed(1)} kg/h vs média ${mediaMed.toFixed(1)} kg/h da medida → <strong>+${(desvio*100).toFixed(0)}% acima</strong>`
+        });
+      }
+    } else if(desvio < -0.20){
+      // Alerta expira após 2 dias
+      const [dd2b,mm2b] = r.data.split('/').map(Number);
+      const dataLote2b = new Date(new Date().getFullYear(), mm2b-1, dd2b);
+      const diffDias2b = (new Date() - dataLote2b) / (1000*60*60*24);
+      if(diffDias2b <= 2){
+        alertas.push({
+          tipo:'red', icon:'🔴',
+          titulo:`Lote abaixo da média — ${r.med} · ${r.data}`,
+          msg:`${r.operador||'—'} na ${r.maquina||'—'} (Turno ${r.turno||'—'}): ${kghLote.toFixed(1)} kg/h vs média ${mediaMed.toFixed(1)} kg/h da medida → <strong>${(desvio*100).toFixed(0)}% abaixo</strong>`
+        });
+      }
+    }
+  });
+
+  // 3. Operador com perda acima da média geral
+  const perdaMediaGeral = totalKg>0 ? totalPerda/totalKg*100 : 0;
+  Object.entries(byOp).forEach(([op,d])=>{
+    const perdaOp = d.kg>0 ? d.perda/d.kg*100 : 0;
+    if(perdaOp > perdaMediaGeral*1.3 && d.perda>0){
+      alertas.push({
+        tipo:'yellow', icon:'⚠️',
+        titulo:`${op} — Perda acima da média`,
+        msg:`Perda de ${d.perda.toFixed(1)} kg (${perdaOp.toFixed(1)}% do produzido) — média geral é ${perdaMediaGeral.toFixed(1)}%`
+      });
+    }
+  });
+
+  // 4. Turno com produtividade muito abaixo
+  const turnoVals = Object.values(byTurno).map(d=>d.kg);
+  const mediaKgTurno = turnoVals.reduce((a,b)=>a+b,0)/(turnoVals.length||1);
+  Object.entries(byTurno).forEach(([turno,d])=>{
+    if(d.kg < mediaKgTurno*0.7 && turnoVals.length>1){
+      alertas.push({
+        tipo:'blue', icon:'🔵',
+        titulo:`Turno ${turno} — Produção abaixo da média`,
+        msg:`Produziu ${d.kg.toFixed(0)} kg — média entre turnos é ${mediaKgTurno.toFixed(0)} kg`
+      });
+    }
+  });
+
+  // Ordena: primeiro vermelhos, depois amarelos, verdes, azuis
+  const ordemTipo = {red:0, yellow:1, green:2, blue:3};
+  alertas.sort((a,b)=>(ordemTipo[a.tipo]||9)-(ordemTipo[b.tipo]||9));
+
+  // ── Sistema de pontuação (bonificação) ───────
+  // 80% eficiência vs média kg/hora da medida + 20% constância (dias únicos)
+  // Cada lote é comparado com a média histórica de kg/hora daquela medida específica
+  // Assim é 100% justo: medida pequena compete com média da medida pequena
+
+  const HORAS_TURNO_OP = 10;
+
+  // Média histórica de kg/hora por medida (todos os lotes da Primícia)
+  // Horas proporcional ao kg para o ranking
+  const f2Rank = calcHorasProporcional(
+    STATE.f2.filter(r=>r.operador&&r.operador.trim()!==''),
+    HORAS_TURNO_OP
+  );
+
+  const mediaKgHPorMed = {};
+  const contMed = {};
+  f2Rank.forEach(r=>{
+    if(!r.med) return;
+    const kgh = r.kg / r.horasLote;
+    if(!mediaKgHPorMed[r.med]){ mediaKgHPorMed[r.med]=0; contMed[r.med]=0; }
+    mediaKgHPorMed[r.med] += kgh;
+    contMed[r.med]++;
+  });
+  Object.keys(mediaKgHPorMed).forEach(med=>{
+    mediaKgHPorMed[med] = mediaKgHPorMed[med] / contMed[med];
+  });
+
+  // Dias únicos por operador (constância)
+  const diasPorOp = {};
+  rows.forEach(r=>{
+    if(!r.operador) return;
+    if(!diasPorOp[r.operador]) diasPorOp[r.operador] = new Set();
+    diasPorOp[r.operador].add(r.data);
+  });
+  const maxDias = Math.max(...Object.keys(diasPorOp).map(op=>diasPorOp[op].size), 1);
+
+  // Índice de eficiência por operador:
+  // Para cada lote: kgh_lote / media_kgh_medida → índice
+  // Média de todos os índices do operador = eficiência final
+  const eficienciaOp = {};
+  const eficienciaDetalhe = {}; // para exibir no rank
+  f2Rank.forEach(r=>{
+    if(!r.operador||!r.med) return;
+    const kghLote = r.kg / r.horasLote;
+    const mediaMed = mediaKgHPorMed[r.med] || kghLote;
+    const indice = mediaMed > 0 ? kghLote / mediaMed : 1;
+    if(!eficienciaOp[r.operador]){ eficienciaOp[r.operador]=[]; }
+    eficienciaOp[r.operador].push(indice);
+  });
+  // Média dos índices de cada operador
+  const efMedia = {};
+  Object.entries(eficienciaOp).forEach(([op,arr])=>{
+    efMedia[op] = arr.reduce((a,b)=>a+b,0)/arr.length;
+  });
+  const maxEf = Math.max(...Object.values(efMedia), 1);
+
+  const ranking = Object.entries(byOp).map(([op,d])=>{
+    const dias = diasPorOp[op] ? diasPorOp[op].size : 0;
+    const ef = efMedia[op] || 0;
+    const pctPerda = d.kg>0 ? d.perda/d.kg*100 : 0;
+    // 80% eficiência vs média da medida + 20% constância
+    const pts = Math.round(
+      (ef / maxEf) * 80 +
+      (dias / maxDias) * 20
+    );
+    return {op, kg:d.kg, mil:d.mil, perda:d.perda, lotes:d.lotes, dias, ef, pctPerda, pts};
+  }).sort((a,b)=>b.pts-a.pts);
+
+  // ── HTML ──────────────────────────────────────
+  const medals=['🥇','🥈','🥉'];
+  const posClass=['gold','silver','bronze'];
+
+  // KPIs
+  let html=`<div class="kpis">
+    <div class="kpi"><div class="kpi-icon">⚖️</div><div class="kpi-label">KG Produzido</div><div class="kpi-val">${totalKg.toLocaleString('pt-BR',{maximumFractionDigits:0})} kg</div><div class="kpi-sub">${rows.length} lotes registrados</div></div>
+    <div class="kpi"><div class="kpi-icon">📦</div><div class="kpi-label">Milheiros</div><div class="kpi-val">${totalMil.toLocaleString('pt-BR')}</div><div class="kpi-sub">${(totalMil*1000).toLocaleString('pt-BR')} unidades</div></div>
+    <div class="kpi"><div class="kpi-icon">🗑️</div><div class="kpi-label">Perda Total</div><div class="kpi-val" style="color:var(--red)">${totalPerda.toFixed(1)} kg</div><div class="kpi-sub">${(totalPerda/totalKg*100).toFixed(1)}% do total produzido</div></div>
+    <div class="kpi"><div class="kpi-icon">⚡</div><div class="kpi-label">Eficiência Geral</div><div class="kpi-val" style="color:${eficiencia>=95?'var(--green)':eficiencia>=85?'var(--orange)':'var(--red)'}">${eficiencia.toFixed(1)}%</div><div class="kpi-sub">kg útil / kg total</div></div>
+    <div class="kpi"><div class="kpi-icon">👥</div><div class="kpi-label">Operadores</div><div class="kpi-val">${Object.keys(byOp).length}</div><div class="kpi-sub">${Object.keys(byMaq).length} máquinas ativas</div></div>
+  </div>`;
+
+  // Alertas
+  if(alertas.length){
+    html+=`<div class="section"><div class="section-header"><div class="section-title">⚡ Alertas do período</div><div class="section-badge">${alertas.length} alerta${alertas.length>1?'s':''}</div></div>`;
+    alertas.forEach(a=>{
+      html+=`<div class="alert-op ${a.tipo}"><div class="alert-op-icon">${a.icon}</div><div class="alert-op-body"><strong>${a.titulo}</strong>${a.msg}</div></div>`;
+    });
+    html+=`</div>`;
+  }
+
+  // Pódio bonificação
+  if(ranking.length>=2){
+    html+=`<div class="section"><div class="section-header"><div class="section-title">🏆 Pódio — Bonificação</div><div class="section-badge">Eficiência kg/h 80% · Constância 20%</div></div>
+    <div class="table-wrap"><div class="card-body" style="padding:20px">
+    <div class="podio">`;
+    // Ordem pódio: 2º, 1º, 3º
+    const podioOrder = ranking.length>=3 ? [1,0,2] : ranking.length===2 ? [1,0] : [0];
+    podioOrder.forEach(i=>{
+      if(!ranking[i]) return;
+      const r=ranking[i];
+      const cls=posClass[i]||'other';
+      const h=i===0?70:i===1?50:35;
+      html+=`<div class="podio-item">
+        <div class="podio-avatar ${cls}">${medals[i]||'🎖️'}</div>
+        <div class="podio-name">${r.op}</div>
+        <div class="podio-pts">${r.pts} pts</div>
+        <div class="podio-base ${cls}"><span>${i===0?'1º':i===1?'2º':'3º'} lugar</span></div>
+      </div>`;
+    });
+    html+=`</div></div></div></div>`;
+  }
+
+  // Grid: Ranking operadores + Comparativo turno
+  html+=`<div class="op-grid">`;
+
+  // Ranking operadores
+  html+=`<div class="section"><div class="section-header"><div class="section-title">👤 Ranking Operadores</div></div>
+  <div class="rank-list">`;
+  ranking.forEach((r,i)=>{
+    const cls=i===0?'gold':i===1?'silver':i===2?'bronze':'other';
+    html+=`<div class="rank-item">
+      <div class="rank-pos ${cls}">${medals[i]||i+1}</div>
+      <div class="rank-info">
+        <div class="rank-name">${r.op}</div>
+        <div class="rank-sub">Ef. ${(r.ef*100).toFixed(1)}% vs média · ${r.dias} dias · ${r.lotes} lotes</div>
+      </div>
+      <div class="rank-score">
+        <div class="rank-pts">${r.pts}</div>
+        <div class="rank-pts-label">pontos</div>
+      </div>
+    </div>`;
+  });
+  html+=`</div></div>`;
+
+  // Comparativo turnos
+  const turnos = Object.entries(byTurno).sort((a,b)=>b[1].kg-a[1].kg);
+  html+=`<div class="section"><div class="section-header"><div class="section-title">🌅 Turno Dia vs Noite</div></div>
+  <div class="turno-compare">`;
+  turnos.forEach(([turno,d])=>{
+    const ef = d.kg>0?(d.kg-d.perda)/d.kg*100:0;
+    const icon = turno.toLowerCase().includes('dia')?'☀️':'🌙';
+    html+=`<div class="turno-card">
+      <div class="turno-title">${icon} Turno ${turno}</div>
+      <div class="turno-stat"><span class="turno-stat-label">KG Produzido</span><span class="turno-stat-val">${d.kg.toFixed(0)} kg</span></div>
+      <div class="turno-stat"><span class="turno-stat-label">Milheiros</span><span class="turno-stat-val">${d.mil.toLocaleString('pt-BR')}</span></div>
+      <div class="turno-stat"><span class="turno-stat-label">Perda</span><span class="turno-stat-val" style="color:var(--red)">${d.perda.toFixed(1)} kg</span></div>
+      <div class="turno-stat"><span class="turno-stat-label">Eficiência</span><span class="turno-stat-val" style="color:${ef>=95?'var(--green)':ef>=85?'var(--orange)':'var(--red)'}">${ef.toFixed(1)}%</span></div>
+      <div class="turno-stat"><span class="turno-stat-label">Lotes</span><span class="turno-stat-val">${d.lotes}</span></div>
+    </div>`;
+  });
+  html+=`</div></div>`;
+  html+=`</div>`; // fim op-grid
+
+  // Produção por máquina (barras horizontais)
+  const maqList = Object.entries(byMaq).sort((a,b)=>b[1].kg-a[1].kg);
+  const maxMaqKg = Math.max(...maqList.map(m=>m[1].kg),1);
+  const cores=['#E87722','#5b8af5','#2ecc71','#a55eea','#f1c40f'];
+  html+=`<div class="op-grid">`;
+
+  html+=`<div class="section"><div class="section-header"><div class="section-title">⚙️ Produção por Máquina</div></div>
+  <div class="table-wrap"><div style="padding:16px"><div class="bar-h-wrap">`;
+  maqList.forEach(([maq,d],i)=>{
+    const pct=d.kg/maxMaqKg*100;
+    const ef=d.kg>0?(d.kg-d.perda)/d.kg*100:0;
+    html+=`<div class="bar-h-item">
+      <div class="bar-h-label">${maq}</div>
+      <div class="bar-h-track">
+        <div class="bar-h-fill" style="width:${pct}%;background:${cores[i%cores.length]}">${ef.toFixed(0)}% ef.</div>
+      </div>
+      <div class="bar-h-val">${d.kg.toFixed(0)} kg</div>
+    </div>`;
+  });
+  html+=`</div></div></div></div>`;
+
+  // Tabela detalhada por máquina
+  html+=`<div class="section"><div class="section-header"><div class="section-title">📊 Detalhe por Máquina</div></div>
+  <div class="table-wrap"><table class="data-table"><thead><tr>
+    <th>Máquina</th><th>KG</th><th>Milheiros</th><th>Lotes</th><th>Perda (kg)</th><th>% Perda</th><th>Eficiência</th>
+  </tr></thead><tbody>`;
+  maqList.forEach(([maq,d])=>{
+    const pctPerda=d.kg>0?d.perda/d.kg*100:0;
+    const ef=d.kg>0?(d.kg-d.perda)/d.kg*100:0;
+    html+=`<tr>
+      <td style="font-weight:700">${maq}</td>
+      <td>${d.kg.toFixed(0)}</td>
+      <td>${d.mil.toLocaleString('pt-BR')}</td>
+      <td>${d.lotes}</td>
+      <td style="color:var(--red)">${d.perda.toFixed(1)}</td>
+      <td style="color:${pctPerda<3?'var(--green)':pctPerda<6?'var(--orange)':'var(--red)'}">${pctPerda.toFixed(1)}%</td>
+      <td style="color:${ef>=95?'var(--green)':ef>=85?'var(--orange)':'var(--red)'}"><strong>${ef.toFixed(1)}%</strong></td>
+    </tr>`;
+  });
+  html+=`</tbody></table></div></div>`;
+  html+=`</div>`; // fim op-grid
+
+  // Tabela lotes completa
+  html+=`<div class="section"><div class="section-header"><div class="section-title">📋 Todos os Lotes — Operacional</div><div class="section-badge">${rows.length} registros</div></div>
+  <div class="table-wrap"><table class="data-table"><thead><tr>
+    <th>Data</th><th>Medida</th><th>Máquina</th><th>Turno</th><th>Operador</th><th>KG</th><th>Milheiros</th><th>Perda (kg)</th><th>% Perda</th>
+  </tr></thead><tbody>`;
+  [...rows].reverse().forEach(r=>{
+    const pctP=r.kg>0?r.perda/r.kg*100:0;
+    html+=`<tr>
+      <td style="color:var(--text3);font-size:12px">${r.data}</td>
+      <td>${r.med}</td>
+      <td><span style="font-family:'DM Mono',monospace;font-size:12px;background:var(--orange-dim);color:var(--orange);padding:2px 8px;border-radius:4px">${r.maquina||'—'}</span></td>
+      <td>${r.turno?( r.turno.toLowerCase().includes('dia')?'☀️ '+r.turno:'🌙 '+r.turno):'—'}</td>
+      <td style="font-weight:600">${r.operador||'—'}</td>
+      <td>${r.kg.toFixed(0)}</td>
+      <td>${r.mil.toLocaleString('pt-BR')}</td>
+      <td style="color:${r.perda>0?'var(--red)':'var(--text3)'}">${r.perda>0?r.perda.toFixed(1):'—'}</td>
+      <td style="color:${pctP<3?'var(--green)':pctP<6?'var(--orange)':'var(--red)'}">${r.perda>0?pctP.toFixed(1)+'%':'—'}</td>
+    </tr>`;
+  });
+  html+=`</tbody></table></div></div>`;
+
+  main.innerHTML=html;
+}
+
 </script>
 </body>
 </html>
