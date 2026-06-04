@@ -1117,33 +1117,6 @@ render();
 //  ABA MERCADO ADS
 // ══════════════════════════════════════════════
 
-// Benchmarks configurados (maio/2026 base)
-const ADS_BENCHMARK = {
-  receita: 244888, investimento: 15390, roas: 15.9, acos: 6.28, cvr: null
-};
-
-// Classifica anúncio por ROAS
-function adsClass(roas){
-  if(roas >= 20) return {label:'Herói', css:'ads-class-hero'};
-  if(roas >= 8)  return {label:'Saudável', css:'ads-class-healthy'};
-  if(roas >= 5)  return {label:'Alerta', css:'ads-class-alert'};
-  return {label:'Corte', css:'ads-class-cut'};
-}
-
-// Extrai nome curto do anúncio a partir do título completo
-function adsShortName(titulo){
-  if(!titulo) return '—';
-  // Remove prefixos comuns
-  let s = titulo.replace(/Envelope\s+Segurança\s+(De\s+)?(Envio\s+)?(Com\s+Lacre\s+)?/i,'')
-                .replace(/Embalagem\s+(De\s+)?(Envio\s+)?/i,'')
-                .replace(/True Embalagens\s*/i,'')
-                .replace(/Plástico\s*/i,'')
-                .replace(/Inviolável\s*/i,'')
-                .replace(/Cinza-escuro|Cinza-chumbo|Cinza|Preto/gi,'')
-                .replace(/\s+/g,' ').trim();
-  return s.length > 52 ? s.slice(0,50)+'…' : s;
-}
-
 // ══════════════════════════════════════════════
 //  MERCADO ADS — ENGINE COMPLETO
 // ══════════════════════════════════════════════
