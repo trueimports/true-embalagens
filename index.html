@@ -195,7 +195,7 @@ body{min-height:100vh;padding-bottom:80px;}
 .tag-ruim{background:rgba(231,76,60,.15);color:var(--red);}
 
 
-/* ── MERCADO ADS ──────────────────────────────────── */
+/* ── MERCADO ADS ─────────────────────────────────────────────────────────── */
 .ads-upload-zone{border:2px dashed var(--border2);border-radius:14px;padding:48px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg2);margin-bottom:28px;}
 .ads-upload-zone:hover{border-color:var(--orange);background:var(--orange-dim);}
 .ads-upload-icon{font-size:32px;margin-bottom:12px;}
@@ -211,11 +211,10 @@ body{min-height:100vh;padding-bottom:80px;}
 .ads-class-cut{background:rgba(231,76,60,0.12);color:#e74c3c;border:1px solid rgba(231,76,60,0.25);display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;font-family:'Syne',sans-serif;}
 .ads-class-sub{background:rgba(165,94,234,0.12);color:#a55eea;border:1px solid rgba(165,94,234,0.25);display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;font-family:'Syne',sans-serif;}
 .ads-roas-bar{display:inline-block;height:5px;border-radius:3px;background:var(--orange);vertical-align:middle;margin-right:6px;}
-.ads-insight{display:flex;align-items:flex-start;gap:14px;padding:16px 20px;border-radius:12px;font-size:13px;background:rgba(232,119,34,0.07);border:1px solid rgba(232,119,34,0.2);margin-bottom:24px;}
+.ads-insight{display:flex;align-items:flex-start;gap:14px;padding:16px 20px;border-radius:12px;font-size:13px;background:rgba(232,119,34,0.07);border:1px solid rgba(232,119,34,0.2);margin-bottom:16px;}
 .ads-insight-icon{font-size:22px;flex-shrink:0;}
 .ads-insight-body{line-height:1.65;color:var(--text);}
 .ads-insight-body strong{color:var(--orange);display:block;font-size:14px;margin-bottom:3px;}
-.ads-filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
 .ads-filter-btn{font-size:11px;padding:4px 12px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;font-family:'Syne',sans-serif;font-weight:600;transition:all .2s;}
 .ads-filter-btn.active{background:var(--orange-dim);color:var(--orange);border-color:var(--orange-glow);}
 .ads-compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
@@ -430,17 +429,17 @@ async function syncSheets(){
   msg.textContent='Sincronizando com Google Sheets...';
   try{
     msg.textContent='Buscando ALP...';
-    const r1 = await fetch(`${SCRIPT_URL}?aba=alp`,{signal:AbortSignal.timeout(3000)}).then(r=>{
+    const r1 = await fetch(`${SCRIPT_URL}?aba=alp`).then(r=>{
       if(!r.ok) throw new Error('ALP erro '+r.status);
       return r.text();
     });
     msg.textContent='Buscando Primícia...';
-    const r2 = await fetch(`${SCRIPT_URL}?aba=primicia`,{signal:AbortSignal.timeout(3000)}).then(r=>{
+    const r2 = await fetch(`${SCRIPT_URL}?aba=primicia`).then(r=>{
       if(!r.ok) throw new Error('Primícia erro '+r.status);
       return r.text();
     });
     msg.textContent='Buscando Vendas Diretas...';
-    const r3 = await fetch(`${SCRIPT_URL}?aba=vendas`,{signal:AbortSignal.timeout(3000)}).then(r=>{
+    const r3 = await fetch(`${SCRIPT_URL}?aba=vendas`).then(r=>{
       if(!r.ok) throw new Error('Vendas erro '+r.status);
       return r.text();
     });
@@ -578,15 +577,6 @@ function render(){
   if(STATE.fab===6){ renderAds(); return; }
   renderMonthBar();
   const rows=getRows();
-  // Se não há dados ainda, mostra tela de espera sem spinner
-  if(!rows.length && !STATE.f1.length && !STATE.f2.length){
-    document.getElementById('main').innerHTML=`<div style="padding:80px;text-align:center;color:var(--text3)">
-      <div style="font-size:40px;margin-bottom:16px">📡</div>
-      <div style="font-size:16px;font-weight:700;color:var(--text2);margin-bottom:8px">Sem dados carregados</div>
-      <div style="font-size:13px;line-height:1.7">Clique em <strong style="color:var(--orange)">↻ Atualizar</strong> para conectar ao Google Sheets,<br>ou acesse a aba <strong style="color:var(--orange)">📊 Mercado Ads</strong> para importar relatórios.</div>
-    </div>`;
-    return;
-  }
   const prevRows=getPrevRows();
   const cons=consolidate(rows);
   const prevMap={};consolidate(prevRows).forEach(c=>prevMap[c.med]=c);
@@ -1111,682 +1101,7 @@ function togglePaidComissao(key){
 }
 
 document.getElementById('moCtrl').style.display='flex';
-
-// Tenta conectar ao Sheets — se falhar, não bloqueia
-// Sync em background — não bloqueia a UI
-// Inicializa dashboard — Sheets só conecta ao clicar em Atualizar
-const dot=document.getElementById('syncDot');
-const msg=document.getElementById('syncMsg');
-if(dot) dot.className='sync-dot error';
-if(msg) msg.textContent='Clique em Atualizar para conectar ao Google Sheets.';
-// Limpa spinner imediatamente antes de renderizar
-const mainEl=document.getElementById('main');
-if(mainEl) mainEl.innerHTML='';
-render();
-
-// ══════════════════════════════════════════════
-// ══════════════════════════════════════════════
-//  ABA MERCADO ADS
-// ══════════════════════════════════════════════
-
-// ══════════════════════════════════════════════
-//  MERCADO ADS — ENGINE COMPLETO
-// ══════════════════════════════════════════════
-
-const ADS_BENCHMARK = { receita:244888, investimento:15390, roas:15.9, acos:6.28 };
-let ADS_FILTER = 'todos';
-let ADS_VIEW   = 'anuncios'; // 'anuncios' | 'campanhas' | 'acoes' | 'isolamento'
-
-function adsClass(roas){
-  if(roas>=20) return {label:'Herói',    css:'ads-class-hero'};
-  if(roas>=8)  return {label:'Saudável', css:'ads-class-healthy'};
-  if(roas>=5)  return {label:'Alerta',   css:'ads-class-alert'};
-  return           {label:'Corte',    css:'ads-class-cut'};
-}
-
-function adsShortName(titulo){
-  if(!titulo) return '—';
-  return titulo
-    .replace(/Envelope\s+Segurança\s+(De\s+)?(Envio\s+)?(Com\s+Lacre\s+)?/gi,'')
-    .replace(/Embalagem\s+(De\s+)?(Envio\s+)?/gi,'')
-    .replace(/True Embalagens\s*/gi,'')
-    .replace(/Plástico\s*|Inviolável\s*/gi,'')
-    .replace(/Cinza-escuro|Cinza-chumbo|Cinza|Preto/gi,'')
-    .replace(/\s+/g,' ').trim()
-    .slice(0,54);
-}
-
-// ── Parser XLSX ──────────────────────────────
-function parseAdsXLSX(arrayBuffer){
-  const XLSX = window.XLSX;
-  const wb   = XLSX.read(arrayBuffer,{type:'array'});
-  const sheetName = wb.SheetNames.find(n=>n.toLowerCase().includes('relat'))||wb.SheetNames[0];
-  const ws   = wb.Sheets[sheetName];
-  const raw  = XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
-
-  let headerRow=-1;
-  for(let i=0;i<Math.min(10,raw.length);i++){
-    if(raw[i].some(c=>String(c).toLowerCase().includes('título')||String(c).toLowerCase().includes('titulo'))){
-      headerRow=i; break;
-    }
-  }
-  if(headerRow<0) return {rows:[],periodoLabel:'',dias:30};
-
-  const headers=raw[headerRow].map(h=>String(h).toLowerCase().replace(/\n/g,' ').trim());
-  const fi=name=>headers.findIndex(h=>h.includes(name));
-  const idx={
-    campanha:fi('campanha'), titulo:fi('título')||fi('titulo'),
-    impressoes:fi('impres'), cliques:fi('clique'), cvr:fi('cvr'),
-    receita:headers.findIndex(h=>h.includes('receita')&&!h.includes('diret')&&!h.includes('indir')),
-    invest:fi('investimento'), acos:fi('acos'),
-    vendasDir:headers.findIndex(h=>h.includes('diretas')&&!h.includes('receita')),
-    vendasIndir:headers.findIndex(h=>h.includes('indir')&&!h.includes('receita')),
-    desde:fi('desde'), ate:fi('até')||fi('ate'),
-  };
-
-  // Detecta período e dias
-  let periodoLabel='', datas=[];
-  for(let i=0;i<headerRow;i++){
-    for(const cell of raw[i]){
-      const s=String(cell);
-      if(s.match(/\d{2}[\s-](jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)/i)||
-         s.match(/\d{2}[\/\-]\d{2}[\/\-]\d{4}/)){
-        periodoLabel=s.trim(); break;
-      }
-    }
-    if(periodoLabel) break;
-  }
-
-  const meses={'jan':0,'fev':1,'mar':2,'abr':3,'mai':4,'jun':5,'jul':6,'ago':7,'set':8,'out':9,'nov':10,'dez':11};
-  function parsePTDate(s){
-    const m=s.match(/(\d{1,2})[\s-](jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)[a-z]*[\s-]*(\d{4})?/i);
-    if(m) return new Date(parseInt(m[3]||2026), meses[m[2].toLowerCase().slice(0,3)], parseInt(m[1]));
-    const m2=s.match(/(\d{2})[\/\-](\d{2})[\/\-](\d{4})/);
-    if(m2) return new Date(parseInt(m2[3]),parseInt(m2[2])-1,parseInt(m2[1]));
-    return null;
-  }
-
-  // Tenta detectar datas desde/até nas linhas de dados
-  let minDate=null,maxDate=null;
-  const pn=v=>{const n=parseFloat(String(v).replace(',','.')); return isNaN(n)?0:n;};
-  const rows=[];
-  for(let i=headerRow+1;i<raw.length;i++){
-    const r=raw[i];
-    if(!r||!r[idx.titulo]) continue;
-    const receita=pn(r[idx.receita]);
-    const invest =pn(r[idx.invest]);
-    if(receita===0&&invest===0) continue;
-    // datas
-    if(idx.desde>=0&&r[idx.desde]){
-      const d=parsePTDate(String(r[idx.desde]));
-      if(d){ if(!minDate||d<minDate) minDate=d; }
-    }
-    if(idx.ate>=0&&r[idx.ate]){
-      const d=parsePTDate(String(r[idx.ate]));
-      if(d){ if(!maxDate||d>maxDate) maxDate=d; }
-    }
-    rows.push({
-      titulo:   String(r[idx.titulo]||''),
-      campanha: String(r[idx.campanha]||'').trim(),
-      impressoes:pn(r[idx.impressoes]),
-      cliques:  pn(r[idx.cliques]),
-      cvr:      pn(r[idx.cvr]),
-      receita, invest,
-      acos:     pn(r[idx.acos]),
-      vendasTotal: pn(r[idx.vendasDir])+pn(r[idx.vendasIndir]),
-    });
-  }
-
-  let dias=30;
-  if(minDate&&maxDate){
-    dias=Math.max(1,Math.round((maxDate-minDate)/(1000*60*60*24))+1);
-  }
-
-  // Label limpo
-  if(!periodoLabel && rows.length){
-    periodoLabel = 'Período importado';
-  }
-  // Simplifica label longo
-  const labelMatch = periodoLabel.match(/(\d{2}[- ][a-zç]+[- ]\d{4})/gi);
-  if(labelMatch&&labelMatch.length>=2) periodoLabel=labelMatch[0]+' → '+labelMatch[1];
-
-  return {rows, periodoLabel, dias};
-}
-
-// ── Agrega por anúncio ───────────────────────
-function adsAggregate(rows){
-  const map={};
-  rows.forEach(r=>{
-    if(!map[r.titulo]) map[r.titulo]={titulo:r.titulo,campanha:r.campanha,receita:0,invest:0,cliques:0,vendasTotal:0,impressoes:0};
-    map[r.titulo].receita    +=r.receita;
-    map[r.titulo].invest     +=r.invest;
-    map[r.titulo].cliques    +=r.cliques;
-    map[r.titulo].vendasTotal+=r.vendasTotal;
-    map[r.titulo].impressoes +=r.impressoes;
-    // Mantém campanha da primeira ocorrência com mais investimento
-    if(r.invest > (map[r.titulo]._maxInv||0)){ map[r.titulo].campanha=r.campanha; map[r.titulo]._maxInv=r.invest; }
-  });
-  return Object.values(map).map(a=>{
-    a.roas=a.invest>0?a.receita/a.invest:0;
-    a.acos=a.receita>0?a.invest/a.receita*100:0;
-    a.cvr =a.cliques>0?a.vendasTotal/a.cliques*100:0;
-    return a;
-  }).filter(a=>a.invest>5||a.receita>5).sort((a,b)=>b.roas-a.roas);
-}
-
-// ── Agrega por campanha ──────────────────────
-function adsCampanhas(rows){
-  const map={};
-  rows.forEach(r=>{
-    const k=r.campanha||'(sem campanha)';
-    if(!map[k]) map[k]={campanha:k,receita:0,invest:0,cliques:0,vendasTotal:0,anuncios:[],roasList:[]};
-    map[k].receita    +=r.receita;
-    map[k].invest     +=r.invest;
-    map[k].cliques    +=r.cliques;
-    map[k].vendasTotal+=r.vendasTotal;
-    if(r.receita>0||r.invest>5) map[k].anuncios.push(r);
-  });
-  return Object.values(map).map(c=>{
-    c.roas=c.invest>0?c.receita/c.invest:0;
-    c.acos=c.receita>0?c.invest/c.receita*100:0;
-    // ROAS máx e mín dos anúncios
-    const adsAgg = adsAggregate(c.anuncios);
-    c.adsAgg=adsAgg;
-    c.roasMax=adsAgg.length?Math.max(...adsAgg.map(a=>a.roas)):0;
-    c.roasMin=adsAgg.length?Math.min(...adsAgg.filter(a=>a.invest>5).map(a=>a.roas)||[0]):0;
-    c.spread=c.roasMax-c.roasMin;
-    return c;
-  }).filter(c=>c.invest>5||c.receita>5).sort((a,b)=>b.roas-a.roas);
-}
-
-// ── Detecta heróis candidatos a isolamento ───
-function adsDetectIsolamento(campanhas){
-  const candidatos=[];
-  campanhas.forEach(c=>{
-    if(c.adsAgg.length<2) return;
-    c.adsAgg.forEach(a=>{
-      if(a.roas<25) return;
-      const outros=c.adsAgg.filter(x=>x.titulo!==a.titulo&&x.invest>5);
-      if(!outros.length) return;
-      const roasOutros=outros.reduce((s,x)=>s+x.roas,0)/outros.length;
-      if(roasOutros>10) return; // campanha já é boa, não precisa isolar
-      const pctBudget=c.invest>0?a.invest/c.invest:0;
-      if(pctBudget>0.6) return; // já recebe a maior parte
-      candidatos.push({
-        anuncio: a,
-        campanha: c,
-        roasCampanha: c.roas,
-        roasOutros,
-        pctBudget,
-        potencial: a.receita/a.invest * (c.invest*0.4), // estimativa se receber 40% a mais
-      });
-    });
-  });
-  return candidatos.sort((a,b)=>b.anuncio.roas-a.anuncio.roas);
-}
-
-// ── Gera listas de ação ──────────────────────
-function adsGerarAcoes(ads, campanhas, dias){
-  const acoes={pausar:[],aumentar:[],isolar:[]};
-
-  // 1. PAUSAR — anúncios com ROAS < 5x e invest > 0
-  ads.filter(a=>a.invest>10&&a.roas<5).sort((a,b)=>a.roas-b.roas).forEach(a=>{
-    acoes.pausar.push({
-      titulo: adsShortName(a.titulo),
-      campanha: a.campanha,
-      roas: a.roas,
-      invest: a.invest,
-      receita: a.receita,
-      economia: a.invest,
-    });
-  });
-
-  // 2. AUMENTAR BUDGET — heróis com invest < threshold
-  const totalInvest=ads.reduce((s,a)=>s+a.invest,0);
-  const budgetDiario=totalInvest/dias;
-  ads.filter(a=>a.roas>=20).sort((a,b)=>b.roas-a.roas).forEach(a=>{
-    const budgetIdeal=Math.min(a.receita*0.08, budgetDiario*0.5); // 8% ACOS ideal ou 50% budget diário
-    const gap=budgetIdeal-a.invest;
-    if(gap>20){
-      acoes.aumentar.push({
-        titulo: adsShortName(a.titulo),
-        campanha: a.campanha,
-        roas: a.roas,
-        investAtual: a.invest,
-        investSugerido: Math.round(budgetIdeal),
-        aumento: Math.round(gap),
-        receitaEstimada: Math.round(gap*a.roas),
-      });
-    }
-  });
-
-  // 3. ISOLAR — candidatos detectados
-  const candidatos=adsDetectIsolamento(campanhas);
-  candidatos.forEach(c=>{
-    acoes.isolar.push({
-      titulo: adsShortName(c.anuncio.titulo),
-      campanha: c.campanha.campanha,
-      roas: c.anuncio.roas,
-      roasCampanha: c.roasCampanha,
-      pctBudget: c.pctBudget,
-      potencial: Math.round(c.potencial),
-    });
-  });
-
-  return acoes;
-}
-
-// ── Formatos ─────────────────────────────────
-const fmtR  = n=>'R$\u00a0'+Math.round(n).toLocaleString('pt-BR');
-const fmtRk = n=>n>=1000?'R$\u00a0'+(n/1000).toFixed(1).replace('.',',')+'k':fmtR(n);
-const sign  = n=>n>=0?'+':'';
-
-// ── RENDER PRINCIPAL ─────────────────────────
-function renderAds(){
-  const main=document.getElementById('main');
-
-  if(!STATE.ads||STATE.ads.length===0){
-    main.innerHTML=`
-    <div style="max-width:700px;margin:40px auto;">
-      <div class="ads-upload-zone" id="adsDropZone" onclick="document.getElementById('adsFileInput').click()">
-        <div class="ads-upload-icon">📂</div>
-        <div class="ads-upload-title">Importar relatório do Mercado Ads</div>
-        <div class="ads-upload-sub">Arraste ou clique para selecionar o .xlsx exportado do Mercado Livre</div>
-        <div style="margin-top:12px;font-size:12px;color:var(--orange);font-weight:700">Mercado Ads → Relatórios → Anúncios patrocinados → Exportar Excel</div>
-        <input type="file" id="adsFileInput" accept=".xlsx,.xls" style="display:none" onchange="adsLoadFile(this.files[0])">
-      </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-top:0">
-        <div style="font-size:11px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Fluxo recomendado — 3 checkpoints por mês</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
-          ${[['📅 Dia 10','Exporta 1º→10º','Identifica cortes urgentes e heróis subfinanciados. Age no budget.'],
-             ['📅 Dia 20','Exporta 1º→20º','Valida se ajustes funcionaram. Amplifica heróis que aceleraram.'],
-             ['📅 Fechamento','Exporta mês completo','Análise final. Benchmark atualizado. Estratégia do mês seguinte.']
-            ].map(([t,p,d])=>`<div style="background:var(--bg3);border-radius:10px;padding:14px;">
-            <div style="font-size:13px;font-weight:700;color:var(--orange);margin-bottom:4px">${t}</div>
-            <div style="font-size:11px;color:var(--text2);font-weight:600;margin-bottom:6px">${p}</div>
-            <div style="font-size:11px;color:var(--text3);line-height:1.5">${d}</div>
-          </div>`).join('')}
-        </div>
-      </div>
-    </div>`;
-    setTimeout(()=>{
-      const z=document.getElementById('adsDropZone');
-      if(!z) return;
-      z.addEventListener('dragover',e=>{e.preventDefault();z.style.borderColor='var(--orange)';});
-      z.addEventListener('dragleave',()=>{z.style.borderColor='';});
-      z.addEventListener('drop',e=>{e.preventDefault();z.style.borderColor='';if(e.dataTransfer.files[0])adsLoadFile(e.dataTransfer.files[0]);});
-    },100);
-    return;
-  }
-
-  const periods=STATE.ads;
-  const selIdx =STATE.selPeriodoAds!==null?STATE.selPeriodoAds:periods.length-1;
-  const period =periods[selIdx];
-  const ads    =adsAggregate(period.rows);
-  const campanhas=adsCampanhas(period.rows);
-  const acoes  =adsGerarAcoes(ads, campanhas, period.dias||30);
-
-  const totRec =ads.reduce((s,a)=>s+a.receita,0);
-  const totInv =ads.reduce((s,a)=>s+a.invest,0);
-  const totCliq=ads.reduce((s,a)=>s+a.cliques,0);
-  const totVend=ads.reduce((s,a)=>s+a.vendasTotal,0);
-  const roasG  =totInv>0?totRec/totInv:0;
-  const acosG  =totRec>0?totInv/totRec*100:0;
-  const cvrG   =totCliq>0?totVend/totCliq*100:0;
-
-  const heroes =ads.filter(a=>a.roas>=20);
-  const healthy=ads.filter(a=>a.roas>=8&&a.roas<20);
-  const alertA =ads.filter(a=>a.roas>=5&&a.roas<8);
-  const cut    =ads.filter(a=>a.invest>5&&a.roas<5);
-  const subfin =heroes.filter(a=>a.invest<200);
-
-  const dRoas=roasG-ADS_BENCHMARK.roas;
-  const dAcos=acosG-ADS_BENCHMARK.acos;
-  const dRec =totRec-ADS_BENCHMARK.receita;
-
-  let html='';
-
-  // ── Barra de períodos + botão importar ──
-  html+=`<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
-    <div class="ads-period-bar" style="margin-bottom:0;flex:1;">
-      <span class="ads-period-label">Período</span>
-      ${periods.map((p,i)=>`<button class="ads-period-btn${i===selIdx?' active':''}" onclick="STATE.selPeriodoAds=${i};renderAds()">${p.label}</button>`).join('')}
-    </div>
-    <div style="display:flex;gap:8px;">
-      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('adsFileInputExtra').click()">+ Importar período</button>
-      <input type="file" id="adsFileInputExtra" accept=".xlsx,.xls" style="display:none" onchange="adsLoadFile(this.files[0])">
-      <button class="btn btn-ghost btn-sm" onclick="if(confirm('Limpar todos os períodos?')){STATE.ads=[];STATE.selPeriodoAds=null;renderAds();}">✕ Limpar</button>
-    </div>
-  </div>`;
-
-  // ── KPIs ──
-  html+=`<div class="kpis">
-    <div class="kpi"><div class="kpi-icon">💰</div><div class="kpi-label">Receita via Ads</div>
-      <div class="kpi-val">${fmtRk(totRec)}</div>
-      <div class="kpi-sub" style="color:${dRec>=0?'var(--green)':'var(--red)'}">${sign(dRec)}${fmtRk(Math.abs(dRec))} vs benchmark</div></div>
-    <div class="kpi"><div class="kpi-icon">📈</div><div class="kpi-label">ROAS geral</div>
-      <div class="kpi-val" style="color:${roasG>=15.9?'var(--green)':roasG>=8?'var(--orange)':'var(--red)'}">${roasG.toFixed(1)}x</div>
-      <div class="kpi-sub" style="color:${dRoas>=0?'var(--green)':'var(--red)'}">${sign(dRoas)}${Math.abs(dRoas).toFixed(1)}x vs 15,9x ref</div></div>
-    <div class="kpi"><div class="kpi-icon">🎯</div><div class="kpi-label">ACOS</div>
-      <div class="kpi-val" style="color:${acosG<=6.28?'var(--green)':acosG<=10?'var(--orange)':'var(--red)'}">${acosG.toFixed(2)}%</div>
-      <div class="kpi-sub" style="color:${dAcos<=0?'var(--green)':'var(--red)'}">${sign(dAcos)}${Math.abs(dAcos).toFixed(2)}pp vs 6,28% ref</div></div>
-    <div class="kpi"><div class="kpi-icon">🔄</div><div class="kpi-label">CVR</div>
-      <div class="kpi-val">${cvrG.toFixed(1)}%</div>
-      <div class="kpi-sub">${totVend.toLocaleString('pt-BR')} vendas · ${totCliq.toLocaleString('pt-BR')} cliques</div></div>
-    <div class="kpi"><div class="kpi-icon">🏆</div><div class="kpi-label">Heróis</div>
-      <div class="kpi-val" style="color:var(--green)">${heroes.length}</div>
-      <div class="kpi-sub" style="color:${subfin.length>0?'var(--red)':'var(--text3)'}">${subfin.length} subfinanciados</div></div>
-    <div class="kpi"><div class="kpi-icon">⚡</div><div class="kpi-label">Ações pendentes</div>
-      <div class="kpi-val" style="color:var(--orange)">${acoes.pausar.length+acoes.aumentar.length+acoes.isolar.length}</div>
-      <div class="kpi-sub">${acoes.pausar.length} pausar · ${acoes.aumentar.length} escalar · ${acoes.isolar.length} isolar</div></div>
-  </div>`;
-
-  // ── Alertas de ação imediata ──
-  const totalEconomia=acoes.pausar.reduce((s,a)=>s+a.economia,0);
-  const totalPotencial=acoes.aumentar.reduce((s,a)=>s+a.receitaEstimada,0);
-  if(acoes.pausar.length||acoes.aumentar.length||acoes.isolar.length){
-    html+=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:24px;">`;
-    if(acoes.pausar.length) html+=`<div class="ads-insight" style="margin-bottom:0">
-      <div class="ads-insight-icon">✂️</div>
-      <div class="ads-insight-body"><strong style="color:var(--red)">Pausar agora — ${acoes.pausar.length} anúncios</strong>
-      Libera <strong>${fmtR(totalEconomia)}</strong> de budget desperdiçado em anúncios abaixo de 5x ROAS.</div></div>`;
-    if(acoes.aumentar.length) html+=`<div class="ads-insight" style="margin-bottom:0">
-      <div class="ads-insight-icon">🚀</div>
-      <div class="ads-insight-body"><strong style="color:var(--green)">Escalar — ${acoes.aumentar.length} heróis subfinanciados</strong>
-      Potencial de <strong>+${fmtR(totalPotencial)}</strong> em receita incremental com reforço de budget.</div></div>`;
-    if(acoes.isolar.length) html+=`<div class="ads-insight" style="margin-bottom:0">
-      <div class="ads-insight-icon">⭐</div>
-      <div class="ads-insight-body"><strong style="color:var(--yellow)">Isolar — ${acoes.isolar.length} herói(s) prontos para voar sozinhos</strong>
-      Anúncios com ROAS >25x presos em campanhas com anúncios fracos. Criar campanha exclusiva.</div></div>`;
-    html+=`</div>`;
-  }
-
-  // ── Navegação de views ──
-  html+=`<div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
-    ${[['anuncios','📋 Anúncios'],['campanhas','🗂️ Campanhas'],['acoes','⚡ Plano de Ação'],['isolamento','⭐ Isolar Heróis']].map(([v,l])=>
-      `<button class="ads-filter-btn${ADS_VIEW===v?' active':''}" onclick="ADS_VIEW='${v}';renderAds()">${l}${v==='acoes'&&(acoes.pausar.length+acoes.aumentar.length+acoes.isolar.length)>0?' ('+( acoes.pausar.length+acoes.aumentar.length+acoes.isolar.length)+')':''}</button>`
-    ).join('')}
-  </div>`;
-
-  // ════════════════════════════════════════
-  //  VIEW: ANÚNCIOS
-  // ════════════════════════════════════════
-  if(ADS_VIEW==='anuncios'){
-    const maxRoas=Math.max(...ads.map(a=>a.roas),1);
-    let filtered=ads;
-    if(ADS_FILTER==='hero')    filtered=heroes;
-    if(ADS_FILTER==='healthy') filtered=healthy;
-    if(ADS_FILTER==='alert')   filtered=alertA;
-    if(ADS_FILTER==='cut')     filtered=cut;
-
-    html+=`<div class="ads-filter-bar">
-      ${[['todos','Todos',ads.length],['hero','🏆 Heróis',heroes.length],['healthy','✅ Saudáveis',healthy.length],['alert','⚠️ Alerta',alertA.length],['cut','✂️ Corte',cut.length]]
-        .map(([v,l,n])=>`<button class="ads-filter-btn${ADS_FILTER===v?' active':''}" onclick="ADS_FILTER='${v}';renderAds()">${l} (${n})</button>`).join('')}
-    </div>`;
-
-    html+=`<div class="section"><div class="section-header">
-      <div class="section-title">Ranking por ROAS — ${period.label}</div>
-      <div class="section-badge">${filtered.length} anúncios</div>
-    </div><div class="table-wrap"><table class="data-table">
-    <thead><tr><th>Anúncio</th><th>Campanha</th><th>Classe</th><th>ROAS</th><th>Receita</th><th>Investimento</th><th>ACOS</th><th>CVR</th><th>Vendas</th></tr></thead><tbody>`;
-
-    filtered.forEach(a=>{
-      const cls=adsClass(a.roas);
-      const bw=Math.max(4,Math.round(a.roas/maxRoas*70));
-      const isS=a.roas>=20&&a.invest<200;
-      html+=`<tr>
-        <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${a.titulo}">${adsShortName(a.titulo)}</td>
-        <td style="font-size:11px;color:var(--text3);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.campanha||'—'}</td>
-        <td><span class="${cls.css}">${cls.label}</span>${isS?` <span class="ads-class-sub">subfin.</span>`:''}</td>
-        <td><span class="ads-roas-bar" style="width:${bw}px"></span><span style="font-family:'DM Mono',monospace;font-weight:700;color:${a.roas>=20?'var(--green)':a.roas>=8?'var(--text)':'var(--red)'}">${a.roas.toFixed(1)}x</span></td>
-        <td style="color:var(--text)">${fmtR(a.receita)}</td>
-        <td>${fmtR(a.invest)}</td>
-        <td style="color:${a.acos<=6.28?'var(--green)':a.acos<=10?'var(--orange)':'var(--red)'}">${a.acos.toFixed(1)}%</td>
-        <td>${a.cvr.toFixed(1)}%</td>
-        <td style="font-family:'DM Mono',monospace">${a.vendasTotal.toLocaleString('pt-BR')}</td>
-      </tr>`;
-    });
-    html+=`<tr class="total-row"><td>TOTAL</td><td>—</td><td>—</td>
-      <td><strong>${roasG.toFixed(1)}x</strong></td>
-      <td>${fmtR(totRec)}</td><td>${fmtR(totInv)}</td>
-      <td>${acosG.toFixed(2)}%</td><td>${cvrG.toFixed(1)}%</td><td>${totVend.toLocaleString('pt-BR')}</td></tr>`;
-    html+=`</tbody></table></div></div>`;
-
-    // Mini comparativo vs benchmark
-    html+=`<div class="ads-compare-grid"><div class="ads-compare-card">
-      <div class="ads-compare-title">vs Benchmark mai/2026</div>
-      ${[['Receita',fmtRk(totRec),dRec>=0,sign(dRec)+fmtRk(Math.abs(dRec))],
-         ['ROAS',roasG.toFixed(1)+'x',dRoas>=0,sign(dRoas)+Math.abs(dRoas).toFixed(1)+'x'],
-         ['ACOS',acosG.toFixed(2)+'%',dAcos<=0,sign(dAcos)+Math.abs(dAcos).toFixed(2)+'pp'],
-         ['Investimento',fmtRk(totInv),totInv<=ADS_BENCHMARK.investimento,sign(totInv-ADS_BENCHMARK.investimento)+fmtRk(Math.abs(totInv-ADS_BENCHMARK.investimento))],
-        ].map(([l,v,g,d])=>`<div class="ads-compare-row">
-          <span class="ads-compare-label">${l}</span><span class="ads-compare-val">${v}</span>
-          <span class="ads-compare-delta ${g?'ads-delta-up':'ads-delta-down'}">${d}</span></div>`).join('')}
-    </div><div class="ads-compare-card">
-      <div class="ads-compare-title">Budget por classificação</div>
-      ${[['Heróis ≥20x',heroes,true],['Saudáveis 8–20x',healthy,false],['Alerta 5–8x',alertA,false],['Corte <5x',cut,false]]
-        .map(([l,arr])=>{const inv=arr.reduce((s,a)=>s+a.invest,0);const pct=totInv>0?inv/totInv*100:0;
-          return `<div class="ads-compare-row"><span class="ads-compare-label">${l}</span>
-          <span class="ads-compare-val">${fmtR(inv)}</span>
-          <span style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">${pct.toFixed(0)}%</span></div>`;}).join('')}
-    </div></div>`;
-  }
-
-  // ════════════════════════════════════════
-  //  VIEW: CAMPANHAS
-  // ════════════════════════════════════════
-  else if(ADS_VIEW==='campanhas'){
-    html+=`<div class="section"><div class="section-header">
-      <div class="section-title">Performance por campanha</div>
-      <div class="section-badge">${campanhas.length} campanhas</div>
-    </div><div class="table-wrap"><table class="data-table">
-    <thead><tr><th>Campanha</th><th>ROAS médio</th><th>ROAS máx/mín</th><th>Receita</th><th>Investimento</th><th>Anúncios</th><th>Diagnóstico</th></tr></thead><tbody>`;
-
-    campanhas.forEach(c=>{
-      const cls=adsClass(c.roas);
-      const spread=c.roasMax-c.roasMin;
-      let diag='', diagColor='var(--text3)';
-      if(spread>20){diag='⚠️ Budget mal distribuído';diagColor='var(--yellow)';}
-      else if(c.roas>=20){diag='✅ Campanha sólida';diagColor='var(--green)';}
-      else if(c.roas>=8){diag='Saudável';diagColor='var(--text2)';}
-      else if(c.roas>=5){diag='👀 Monitorar';diagColor='var(--orange)';}
-      else{diag='✂️ Revisar campanhas';diagColor='var(--red)';}
-
-      html+=`<tr>
-        <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px" title="${c.campanha}">${c.campanha||'(sem campanha)'}</td>
-        <td><span class="${cls.css}">${c.roas.toFixed(1)}x</span></td>
-        <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text3)">
-          <span style="color:var(--green)">${c.roasMax.toFixed(1)}x</span> / <span style="color:${c.roasMin<5?'var(--red)':'var(--text3)'}">${c.roasMin.toFixed(1)}x</span>
-        </td>
-        <td style="color:var(--text)">${fmtR(c.receita)}</td>
-        <td>${fmtR(c.invest)}</td>
-        <td style="text-align:center;font-family:'DM Mono',monospace">${c.adsAgg.length}</td>
-        <td style="color:${diagColor};font-size:12px">${diag}</td>
-      </tr>`;
-    });
-    html+=`</tbody></table></div></div>`;
-  }
-
-  // ════════════════════════════════════════
-  //  VIEW: PLANO DE AÇÃO
-  // ════════════════════════════════════════
-  else if(ADS_VIEW==='acoes'){
-    // LISTA 1 — PAUSAR
-    html+=`<div class="section"><div class="section-header">
-      <div class="section-title" style="color:var(--red)">✂️ Lista 1 — Pausar agora</div>
-      <div class="section-badge">${acoes.pausar.length} anúncios · libera ${fmtR(totalEconomia)}</div>
-    </div>`;
-    if(acoes.pausar.length){
-      html+=`<div class="table-wrap"><table class="data-table">
-      <thead><tr><th>Anúncio</th><th>Campanha</th><th>ROAS</th><th>Invest. desperdiçado</th><th>Receita gerada</th><th>Ação</th></tr></thead><tbody>`;
-      acoes.pausar.forEach(a=>{
-        html+=`<tr>
-          <td title="${a.titulo}">${a.titulo}</td>
-          <td style="font-size:11px;color:var(--text3)">${a.campanha||'—'}</td>
-          <td style="color:var(--red);font-family:'DM Mono',monospace;font-weight:700">${a.roas.toFixed(1)}x</td>
-          <td style="color:var(--red)">${fmtR(a.invest)}</td>
-          <td>${fmtR(a.receita)}</td>
-          <td><span class="ads-class-cut">Pausar</span></td>
-        </tr>`;
-      });
-      html+=`</tbody></table></div>`;
-    } else html+=`<div style="padding:20px;color:var(--text3);font-size:13px">✅ Nenhum anúncio para pausar neste período.</div>`;
-    html+=`</div>`;
-
-    // LISTA 2 — AUMENTAR BUDGET
-    html+=`<div class="section"><div class="section-header">
-      <div class="section-title" style="color:var(--green)">🚀 Lista 2 — Aumentar budget</div>
-      <div class="section-badge">${acoes.aumentar.length} heróis · potencial +${fmtR(totalPotencial)}</div>
-    </div>`;
-    if(acoes.aumentar.length){
-      html+=`<div class="table-wrap"><table class="data-table">
-      <thead><tr><th>Anúncio</th><th>Campanha</th><th>ROAS</th><th>Budget atual</th><th>Budget sugerido</th><th>Receita estimada</th></tr></thead><tbody>`;
-      acoes.aumentar.forEach(a=>{
-        html+=`<tr>
-          <td title="${a.titulo}">${a.titulo}</td>
-          <td style="font-size:11px;color:var(--text3)">${a.campanha||'—'}</td>
-          <td style="color:var(--green);font-family:'DM Mono',monospace;font-weight:700">${a.roas.toFixed(1)}x</td>
-          <td>${fmtR(a.investAtual)}</td>
-          <td style="color:var(--orange);font-weight:700">${fmtR(a.investSugerido)}</td>
-          <td style="color:var(--green)">+${fmtR(a.receitaEstimada)}</td>
-        </tr>`;
-      });
-      html+=`</tbody></table></div>`;
-    } else html+=`<div style="padding:20px;color:var(--text3);font-size:13px">✅ Todos os heróis estão adequadamente financiados.</div>`;
-    html+=`</div>`;
-
-    // LISTA 3 — ISOLAR
-    html+=`<div class="section"><div class="section-header">
-      <div class="section-title" style="color:var(--yellow)">⭐ Lista 3 — Isolar em campanha própria</div>
-      <div class="section-badge">${acoes.isolar.length} candidatos</div>
-    </div>`;
-    if(acoes.isolar.length){
-      html+=`<div class="table-wrap"><table class="data-table">
-      <thead><tr><th>Anúncio</th><th>Campanha atual</th><th>ROAS anúncio</th><th>ROAS campanha</th><th>% do budget</th><th>Ação</th></tr></thead><tbody>`;
-      acoes.isolar.forEach(a=>{
-        html+=`<tr>
-          <td title="${a.titulo}">${a.titulo}</td>
-          <td style="font-size:11px;color:var(--text3)">${a.campanha||'—'}</td>
-          <td style="color:var(--green);font-family:'DM Mono',monospace;font-weight:700">${a.roas.toFixed(1)}x</td>
-          <td style="color:var(--orange);font-family:'DM Mono',monospace">${a.roasCampanha.toFixed(1)}x</td>
-          <td style="color:var(--red);font-family:'DM Mono',monospace">${(a.pctBudget*100).toFixed(0)}%</td>
-          <td><span class="ads-class-sub">Isolar</span></td>
-        </tr>`;
-      });
-      html+=`</tbody></table></div>`;
-    } else html+=`<div style="padding:20px;color:var(--text3);font-size:13px">✅ Nenhum herói preso em campanha mista neste período.</div>`;
-    html+=`</div>`;
-  }
-
-  // ════════════════════════════════════════
-  //  VIEW: ISOLAR HERÓIS (explicativo)
-  // ════════════════════════════════════════
-  else if(ADS_VIEW==='isolamento'){
-    const cands=adsDetectIsolamento(campanhas);
-    html+=`<div class="section"><div class="section-header">
-      <div class="section-title">⭐ Heróis prontos para voar sozinhos</div>
-      <div class="section-badge">${cands.length} candidatos identificados</div>
-    </div>`;
-    if(!cands.length){
-      html+=`<div style="padding:40px;text-align:center;color:var(--text3);font-size:14px">
-        Nenhum candidato a isolamento identificado neste período.<br>
-        <span style="font-size:12px">Critério: ROAS > 25x, em campanha com outros anúncios ROAS < 10x, recebendo menos de 60% do budget da campanha.</span>
-      </div>`;
-    }
-    cands.forEach(c=>{
-      html+=`<div style="background:var(--bg2);border:1px solid rgba(241,196,15,0.3);border-radius:14px;padding:20px 24px;margin-bottom:16px;">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">
-          <div style="flex:1;">
-            <div style="font-size:11px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Candidato a isolamento</div>
-            <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px">${adsShortName(c.anuncio.titulo)}</div>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;">
-              <div style="background:var(--bg3);border-radius:8px;padding:10px 12px;">
-                <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">ROAS do anúncio</div>
-                <div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:var(--green)">${c.anuncio.roas.toFixed(1)}x</div>
-              </div>
-              <div style="background:var(--bg3);border-radius:8px;padding:10px 12px;">
-                <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">ROAS da campanha</div>
-                <div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:var(--orange)">${c.roasCampanha.toFixed(1)}x</div>
-              </div>
-              <div style="background:var(--bg3);border-radius:8px;padding:10px 12px;">
-                <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">% do budget</div>
-                <div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:var(--red)">${(c.pctBudget*100).toFixed(0)}%</div>
-              </div>
-              <div style="background:var(--bg3);border-radius:8px;padding:10px 12px;">
-                <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Receita gerada</div>
-                <div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:var(--text)">${fmtRk(c.anuncio.receita)}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
-          <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Passo a passo no Mercado Ads</div>
-          <div style="font-size:13px;color:var(--text2);line-height:1.8;">
-            1. Acesse <strong style="color:var(--orange)">Publicidade → Campanhas</strong> e crie uma nova campanha chamada <strong style="color:var(--orange)">"HERO — ${adsShortName(c.anuncio.titulo).slice(0,30)}"</strong><br>
-            2. Adicione <strong>somente este anúncio</strong> nessa campanha<br>
-            3. Defina o budget inicial como <strong style="color:var(--orange)">${fmtR(Math.max(c.anuncio.invest*1.5, 200))}/mês</strong> (1,5x o que recebia antes)<br>
-            4. Pause ou mova o anúncio da campanha original <strong>"${c.campanha.campanha}"</strong><br>
-            5. Monitore no próximo checkpoint — o ROAS tende a subir nos primeiros 15 dias
-          </div>
-        </div>
-      </div>`;
-    });
-    html+=`</div>`;
-  }
-
-  main.innerHTML=html;
-}
-
-// ── Carrega arquivo ───────────────────────────
-function adsLoadFile(file){
-  if(!file) return;
-  const msg=document.getElementById('syncMsg');
-  const dot=document.getElementById('syncDot');
-  dot.className='sync-dot loading';
-  if(msg) msg.textContent='Processando relatório Mercado Ads...';
-
-  const doProcess=()=>{
-    const reader=new FileReader();
-    reader.onload=e=>{
-      try{
-        const result=parseAdsXLSX(e.target.result);
-        if(!result.rows||result.rows.length===0){
-          alert('Nenhum dado encontrado. Verifique se é um relatório de Anúncios Patrocinados do Mercado Ads.');
-          dot.className='sync-dot error';
-          if(msg) msg.textContent='Erro ao processar relatório Ads';
-          return;
-        }
-        // Label do período
-        let label=result.periodoLabel||file.name.replace(/\.xlsx?$/i,'');
-        // Se já existe mesmo label, sobrescreve
-        const exists=STATE.ads.findIndex(a=>a.label===label);
-        if(exists>=0) STATE.ads.splice(exists,1);
-        STATE.ads.push({label, rows:result.rows, dias:result.dias||30});
-        // Ordena por posição cronológica (ordem de importação)
-        STATE.selPeriodoAds=STATE.ads.length-1;
-        dot.className='sync-dot';
-        if(msg) msg.textContent=`✓ Ads importado · ${result.rows.length} linhas · ${label} · ${result.dias} dias`;
-        document.getElementById('syncTime').textContent='Atualizado às '+new Date().toLocaleTimeString('pt-BR');
-        renderAds();
-      }catch(err){
-        console.error(err);
-        alert('Erro: '+err.message);
-        dot.className='sync-dot error';
-        if(msg) msg.textContent='Erro ao processar arquivo Ads';
-      }
-    };
-    reader.readAsArrayBuffer(file);
-  };
-
-  if(window.XLSX){ doProcess(); }
-  else{
-    const s=document.createElement('script');
-    s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
-    s.onload=doProcess;
-    s.onerror=()=>alert('Não foi possível carregar a biblioteca XLSX. Verifique sua conexão.');
-    document.head.appendChild(s);
-  }
-}
+syncSheets();
 
 // ══════════════════════════════════════════════
 //  ABA PRODUTIVIDADE — Primícia
@@ -2474,6 +1789,468 @@ function renderOperacional(){
   html+=`</tbody></table></div></div>`;
 
   main.innerHTML=html;
+}
+
+
+// ══════════════════════════════════════════════
+//  MERCADO ADS
+// ══════════════════════════════════════════════
+
+const ADS_BM = {receita:244888,investimento:15390,roas:15.9,acos:6.28};
+let ADS_FILTER='todos';
+let ADS_VIEW='anuncios';
+
+function adsClass(r){
+  if(r>=20)return{label:'Herói',css:'ads-class-hero'};
+  if(r>=8) return{label:'Saudável',css:'ads-class-healthy'};
+  if(r>=5) return{label:'Alerta',css:'ads-class-alert'};
+  return{label:'Corte',css:'ads-class-cut'};
+}
+
+function adsShort(t){
+  if(!t)return'—';
+  return t.replace(/Envelope\s+Segurança\s+(De\s+)?(Envio\s+)?(Com\s+Lacre\s+)?/gi,'')
+          .replace(/Embalagem\s+(De\s+)?(Envio\s+)?/gi,'')
+          .replace(/True Embalagens\s*/gi,'').replace(/Plástico\s*|Inviolável\s*/gi,'')
+          .replace(/Cinza-escuro|Cinza-chumbo|Cinza|Preto/gi,'')
+          .replace(/\s+/g,' ').trim().slice(0,52);
+}
+
+function parseAdsXLSX(ab){
+  const wb=window.XLSX.read(ab,{type:'array'});
+  const sn=wb.SheetNames.find(n=>n.toLowerCase().includes('relat'))||wb.SheetNames[0];
+  const raw=window.XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:''});
+  let hr=-1;
+  for(let i=0;i<Math.min(10,raw.length);i++){
+    if(raw[i].some(c=>String(c).toLowerCase().includes('título')||String(c).toLowerCase().includes('titulo'))){hr=i;break;}
+  }
+  if(hr<0)return{rows:[],label:'',dias:30};
+  const hd=raw[hr].map(h=>String(h).toLowerCase().replace(/
+/g,' ').trim());
+  const fi=n=>hd.findIndex(h=>h.includes(n));
+  const ix={
+    camp:fi('campanha'),tit:fi('título')||fi('titulo'),
+    imp:fi('impres'),cli:fi('clique'),cvr:fi('cvr'),
+    rec:hd.findIndex(h=>h.includes('receita')&&!h.includes('diret')&&!h.includes('indir')),
+    inv:fi('investimento'),acos:fi('acos'),
+    vd:hd.findIndex(h=>h.includes('diretas')&&!h.includes('receita')),
+    vi:hd.findIndex(h=>h.includes('indir')&&!h.includes('receita')),
+    de:fi('desde'),at:fi('até')||fi('ate'),
+  };
+  const pn=v=>{const n=parseFloat(String(v).replace(',','.'));return isNaN(n)?0:n;};
+  const meses={jan:0,fev:1,mar:2,abr:3,mai:4,jun:5,jul:6,ago:7,set:8,out:9,nov:10,dez:11};
+  function ptDate(s){
+    const m=s.match(/(\d{1,2})[\s-](jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)[a-z]*[\s-]*(\d{4})?/i);
+    if(m)return new Date(parseInt(m[3]||2026),meses[m[2].toLowerCase().slice(0,3)],parseInt(m[1]));
+    const m2=s.match(/(\d{2})[\/\-](\d{2})[\/\-](\d{4})/);
+    if(m2)return new Date(parseInt(m2[3]),parseInt(m2[2])-1,parseInt(m2[1]));
+    return null;
+  }
+  let minD=null,maxD=null,label='';
+  for(let i=0;i<hr;i++){
+    for(const c of raw[i]){
+      const s=String(c);
+      if(s.match(/\d{2}[\s-](jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)/i)||s.match(/\d{2}[\/\-]\d{2}[\/\-]\d{4}/)){
+        label=s.trim();break;
+      }
+    }
+    if(label)break;
+  }
+  const rows=[];
+  for(let i=hr+1;i<raw.length;i++){
+    const r=raw[i];
+    if(!r||!r[ix.tit])continue;
+    const rec=pn(r[ix.rec]),inv=pn(r[ix.inv]);
+    if(rec===0&&inv===0)continue;
+    if(ix.de>=0&&r[ix.de]){const d=ptDate(String(r[ix.de]));if(d){if(!minD||d<minD)minD=d;}}
+    if(ix.at>=0&&r[ix.at]){const d=ptDate(String(r[ix.at]));if(d){if(!maxD||d>maxD)maxD=d;}}
+    rows.push({tit:String(r[ix.tit]||''),camp:String(r[ix.camp]||'').trim(),
+      rec,inv,cli:pn(r[ix.cli]),cvr:pn(r[ix.cvr]),acos:pn(r[ix.acos]),
+      vend:pn(r[ix.vd])+pn(r[ix.vi]),imp:pn(r[ix.imp])});
+  }
+  const lm=label.match(/(\d{2}[- ][a-zç]+[- ]\d{4})/gi);
+  if(lm&&lm.length>=2)label=lm[0]+' → '+lm[1];
+  const dias=minD&&maxD?Math.max(1,Math.round((maxD-minD)/(864e5))+1):30;
+  return{rows,label:label||'Período importado',dias};
+}
+
+function adsAgg(rows){
+  const m={};
+  rows.forEach(r=>{
+    if(!m[r.tit])m[r.tit]={tit:r.tit,camp:r.camp,rec:0,inv:0,cli:0,vend:0,_mi:0};
+    m[r.tit].rec+=r.rec;m[r.tit].inv+=r.inv;m[r.tit].cli+=r.cli;m[r.tit].vend+=r.vend;
+    if(r.inv>(m[r.tit]._mi||0)){m[r.tit].camp=r.camp;m[r.tit]._mi=r.inv;}
+  });
+  return Object.values(m).map(a=>{
+    a.roas=a.inv>0?a.rec/a.inv:0;
+    a.acos=a.rec>0?a.inv/a.rec*100:0;
+    a.cvr=a.cli>0?a.vend/a.cli*100:0;
+    return a;
+  }).filter(a=>a.inv>5||a.rec>5).sort((a,b)=>b.roas-a.roas);
+}
+
+function adsCamps(rows){
+  const m={};
+  rows.forEach(r=>{
+    const k=r.camp||'(sem campanha)';
+    if(!m[k])m[k]={camp:k,rec:0,inv:0,cli:0,vend:0,ads:[]};
+    m[k].rec+=r.rec;m[k].inv+=r.inv;m[k].cli+=r.cli;m[k].vend+=r.vend;
+    if(r.rec>0||r.inv>5)m[k].ads.push(r);
+  });
+  return Object.values(m).map(c=>{
+    c.roas=c.inv>0?c.rec/c.inv:0;
+    const ag=adsAgg(c.ads);c.ag=ag;
+    c.mx=ag.length?Math.max(...ag.map(a=>a.roas)):0;
+    c.mn=ag.length?Math.min(...ag.filter(a=>a.inv>5).map(a=>a.roas)||[0]):0;
+    return c;
+  }).filter(c=>c.inv>5||c.rec>5).sort((a,b)=>b.roas-a.roas);
+}
+
+function adsIsolamento(camps){
+  const out=[];
+  camps.forEach(c=>{
+    if(c.ag.length<2)return;
+    c.ag.forEach(a=>{
+      if(a.roas<25)return;
+      const outros=c.ag.filter(x=>x.tit!==a.tit&&x.inv>5);
+      if(!outros.length)return;
+      const roOt=outros.reduce((s,x)=>s+x.roas,0)/outros.length;
+      if(roOt>10)return;
+      const pct=c.inv>0?a.inv/c.inv:0;
+      if(pct>0.6)return;
+      out.push({a,c,roOt,pct});
+    });
+  });
+  return out.sort((a,b)=>b.a.roas-a.a.roas);
+}
+
+function adsAcoes(ads,camps,dias){
+  const fR=n=>'R$ '+Math.round(n).toLocaleString('pt-BR');
+  const pausar=ads.filter(a=>a.inv>10&&a.roas<5).sort((a,b)=>a.roas-b.roas)
+    .map(a=>({n:adsShort(a.tit),camp:a.camp,roas:a.roas,inv:a.inv,rec:a.rec}));
+  const totInv=ads.reduce((s,a)=>s+a.inv,0);
+  const bd=totInv/dias;
+  const aumentar=ads.filter(a=>a.roas>=20).sort((a,b)=>b.roas-a.roas).map(a=>{
+    const ideal=Math.min(a.rec*0.08,bd*0.5);
+    const gap=ideal-a.inv;
+    if(gap<=20)return null;
+    return{n:adsShort(a.tit),camp:a.camp,roas:a.roas,inv:a.inv,sug:Math.round(ideal),est:Math.round(gap*a.roas)};
+  }).filter(Boolean);
+  const isolar=adsIsolamento(camps).map(x=>({n:adsShort(x.a.tit),camp:x.c.camp,roas:x.a.roas,roC:x.c.roas,pct:x.pct,rec:x.a.rec,inv:x.a.inv}));
+  return{pausar,aumentar,isolar};
+}
+
+function renderAds(){
+  const main=document.getElementById('main');
+  const fR=n=>'R$ '+Math.round(n).toLocaleString('pt-BR');
+  const fRk=n=>n>=1000?'R$ '+(n/1000).toFixed(1).replace('.',',')+'k':fR(n);
+  const sg=n=>n>=0?'+':'';
+
+  if(!STATE.ads||!STATE.ads.length){
+    main.innerHTML=`<div style="max-width:680px;margin:40px auto;">
+      <div class="ads-upload-zone" id="adsZone" onclick="document.getElementById('adsIn').click()">
+        <div class="ads-upload-icon">📂</div>
+        <div class="ads-upload-title">Importar relatório do Mercado Ads</div>
+        <div class="ads-upload-sub">Arraste ou clique para selecionar o .xlsx exportado do Mercado Livre</div>
+        <div style="margin-top:12px;font-size:12px;color:var(--orange);font-weight:700">Mercado Ads → Relatórios → Anúncios patrocinados → Exportar Excel</div>
+        <input type="file" id="adsIn" accept=".xlsx,.xls" style="display:none" onchange="adsLoad(this.files[0])">
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 24px;">
+        <div style="font-size:11px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">3 checkpoints por mês</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+          ${[['📅 Dia 10','Exporta 1º→10º','Cortes urgentes e heróis subfinanciados'],
+             ['📅 Dia 20','Exporta 1º→20º','Valida ajustes e amplifica heróis'],
+             ['📅 Fechamento','Mês completo','Análise final e estratégia do próximo mês']
+            ].map(([t,p,d])=>`<div style="background:var(--bg3);border-radius:10px;padding:14px;">
+              <div style="font-size:13px;font-weight:700;color:var(--orange);margin-bottom:4px">${t}</div>
+              <div style="font-size:11px;color:var(--text2);font-weight:600;margin-bottom:4px">${p}</div>
+              <div style="font-size:11px;color:var(--text3);line-height:1.5">${d}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+    setTimeout(()=>{
+      const z=document.getElementById('adsZone');
+      if(!z)return;
+      z.addEventListener('dragover',e=>{e.preventDefault();z.style.borderColor='var(--orange)';});
+      z.addEventListener('dragleave',()=>{z.style.borderColor='';});
+      z.addEventListener('drop',e=>{e.preventDefault();z.style.borderColor='';if(e.dataTransfer.files[0])adsLoad(e.dataTransfer.files[0]);});
+    },100);
+    return;
+  }
+
+  const selIdx=STATE.selPeriodoAds!==null?STATE.selPeriodoAds:STATE.ads.length-1;
+  const period=STATE.ads[selIdx];
+  const ads=adsAgg(period.rows);
+  const camps=adsCamps(period.rows);
+  const acoes=adsAcoes(ads,camps,period.dias||30);
+
+  const tR=ads.reduce((s,a)=>s+a.rec,0);
+  const tI=ads.reduce((s,a)=>s+a.inv,0);
+  const tC=ads.reduce((s,a)=>s+a.cli,0);
+  const tV=ads.reduce((s,a)=>s+a.vend,0);
+  const roasG=tI>0?tR/tI:0;
+  const acosG=tR>0?tI/tR*100:0;
+  const cvrG=tC>0?tV/tC*100:0;
+  const heroes=ads.filter(a=>a.roas>=20);
+  const healthy=ads.filter(a=>a.roas>=8&&a.roas<20);
+  const alertA=ads.filter(a=>a.roas>=5&&a.roas<8);
+  const cut=ads.filter(a=>a.inv>5&&a.roas<5);
+  const subfin=heroes.filter(a=>a.inv<200);
+  const dR=roasG-ADS_BM.roas,dA=acosG-ADS_BM.acos,dRec=tR-ADS_BM.receita;
+  const totalPausa=acoes.pausar.reduce((s,a)=>s+a.inv,0);
+  const totalPot=acoes.aumentar.reduce((s,a)=>s+a.est,0);
+
+  let h='';
+
+  // Período selector
+  h+=`<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <span style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px">Período</span>
+      ${STATE.ads.map((p,i)=>`<button class="ads-period-btn${i===selIdx?' active':''}" onclick="STATE.selPeriodoAds=${i};renderAds()">${p.label}</button>`).join('')}
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('adsInExtra').click()">+ Período</button>
+      <input type="file" id="adsInExtra" accept=".xlsx,.xls" style="display:none" onchange="adsLoad(this.files[0])">
+      <button class="btn btn-ghost btn-sm" onclick="if(confirm('Limpar períodos?')){STATE.ads=[];STATE.selPeriodoAds=null;renderAds();}">✕</button>
+    </div>
+  </div>`;
+
+  // KPIs
+  h+=`<div class="kpis">
+    <div class="kpi"><div class="kpi-icon">💰</div><div class="kpi-label">Receita Ads</div>
+      <div class="kpi-val">${fRk(tR)}</div>
+      <div class="kpi-sub" style="color:${dRec>=0?'var(--green)':'var(--red)'}">${sg(dRec)}${fRk(Math.abs(dRec))} vs ref</div></div>
+    <div class="kpi"><div class="kpi-icon">📈</div><div class="kpi-label">ROAS</div>
+      <div class="kpi-val" style="color:${roasG>=15.9?'var(--green)':roasG>=8?'var(--orange)':'var(--red)'}">${roasG.toFixed(1)}x</div>
+      <div class="kpi-sub" style="color:${dR>=0?'var(--green)':'var(--red)'}">${sg(dR)}${Math.abs(dR).toFixed(1)}x vs 15,9x</div></div>
+    <div class="kpi"><div class="kpi-icon">🎯</div><div class="kpi-label">ACOS</div>
+      <div class="kpi-val" style="color:${acosG<=6.28?'var(--green)':acosG<=10?'var(--orange)':'var(--red)'}">${acosG.toFixed(2)}%</div>
+      <div class="kpi-sub" style="color:${dA<=0?'var(--green)':'var(--red)'}">${sg(dA)}${Math.abs(dA).toFixed(2)}pp vs 6,28%</div></div>
+    <div class="kpi"><div class="kpi-icon">🔄</div><div class="kpi-label">CVR</div>
+      <div class="kpi-val">${cvrG.toFixed(1)}%</div>
+      <div class="kpi-sub">${tV.toLocaleString('pt-BR')} vendas</div></div>
+    <div class="kpi"><div class="kpi-icon">🏆</div><div class="kpi-label">Heróis</div>
+      <div class="kpi-val" style="color:var(--green)">${heroes.length}</div>
+      <div class="kpi-sub" style="color:${subfin.length>0?'var(--red)':'var(--text3)'}">${subfin.length} subfinanciados</div></div>
+    <div class="kpi"><div class="kpi-icon">⚡</div><div class="kpi-label">Ações</div>
+      <div class="kpi-val" style="color:var(--orange)">${acoes.pausar.length+acoes.aumentar.length+acoes.isolar.length}</div>
+      <div class="kpi-sub">${acoes.pausar.length} pausar · ${acoes.aumentar.length} escalar · ${acoes.isolar.length} isolar</div></div>
+    <div class="kpi"><div class="kpi-icon">💸</div><div class="kpi-label">Investimento</div>
+      <div class="kpi-val">${fRk(tI)}</div>
+      <div class="kpi-sub" style="color:${tI<=ADS_BM.investimento?'var(--green)':'var(--red)'}">${sg(tI-ADS_BM.investimento)}${fRk(Math.abs(tI-ADS_BM.investimento))} vs R$15,4k ref</div></div>
+  </div>`;
+
+  // Alertas resumo
+  if(acoes.pausar.length||acoes.aumentar.length||acoes.isolar.length){
+    h+=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px;">`;
+    if(acoes.pausar.length) h+=`<div class="ads-insight" style="margin-bottom:0"><div class="ads-insight-icon">✂️</div><div class="ads-insight-body"><strong style="color:var(--red)">Pausar — ${acoes.pausar.length} anúncios</strong>Libera ${fR(totalPausa)} de budget abaixo de 5x ROAS</div></div>`;
+    if(acoes.aumentar.length) h+=`<div class="ads-insight" style="margin-bottom:0"><div class="ads-insight-icon">🚀</div><div class="ads-insight-body"><strong style="color:var(--green)">Escalar — ${acoes.aumentar.length} heróis</strong>Potencial +${fR(totalPot)} em receita incremental</div></div>`;
+    if(acoes.isolar.length) h+=`<div class="ads-insight" style="margin-bottom:0"><div class="ads-insight-icon">⭐</div><div class="ads-insight-body"><strong style="color:var(--yellow)">Isolar — ${acoes.isolar.length} herói(s)</strong>ROAS >25x preso em campanha com anúncios fracos</div></div>`;
+    h+=`</div>`;
+  }
+
+  // Views nav
+  const totalAcoes=acoes.pausar.length+acoes.aumentar.length+acoes.isolar.length;
+  h+=`<div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+    ${[['anuncios','📋 Anúncios'],['campanhas','🗂️ Campanhas'],['acoes','⚡ Plano de Ação'+(totalAcoes?` (${totalAcoes})`:'')],['isolamento','⭐ Isolar Heróis']]
+      .map(([v,l])=>`<button class="ads-filter-btn${ADS_VIEW===v?' active':''}" onclick="ADS_VIEW='${v}';renderAds()">${l}</button>`).join('')}
+  </div>`;
+
+  // ── VIEW ANÚNCIOS ──
+  if(ADS_VIEW==='anuncios'){
+    let filtered=ads;
+    if(ADS_FILTER==='hero')filtered=heroes;
+    else if(ADS_FILTER==='healthy')filtered=healthy;
+    else if(ADS_FILTER==='alert')filtered=alertA;
+    else if(ADS_FILTER==='cut')filtered=cut;
+    const mx=Math.max(...ads.map(a=>a.roas),1);
+
+    h+=`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+      ${[['todos','Todos',ads.length],['hero','🏆 Heróis',heroes.length],['healthy','✅ Saudáveis',healthy.length],['alert','⚠️ Alerta',alertA.length],['cut','✂️ Corte',cut.length]]
+        .map(([v,l,n])=>`<button class="ads-filter-btn${ADS_FILTER===v?' active':''}" onclick="ADS_FILTER='${v}';renderAds()">${l} (${n})</button>`).join('')}
+    </div>`;
+
+    h+=`<div class="section"><div class="section-header">
+      <div class="section-title">Ranking ROAS — ${period.label}</div>
+      <div class="section-badge">${filtered.length} anúncios</div>
+    </div><div class="table-wrap"><table class="data-table">
+    <thead><tr><th>Anúncio</th><th>Campanha</th><th>Classe</th><th>ROAS</th><th>Receita</th><th>Investimento</th><th>ACOS</th><th>CVR</th></tr></thead><tbody>`;
+    filtered.forEach(a=>{
+      const cl=adsClass(a.roas);
+      const bw=Math.max(4,Math.round(a.roas/mx*60));
+      const sub=a.roas>=20&&a.inv<200;
+      h+=`<tr>
+        <td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${a.tit}">${adsShort(a.tit)}</td>
+        <td style="font-size:11px;color:var(--text3);max-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.camp||'—'}</td>
+        <td><span class="${cl.css}">${cl.label}</span>${sub?` <span class="ads-class-sub">subfin.</span>`:''}</td>
+        <td><span class="ads-roas-bar" style="width:${bw}px"></span><span style="font-family:'DM Mono',monospace;font-weight:700;color:${a.roas>=20?'var(--green)':a.roas>=8?'var(--text)':'var(--red)'}">${a.roas.toFixed(1)}x</span></td>
+        <td style="color:var(--text)">${fR(a.rec)}</td>
+        <td>${fR(a.inv)}</td>
+        <td style="color:${a.acos<=6.28?'var(--green)':a.acos<=10?'var(--orange)':'var(--red)'}">${a.acos.toFixed(1)}%</td>
+        <td>${a.cvr.toFixed(1)}%</td>
+      </tr>`;
+    });
+    h+=`<tr class="total-row"><td>TOTAL</td><td>—</td><td>—</td>
+      <td><strong>${roasG.toFixed(1)}x</strong></td><td>${fR(tR)}</td><td>${fR(tI)}</td>
+      <td>${acosG.toFixed(2)}%</td><td>${cvrG.toFixed(1)}%</td></tr>`;
+    h+=`</tbody></table></div></div>`;
+
+    h+=`<div class="ads-compare-grid">
+      <div class="ads-compare-card"><div class="ads-compare-title">vs Benchmark mai/2026</div>
+        ${[['Receita',fRk(tR),dRec>=0,sg(dRec)+fRk(Math.abs(dRec))],
+           ['ROAS',roasG.toFixed(1)+'x',dR>=0,sg(dR)+Math.abs(dR).toFixed(1)+'x'],
+           ['ACOS',acosG.toFixed(2)+'%',dA<=0,sg(dA)+Math.abs(dA).toFixed(2)+'pp'],
+           ['Investimento',fRk(tI),tI<=ADS_BM.investimento,sg(tI-ADS_BM.investimento)+fRk(Math.abs(tI-ADS_BM.investimento))],
+          ].map(([l,v,g,d])=>`<div class="ads-compare-row">
+            <span class="ads-compare-label">${l}</span><span class="ads-compare-val">${v}</span>
+            <span class="ads-compare-delta ${g?'ads-delta-up':'ads-delta-down'}">${d}</span></div>`).join('')}
+      </div>
+      <div class="ads-compare-card"><div class="ads-compare-title">Budget por classificação</div>
+        ${[['Heróis ≥20x',heroes],['Saudáveis 8–20x',healthy],['Alerta 5–8x',alertA],['Corte <5x',cut]]
+          .map(([l,arr])=>{const inv=arr.reduce((s,a)=>s+a.inv,0);const pct=tI>0?inv/tI*100:0;
+            return `<div class="ads-compare-row"><span class="ads-compare-label">${l}</span>
+              <span class="ads-compare-val">${fR(inv)}</span>
+              <span style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">${pct.toFixed(0)}%</span></div>`;}).join('')}
+      </div>
+    </div>`;
+  }
+
+  // ── VIEW CAMPANHAS ──
+  else if(ADS_VIEW==='campanhas'){
+    h+=`<div class="section"><div class="section-header">
+      <div class="section-title">Performance por campanha</div>
+      <div class="section-badge">${camps.length} campanhas</div>
+    </div><div class="table-wrap"><table class="data-table">
+    <thead><tr><th>Campanha</th><th>ROAS</th><th>Máx / Mín</th><th>Receita</th><th>Investimento</th><th>Anúncios</th><th>Diagnóstico</th></tr></thead><tbody>`;
+    camps.forEach(c=>{
+      const cl=adsClass(c.roas);
+      const sp=c.mx-c.mn;
+      let diag,dc;
+      if(sp>20){diag='⚠️ Budget mal distribuído';dc='var(--yellow)';}
+      else if(c.roas>=20){diag='✅ Campanha sólida';dc='var(--green)';}
+      else if(c.roas>=8){diag='Saudável';dc='var(--text2)';}
+      else if(c.roas>=5){diag='👀 Monitorar';dc='var(--orange)';}
+      else{diag='✂️ Revisar';dc='var(--red)';}
+      h+=`<tr>
+        <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px" title="${c.camp}">${c.camp}</td>
+        <td><span class="${cl.css}">${c.roas.toFixed(1)}x</span></td>
+        <td style="font-family:'DM Mono',monospace;font-size:12px">
+          <span style="color:var(--green)">${c.mx.toFixed(1)}x</span> / <span style="color:${c.mn<5?'var(--red)':'var(--text3)'}">${c.mn.toFixed(1)}x</span></td>
+        <td style="color:var(--text)">${fR(c.rec)}</td><td>${fR(c.inv)}</td>
+        <td style="text-align:center">${c.ag.length}</td>
+        <td style="color:${dc};font-size:12px">${diag}</td>
+      </tr>`;
+    });
+    h+=`</tbody></table></div></div>`;
+  }
+
+  // ── VIEW PLANO DE AÇÃO ──
+  else if(ADS_VIEW==='acoes'){
+    h+=`<div class="section"><div class="section-header">
+      <div class="section-title" style="color:var(--red)">✂️ Lista 1 — Pausar agora</div>
+      <div class="section-badge">${acoes.pausar.length} anúncios · libera ${fR(totalPausa)}</div>
+    </div>`;
+    if(acoes.pausar.length){
+      h+=`<div class="table-wrap"><table class="data-table"><thead><tr><th>Anúncio</th><th>Campanha</th><th>ROAS</th><th>Investimento</th><th>Receita</th></tr></thead><tbody>`;
+      acoes.pausar.forEach(a=>{h+=`<tr><td>${a.n}</td><td style="font-size:11px;color:var(--text3)">${a.camp||'—'}</td><td style="color:var(--red);font-weight:700">${a.roas.toFixed(1)}x</td><td style="color:var(--red)">${fR(a.inv)}</td><td>${fR(a.rec)}</td></tr>`;});
+      h+=`</tbody></table></div>`;
+    }else h+=`<div style="padding:16px;color:var(--text3);font-size:13px">✅ Nenhum anúncio para pausar.</div>`;
+    h+=`</div>`;
+
+    h+=`<div class="section"><div class="section-header">
+      <div class="section-title" style="color:var(--green)">🚀 Lista 2 — Aumentar budget</div>
+      <div class="section-badge">${acoes.aumentar.length} heróis · potencial +${fR(totalPot)}</div>
+    </div>`;
+    if(acoes.aumentar.length){
+      h+=`<div class="table-wrap"><table class="data-table"><thead><tr><th>Anúncio</th><th>Campanha</th><th>ROAS</th><th>Budget atual</th><th>Budget sugerido</th><th>Receita estimada</th></tr></thead><tbody>`;
+      acoes.aumentar.forEach(a=>{h+=`<tr><td>${a.n}</td><td style="font-size:11px;color:var(--text3)">${a.camp||'—'}</td><td style="color:var(--green);font-weight:700">${a.roas.toFixed(1)}x</td><td>${fR(a.inv)}</td><td style="color:var(--orange);font-weight:700">${fR(a.sug)}</td><td style="color:var(--green)">+${fR(a.est)}</td></tr>`;});
+      h+=`</tbody></table></div>`;
+    }else h+=`<div style="padding:16px;color:var(--text3);font-size:13px">✅ Todos os heróis estão bem financiados.</div>`;
+    h+=`</div>`;
+
+    h+=`<div class="section"><div class="section-header">
+      <div class="section-title" style="color:var(--yellow)">⭐ Lista 3 — Isolar em campanha própria</div>
+      <div class="section-badge">${acoes.isolar.length} candidatos</div>
+    </div>`;
+    if(acoes.isolar.length){
+      h+=`<div class="table-wrap"><table class="data-table"><thead><tr><th>Anúncio</th><th>Campanha atual</th><th>ROAS anúncio</th><th>ROAS campanha</th><th>% budget</th></tr></thead><tbody>`;
+      acoes.isolar.forEach(a=>{h+=`<tr><td>${a.n}</td><td style="font-size:11px;color:var(--text3)">${a.camp||'—'}</td><td style="color:var(--green);font-weight:700">${a.roas.toFixed(1)}x</td><td style="color:var(--orange)">${a.roC.toFixed(1)}x</td><td style="color:var(--red)">${(a.pct*100).toFixed(0)}%</td></tr>`;});
+      h+=`</tbody></table></div>`;
+    }else h+=`<div style="padding:16px;color:var(--text3);font-size:13px">✅ Nenhum herói preso em campanha mista.</div>`;
+    h+=`</div>`;
+  }
+
+  // ── VIEW ISOLAR ──
+  else if(ADS_VIEW==='isolamento'){
+    const cands=adsIsolamento(camps);
+    h+=`<div class="section"><div class="section-header">
+      <div class="section-title">⭐ Heróis prontos para voar sozinhos</div>
+      <div class="section-badge">${cands.length} candidatos</div>
+    </div>`;
+    if(!cands.length){
+      h+=`<div style="padding:40px;text-align:center;color:var(--text3);font-size:13px">Nenhum candidato identificado.<br><span style="font-size:11px">Critério: ROAS >25x, em campanha com outros anúncios ROAS <10x, recebendo menos de 60% do budget.</span></div>`;
+    }
+    cands.forEach(x=>{
+      h+=`<div style="background:var(--bg2);border:1px solid rgba(241,196,15,0.3);border-radius:14px;padding:20px 24px;margin-bottom:14px;">
+        <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Candidato a isolamento</div>
+        <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px">${adsShort(x.a.tit)}</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:16px;">
+          ${[['ROAS anúncio',x.a.roas.toFixed(1)+'x','var(--green)'],['ROAS campanha',x.c.roas.toFixed(1)+'x','var(--orange)'],
+             ['% do budget',(x.pct*100).toFixed(0)+'%','var(--red)'],['Receita',fRk(x.a.rec),'var(--text)']].map(([l,v,c])=>
+            `<div style="background:var(--bg3);border-radius:8px;padding:10px 12px;">
+              <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">${l}</div>
+              <div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:${c}">${v}</div>
+            </div>`).join('')}
+        </div>
+        <div style="border-top:1px solid var(--border);padding-top:14px;font-size:13px;color:var(--text2);line-height:1.8;">
+          <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Passo a passo</div>
+          1. Crie nova campanha <strong style="color:var(--orange)">"HERO — ${adsShort(x.a.tit).slice(0,28)}"</strong><br>
+          2. Adicione <strong>somente este anúncio</strong><br>
+          3. Budget inicial: <strong style="color:var(--orange)">${fR(Math.max(x.a.inv*1.5,200))}/mês</strong><br>
+          4. Pause este anúncio na campanha <strong>"${x.c.camp}"</strong><br>
+          5. Monitore no próximo checkpoint
+        </div>
+      </div>`;
+    });
+    h+=`</div>`;
+  }
+
+  main.innerHTML=h;
+}
+
+function adsLoad(file){
+  if(!file)return;
+  const syncDotEl=document.getElementById('syncDot');
+  const syncMsgEl=document.getElementById('syncMsg');
+  if(syncDotEl)syncDotEl.className='sync-dot loading';
+  if(syncMsgEl)syncMsgEl.textContent='Processando relatório Mercado Ads...';
+  const go=()=>{
+    const rd=new FileReader();
+    rd.onload=e=>{
+      try{
+        const res=parseAdsXLSX(e.target.result);
+        if(!res.rows||!res.rows.length){alert('Nenhum dado encontrado. Verifique se é um relatório de Anúncios Patrocinados.');if(syncDotEl)syncDotEl.className='sync-dot error';return;}
+        const exists=STATE.ads.findIndex(a=>a.label===res.label);
+        if(exists>=0)STATE.ads.splice(exists,1);
+        STATE.ads.push({label:res.label,rows:res.rows,dias:res.dias||30});
+        STATE.selPeriodoAds=STATE.ads.length-1;
+        if(syncDotEl)syncDotEl.className='sync-dot';
+        if(syncMsgEl)syncMsgEl.textContent=`✓ Ads importado · ${res.rows.length} linhas · ${res.label}`;
+        document.getElementById('syncTime').textContent='Atualizado às '+new Date().toLocaleTimeString('pt-BR');
+        renderAds();
+      }catch(err){console.error(err);alert('Erro: '+err.message);if(syncDotEl)syncDotEl.className='sync-dot error';}
+    };
+    rd.readAsArrayBuffer(file);
+  };
+  if(window.XLSX){go();}
+  else{
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    s.onload=go;
+    s.onerror=()=>alert('Erro ao carregar biblioteca XLSX.');
+    document.head.appendChild(s);
+  }
 }
 
 </script>
