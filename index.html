@@ -578,6 +578,15 @@ function render(){
   if(STATE.fab===6){ renderAds(); return; }
   renderMonthBar();
   const rows=getRows();
+  // Se não há dados ainda, mostra tela de espera sem spinner
+  if(!rows.length && !STATE.f1.length && !STATE.f2.length){
+    document.getElementById('main').innerHTML=`<div style="padding:80px;text-align:center;color:var(--text3)">
+      <div style="font-size:40px;margin-bottom:16px">📡</div>
+      <div style="font-size:16px;font-weight:700;color:var(--text2);margin-bottom:8px">Sem dados carregados</div>
+      <div style="font-size:13px;line-height:1.7">Clique em <strong style="color:var(--orange)">↻ Atualizar</strong> para conectar ao Google Sheets,<br>ou acesse a aba <strong style="color:var(--orange)">📊 Mercado Ads</strong> para importar relatórios.</div>
+    </div>`;
+    return;
+  }
   const prevRows=getPrevRows();
   const cons=consolidate(rows);
   const prevMap={};consolidate(prevRows).forEach(c=>prevMap[c.med]=c);
@@ -1110,6 +1119,9 @@ const dot=document.getElementById('syncDot');
 const msg=document.getElementById('syncMsg');
 if(dot) dot.className='sync-dot error';
 if(msg) msg.textContent='Clique em Atualizar para conectar ao Google Sheets.';
+// Limpa spinner imediatamente antes de renderizar
+const mainEl=document.getElementById('main');
+if(mainEl) mainEl.innerHTML='';
 render();
 
 // ══════════════════════════════════════════════
