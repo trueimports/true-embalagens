@@ -1137,10 +1137,14 @@ const MELI_OAUTH_STATE_KEY='meliOauthState';
 
 function adsGetMeliAuthCodeFromUrl(){
   try{
-    return new URLSearchParams(window.location.search).get('code')||'';
+    return adsGetUrlParam('code');
   }catch(e){
     return '';
   }
+}
+
+function adsGetUrlParam(name){
+  return new URLSearchParams(window.location.search).get(name)||'';
 }
 
 function adsSaveMeliConfig(){
@@ -1175,7 +1179,7 @@ function adsOpenMeliAuth(){
     window.crypto.getRandomValues(arr);
     state=Array.from(arr).map(n=>n.toString(16).padStart(8,'0')).join('');
   }else{
-    alert('Seu navegador não suporta geração segura de state OAuth. Atualize o navegador.');
+    alert('Seu navegador não suporta Web Crypto API para state OAuth seguro. Use Chrome/Edge/Firefox/Safari atualizados.');
     return;
   }
   sessionStorage.setItem(MELI_OAUTH_STATE_KEY,state);
@@ -1202,7 +1206,7 @@ async function adsTestMeliToken(){
     try{
       body=raw?JSON.parse(raw):{};
     }catch(parseErr){
-      throw new Error('Resposta inválida da API (não JSON): '+raw.slice(0,120));
+      throw new Error('Resposta inválida da API (não JSON).');
     }
     if(!resp.ok){
       const msg=body?.message||`HTTP ${resp.status}`;
@@ -1222,12 +1226,13 @@ function adsInitMeliPanel(){
   const redirectInput=document.getElementById('meliRedirectUri');
   const authCodeInput=document.getElementById('meliAuthCode');
   const status=document.getElementById('meliStatus');
-  const callbackState=new URLSearchParams(window.location.search).get('state')||'';
+  const callbackState=adsGetUrlParam('state');
   const expected=sessionStorage.getItem(MELI_OAUTH_STATE_KEY)||'';
   if(clientIdInput) clientIdInput.value=(STATE.meliConfig&&STATE.meliConfig.clientId)||'';
   if(redirectInput) redirectInput.value=(STATE.meliConfig&&STATE.meliConfig.redirectUri)||'';
   if(authCodeInput) authCodeInput.value=adsGetMeliAuthCodeFromUrl();
-  if(status&&callbackState&&expected&&callbackState!==expected){
+  const hasAuthCode=!!(authCodeInput&&authCodeInput.value);
+  if(status&&hasAuthCode&&(!callbackState||!expected||callbackState!==expected)){
     status.textContent='⚠️ state OAuth inválido. Refaça a autorização para segurança.';
     if(authCodeInput) authCodeInput.value='';
     sessionStorage.removeItem(MELI_OAUTH_STATE_KEY);
