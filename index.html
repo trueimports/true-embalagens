@@ -304,6 +304,7 @@ let STATE={
   paid:JSON.parse(localStorage.getItem('truePaid')||'{}'),
   ads:[],
   selPeriodoAds:null,
+  meliConfig:JSON.parse(localStorage.getItem('trueMeliConfig')||'{"clientId":"","redirectUri":""}'),
   paidComissao:JSON.parse(localStorage.getItem('truePaidComissao')||'{}'),
 };
 
@@ -1133,6 +1134,75 @@ const ADS_BENCHMARK = { receita:244888, investimento:15390, roas:15.9, acos:6.28
 let ADS_FILTER = 'todos';
 let ADS_VIEW   = 'anuncios'; // 'anuncios' | 'campanhas' | 'acoes' | 'isolamento'
 
+function adsGetMeliAuthCodeFromUrl(){
+  try{
+    return new URLSearchParams(window.location.search).get('code')||'';
+  }catch(e){
+    return '';
+  }
+}
+
+function adsSaveMeliConfig(){
+  const clientIdInput=document.getElementById('meliClientId');
+  const redirectInput=document.getElementById('meliRedirectUri');
+  if(!clientIdInput||!redirectInput) return;
+  STATE.meliConfig={
+    clientId:clientIdInput.value.trim(),
+    redirectUri:redirectInput.value.trim(),
+  };
+  localStorage.setItem('trueMeliConfig',JSON.stringify(STATE.meliConfig));
+}
+
+function adsBuildMeliAuthUrl(){
+  const clientId=(STATE.meliConfig&&STATE.meliConfig.clientId)||'';
+  const redirectUri=(STATE.meliConfig&&STATE.meliConfig.redirectUri)||'';
+  if(!clientId||!redirectUri){
+    alert('Preencha Client ID e Redirect URI.');
+    return null;
+  }
+  return `https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+}
+
+function adsOpenMeliAuth(){
+  adsSaveMeliConfig();
+  const url=adsBuildMeliAuthUrl();
+  if(!url) return;
+  window.open(url,'_blank','noopener');
+}
+
+async function adsTestMeliToken(){
+  const tokenInput=document.getElementById('meliAccessToken');
+  const out=document.getElementById('meliStatus');
+  const token=tokenInput?tokenInput.value.trim():'';
+  if(!token){
+    alert('Preencha o Access Token.');
+    return;
+  }
+  if(out) out.textContent='Consultando /users/me...';
+  try{
+    const resp=await fetch('https://api.mercadolibre.com/users/me',{
+      headers:{Authorization:'Bearer '+token}
+    });
+    const body=await resp.json().catch(()=>({}));
+    if(!resp.ok){
+      const msg=(body&&body.message)||`HTTP ${resp.status}`;
+      throw new Error(msg);
+    }
+    if(out) out.textContent=`✓ Conectado: ${body.nickname||'usuário'} (ID ${body.id||'—'})`;
+  }catch(e){
+    if(out) out.textContent='Erro ao validar token: '+e.message;
+  }
+}
+
+function adsInitMeliPanel(){
+  const clientIdInput=document.getElementById('meliClientId');
+  const redirectInput=document.getElementById('meliRedirectUri');
+  const authCodeInput=document.getElementById('meliAuthCode');
+  if(clientIdInput) clientIdInput.value=(STATE.meliConfig&&STATE.meliConfig.clientId)||'';
+  if(redirectInput) redirectInput.value=(STATE.meliConfig&&STATE.meliConfig.redirectUri)||'';
+  if(authCodeInput) authCodeInput.value=adsGetMeliAuthCodeFromUrl();
+}
+
 function adsClass(roas){
   if(roas>=20) return {label:'Herói',    css:'ads-class-hero'};
   if(roas>=8)  return {label:'Saudável', css:'ads-class-healthy'};
@@ -1383,13 +1453,32 @@ function renderAds(){
 
   if(!STATE.ads||STATE.ads.length===0){
     main.innerHTML=`
-    <div style="max-width:700px;margin:40px auto;">
+    <div style="max-width:760px;margin:40px auto;">
       <div class="ads-upload-zone" id="adsDropZone" onclick="document.getElementById('adsFileInput').click()">
         <div class="ads-upload-icon">📂</div>
         <div class="ads-upload-title">Importar relatório do Mercado Ads</div>
         <div class="ads-upload-sub">Arraste ou clique para selecionar o .xlsx exportado do Mercado Livre</div>
         <div style="margin-top:12px;font-size:12px;color:var(--orange);font-weight:700">Mercado Ads → Relatórios → Anúncios patrocinados → Exportar Excel</div>
         <input type="file" id="adsFileInput" accept=".xlsx,.xls" style="display:none" onchange="adsLoadFile(this.files[0])">
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-top:14px">
+        <div style="font-size:11px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Integração Mercado Livre API (OAuth)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+          <input id="meliClientId" class="ctrl-input" style="width:100%;text-align:left;padding:9px 10px;border:1px solid var(--border2);border-radius:8px;background:var(--bg3);color:var(--text);font-family:'DM Mono',monospace" placeholder="Client ID" oninput="adsSaveMeliConfig()">
+          <input id="meliRedirectUri" class="ctrl-input" style="width:100%;text-align:left;padding:9px 10px;border:1px solid var(--border2);border-radius:8px;background:var(--bg3);color:var(--text);font-family:'DM Mono',monospace" placeholder="Redirect URI" oninput="adsSaveMeliConfig()">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+          <input id="meliAuthCode" class="ctrl-input" style="width:100%;text-align:left;padding:9px 10px;border:1px solid var(--border2);border-radius:8px;background:var(--bg3);color:var(--text);font-family:'DM Mono',monospace" placeholder="Authorization code (retorno da URL)">
+          <input id="meliAccessToken" class="ctrl-input" style="width:100%;text-align:left;padding:9px 10px;border:1px solid var(--border2);border-radius:8px;background:var(--bg3);color:var(--text);font-family:'DM Mono',monospace" placeholder="Access token">
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+          <button class="btn btn-primary btn-sm" onclick="adsOpenMeliAuth()">1) Autorizar aplicação</button>
+          <button class="btn btn-ghost btn-sm" onclick="adsTestMeliToken()">2) Validar token (/users/me)</button>
+        </div>
+        <div style="font-size:11px;color:var(--text3);line-height:1.6">
+          Após autorizar, troque o <strong>code</strong> por token em <strong>/oauth/token</strong> no seu backend conforme a documentação.
+        </div>
+        <div id="meliStatus" style="margin-top:8px;font-size:12px;color:var(--text2);font-family:'DM Mono',monospace"></div>
       </div>
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-top:0">
         <div style="font-size:11px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Fluxo recomendado — 3 checkpoints por mês</div>
@@ -1411,6 +1500,7 @@ function renderAds(){
       z.addEventListener('dragover',e=>{e.preventDefault();z.style.borderColor='var(--orange)';});
       z.addEventListener('dragleave',()=>{z.style.borderColor='';});
       z.addEventListener('drop',e=>{e.preventDefault();z.style.borderColor='';if(e.dataTransfer.files[0])adsLoadFile(e.dataTransfer.files[0]);});
+      adsInitMeliPanel();
     },100);
     return;
   }
