@@ -1161,8 +1161,8 @@ function adsBuildMeliAuthUrl(state){
     alert('Preencha Client ID e Redirect URI.');
     return null;
   }
-  const stateParam=state?`&state=${encodeURIComponent(state)}`:'';
-  return `https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}${stateParam}`;
+  const stateQueryParam=state?`&state=${encodeURIComponent(state)}`:'';
+  return `https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}${stateQueryParam}`;
 }
 
 function adsOpenMeliAuth(){
@@ -1202,7 +1202,7 @@ async function adsTestMeliToken(){
     try{
       body=raw?JSON.parse(raw):{};
     }catch(parseErr){
-      throw new Error('Resposta inválida da API (não JSON).');
+      throw new Error('Resposta inválida da API (não JSON): '+raw.slice(0,120));
     }
     if(!resp.ok){
       const msg=body?.message||`HTTP ${resp.status}`;
@@ -1222,17 +1222,19 @@ function adsInitMeliPanel(){
   const redirectInput=document.getElementById('meliRedirectUri');
   const authCodeInput=document.getElementById('meliAuthCode');
   const status=document.getElementById('meliStatus');
-  const cbState=new URLSearchParams(window.location.search).get('state')||'';
+  const callbackState=new URLSearchParams(window.location.search).get('state')||'';
   const expected=sessionStorage.getItem(MELI_OAUTH_STATE_KEY)||'';
   if(clientIdInput) clientIdInput.value=(STATE.meliConfig&&STATE.meliConfig.clientId)||'';
   if(redirectInput) redirectInput.value=(STATE.meliConfig&&STATE.meliConfig.redirectUri)||'';
   if(authCodeInput) authCodeInput.value=adsGetMeliAuthCodeFromUrl();
-  if(status&&cbState&&expected&&cbState!==expected){
+  if(status&&callbackState&&expected&&callbackState!==expected){
     status.textContent='⚠️ state OAuth inválido. Refaça a autorização para segurança.';
     if(authCodeInput) authCodeInput.value='';
+    sessionStorage.removeItem(MELI_OAUTH_STATE_KEY);
     return;
   }else if(status&&authCodeInput&&authCodeInput.value){
     status.textContent='✓ Code OAuth detectado. Faça a troca por token no backend.';
+    sessionStorage.removeItem(MELI_OAUTH_STATE_KEY);
   }
 }
 
