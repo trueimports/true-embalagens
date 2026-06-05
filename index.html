@@ -1168,14 +1168,15 @@ function adsBuildMeliAuthUrl(state){
 function adsOpenMeliAuth(){
   adsSaveMeliConfig();
   let state='';
-  if(window.crypto&&window.crypto.randomUUID){
+  if(window.crypto?.randomUUID){
     state=window.crypto.randomUUID();
-  }else if(window.crypto&&window.crypto.getRandomValues){
+  }else if(window.crypto?.getRandomValues){
     const arr=new Uint32Array(4);
     window.crypto.getRandomValues(arr);
     state=Array.from(arr).map(n=>n.toString(16).padStart(8,'0')).join('');
   }else{
-    state='fallback-'+Date.now();
+    alert('Seu navegador não suporta geração segura de state OAuth. Atualize o navegador.');
+    return;
   }
   sessionStorage.setItem(MELI_OAUTH_STATE_KEY,state);
   const url=adsBuildMeliAuthUrl(state);
@@ -1204,14 +1205,14 @@ async function adsTestMeliToken(){
       throw new Error('Resposta inválida da API (não JSON).');
     }
     if(!resp.ok){
-      const msg=(body&&body.message)||`HTTP ${resp.status}`;
+      const msg=body?.message||`HTTP ${resp.status}`;
       throw new Error(msg);
     }
     if(out) out.textContent=`✓ Conectado: ${body.nickname||'usuário'} (ID ${body.id||'—'})`;
   }catch(e){
-    const msg=e&&e.name==='TypeError'
+    const msg=e?.name==='TypeError'
       ?'Falha de rede/CORS ao consultar a API.'
-      :'Erro ao validar token: '+(e&&e.message?e.message:'erro desconhecido');
+      :'Erro ao validar token: '+(e?.message||'erro desconhecido');
     if(out) out.textContent=msg;
   }
 }
@@ -1228,6 +1229,8 @@ function adsInitMeliPanel(){
   if(authCodeInput) authCodeInput.value=adsGetMeliAuthCodeFromUrl();
   if(status&&cbState&&expected&&cbState!==expected){
     status.textContent='⚠️ state OAuth inválido. Refaça a autorização para segurança.';
+    if(authCodeInput) authCodeInput.value='';
+    return;
   }else if(status&&authCodeInput&&authCodeInput.value){
     status.textContent='✓ Code OAuth detectado. Faça a troca por token no backend.';
   }
