@@ -468,32 +468,34 @@ function parseRows(csv, hasmo){
   return result;
 }
 
+async function fetchAba(nome, timeout=15000){
+  const ctrl = new AbortController();
+  const timer = setTimeout(()=>ctrl.abort(), timeout);
+  try {
+    const r = await fetch(`${SCRIPT_URL}?aba=${nome}`, {signal: ctrl.signal});
+    clearTimeout(timer);
+    if(!r.ok) throw new Error(nome+' erro '+r.status);
+    return r.text();
+  } catch(e) {
+    clearTimeout(timer);
+    throw e;
+  }
+}
+
 async function syncSheets(){
   const dot=document.getElementById('syncDot');
   const msg=document.getElementById('syncMsg');
   dot.className='sync-dot loading';
-  msg.textContent='Sincronizando com Google Sheets...';
+  msg.textContent='Conectando ao Google Sheets...';
   try{
     msg.textContent='Buscando ALP...';
-    const r1 = await fetch(`${SCRIPT_URL}?aba=alp`,{signal:AbortSignal.timeout(3000)}).then(r=>{
-      if(!r.ok) throw new Error('ALP erro '+r.status);
-      return r.text();
-    });
+    const r1 = await fetchAba('alp');
     msg.textContent='Buscando Primícia...';
-    const r2 = await fetch(`${SCRIPT_URL}?aba=primicia`,{signal:AbortSignal.timeout(3000)}).then(r=>{
-      if(!r.ok) throw new Error('Primícia erro '+r.status);
-      return r.text();
-    });
+    const r2 = await fetchAba('primicia');
     msg.textContent='Buscando Vendas Diretas...';
-    const r3 = await fetch(`${SCRIPT_URL}?aba=vendas`,{signal:AbortSignal.timeout(3000)}).then(r=>{
-      if(!r.ok) throw new Error('Vendas erro '+r.status);
-      return r.text();
-    });
+    const r3 = await fetchAba('vendas');
     msg.textContent='Buscando Insumos...';
-    const r4 = await fetch(`${SCRIPT_URL}?aba=insumos`,{signal:AbortSignal.timeout(5000)}).then(r=>{
-      if(!r.ok) throw new Error('Insumos erro '+r.status);
-      return r.text();
-    }).catch(()=>null);
+    const r4 = await fetchAba('insumos').catch(()=>null);
     STATE.f1=parseRows(r1,true);
     STATE.f2=parseRows(r2,false);
     STATE.vendas=parseVendas(r3);
@@ -505,8 +507,9 @@ async function syncSheets(){
     render();
   }catch(e){
     dot.className='sync-dot error';
-    msg.textContent='Erro: '+e.message;
+    msg.textContent='Erro ao conectar: '+e.message+' — clique em Atualizar para tentar novamente.';
     console.error(e);
+    render();
   }
 }
 
