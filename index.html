@@ -1133,6 +1133,7 @@ render();
 const ADS_BENCHMARK = { receita:244888, investimento:15390, roas:15.9, acos:6.28 };
 let ADS_FILTER = 'todos';
 let ADS_VIEW   = 'anuncios'; // 'anuncios' | 'campanhas' | 'acoes' | 'isolamento'
+const MELI_OAUTH_STATE_KEY='meliOauthState';
 
 function adsGetMeliAuthCodeFromUrl(){
   try{
@@ -1153,19 +1154,22 @@ function adsSaveMeliConfig(){
   localStorage.setItem('trueMeliConfig',JSON.stringify(STATE.meliConfig));
 }
 
-function adsBuildMeliAuthUrl(){
+function adsBuildMeliAuthUrl(state){
   const clientId=(STATE.meliConfig&&STATE.meliConfig.clientId)||'';
   const redirectUri=(STATE.meliConfig&&STATE.meliConfig.redirectUri)||'';
   if(!clientId||!redirectUri){
     alert('Preencha Client ID e Redirect URI.');
     return null;
   }
-  return `https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+  const stateParam=state?`&state=${encodeURIComponent(state)}`:'';
+  return `https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}${stateParam}`;
 }
 
 function adsOpenMeliAuth(){
   adsSaveMeliConfig();
-  const url=adsBuildMeliAuthUrl();
+  const state=(window.crypto&&window.crypto.randomUUID)?window.crypto.randomUUID():(Date.now()+'-'+Math.random().toString(36).slice(2));
+  sessionStorage.setItem(MELI_OAUTH_STATE_KEY,state);
+  const url=adsBuildMeliAuthUrl(state);
   if(!url) return;
   window.open(url,'_blank','noopener');
 }
@@ -1183,14 +1187,23 @@ async function adsTestMeliToken(){
     const resp=await fetch('https://api.mercadolibre.com/users/me',{
       headers:{Authorization:'Bearer '+token}
     });
-    const body=await resp.json().catch(()=>({}));
+    const raw=await resp.text();
+    let body={};
+    try{
+      body=raw?JSON.parse(raw):{};
+    }catch(parseErr){
+      throw new Error('Resposta inválida da API (não JSON).');
+    }
     if(!resp.ok){
       const msg=(body&&body.message)||`HTTP ${resp.status}`;
       throw new Error(msg);
     }
     if(out) out.textContent=`✓ Conectado: ${body.nickname||'usuário'} (ID ${body.id||'—'})`;
   }catch(e){
-    if(out) out.textContent='Erro ao validar token: '+e.message;
+    const msg=e&&e.name==='TypeError'
+      ?'Falha de rede/CORS ao consultar a API.'
+      :'Erro ao validar token: '+e.message;
+    if(out) out.textContent=msg;
   }
 }
 
@@ -1198,9 +1211,17 @@ function adsInitMeliPanel(){
   const clientIdInput=document.getElementById('meliClientId');
   const redirectInput=document.getElementById('meliRedirectUri');
   const authCodeInput=document.getElementById('meliAuthCode');
+  const status=document.getElementById('meliStatus');
+  const cbState=new URLSearchParams(window.location.search).get('state')||'';
+  const expected=sessionStorage.getItem(MELI_OAUTH_STATE_KEY)||'';
   if(clientIdInput) clientIdInput.value=(STATE.meliConfig&&STATE.meliConfig.clientId)||'';
   if(redirectInput) redirectInput.value=(STATE.meliConfig&&STATE.meliConfig.redirectUri)||'';
   if(authCodeInput) authCodeInput.value=adsGetMeliAuthCodeFromUrl();
+  if(status&&cbState&&expected&&cbState!==expected){
+    status.textContent='⚠️ state OAuth inválido. Refaça a autorização para segurança.';
+  }else if(status&&authCodeInput&&authCodeInput.value){
+    status.textContent='✓ Code OAuth detectado. Faça a troca por token no backend.';
+  }
 }
 
 function adsClass(roas){
@@ -1476,7 +1497,7 @@ function renderAds(){
           <button class="btn btn-ghost btn-sm" onclick="adsTestMeliToken()">2) Validar token (/users/me)</button>
         </div>
         <div style="font-size:11px;color:var(--text3);line-height:1.6">
-          Após autorizar, troque o <strong>code</strong> por token em <strong>/oauth/token</strong> no seu backend conforme a documentação.
+          Após autorizar, troque o <strong>code</strong> por token em <strong>/oauth/token</strong> no seu backend (etapa obrigatória porque usa <strong>client_secret</strong>).
         </div>
         <div id="meliStatus" style="margin-top:8px;font-size:12px;color:var(--text2);font-family:'DM Mono',monospace"></div>
       </div>
