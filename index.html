@@ -1167,7 +1167,16 @@ function adsBuildMeliAuthUrl(state){
 
 function adsOpenMeliAuth(){
   adsSaveMeliConfig();
-  const state=(window.crypto&&window.crypto.randomUUID)?window.crypto.randomUUID():(Date.now()+'-'+Math.random().toString(36).slice(2));
+  let state='';
+  if(window.crypto&&window.crypto.randomUUID){
+    state=window.crypto.randomUUID();
+  }else if(window.crypto&&window.crypto.getRandomValues){
+    const arr=new Uint32Array(4);
+    window.crypto.getRandomValues(arr);
+    state=Array.from(arr).map(n=>n.toString(16).padStart(8,'0')).join('');
+  }else{
+    state='fallback-'+Date.now();
+  }
   sessionStorage.setItem(MELI_OAUTH_STATE_KEY,state);
   const url=adsBuildMeliAuthUrl(state);
   if(!url) return;
@@ -1202,7 +1211,7 @@ async function adsTestMeliToken(){
   }catch(e){
     const msg=e&&e.name==='TypeError'
       ?'Falha de rede/CORS ao consultar a API.'
-      :'Erro ao validar token: '+e.message;
+      :'Erro ao validar token: '+(e&&e.message?e.message:'erro desconhecido');
     if(out) out.textContent=msg;
   }
 }
