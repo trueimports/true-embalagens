@@ -1115,13 +1115,9 @@ document.getElementById('moCtrl').style.display='flex';
 // Tenta conectar ao Sheets — se falhar, não bloqueia
 // Sync em background — não bloqueia a UI
 // Inicializa dashboard — Sheets só conecta ao clicar em Atualizar
-const dot=document.getElementById('syncDot');
-const msg=document.getElementById('syncMsg');
-if(dot) dot.className='sync-dot error';
-if(msg) msg.textContent='Clique em Atualizar para conectar ao Google Sheets.';
-// Limpa spinner imediatamente antes de renderizar
-const mainEl=document.getElementById('main');
-if(mainEl) mainEl.innerHTML='';
+document.getElementById('syncDot').className='sync-dot error';
+document.getElementById('syncMsg').textContent='Clique em Atualizar para conectar ao Google Sheets.';
+document.getElementById('main').innerHTML='';
 render();
 
 // ══════════════════════════════════════════════
@@ -1503,7 +1499,7 @@ function renderAds(){
 
   // ── Navegação de views ──
   html+=`<div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
-    ${[['anuncios','📋 Anúncios'],['campanhas','🗂️ Campanhas'],['acoes','⚡ Plano de Ação'],['isolamento','⭐ Isolar Heróis']].map(([v,l])=>
+    ${[['anuncios','📋 Anúncios'],['campanhas','🗂️ Campanhas'],['acoes','⚡ Plano de Ação'],['isolamento','⭐ Isolar Heróis'],['comparativo','📊 Comparativo']].map(([v,l])=>
       `<button class="ads-filter-btn${ADS_VIEW===v?' active':''}" onclick="ADS_VIEW='${v}';renderAds()">${l}${v==='acoes'&&(acoes.pausar.length+acoes.aumentar.length+acoes.isolar.length)>0?' ('+( acoes.pausar.length+acoes.aumentar.length+acoes.isolar.length)+')':''}</button>`
     ).join('')}
   </div>`;
@@ -1734,7 +1730,159 @@ function renderAds(){
     html+=`</div>`;
   }
 
+  // ════════════════════════════════════════
+  //  VIEW: COMPARATIVO
+  // ════════════════════════════════════════
+  else if(ADS_VIEW==='comparativo'){
+    // Só mostra se tem 2+ períodos
+    if(STATE.ads.length < 2){
+      html+=`<div style="padding:60px;text-align:center;color:var(--color-text-secondary,#888)">
+        <div style="font-size:32px;margin-bottom:16px">📊</div>
+        <div style="font-size:15px;font-weight:500;margin-bottom:8px;color:var(--text,#f0f0f0)">Importe 2 períodos para ver o comparativo</div>
+        <div style="font-size:13px">Use o botão <strong>+ Importar período</strong> para adicionar outro mês.</div>
+      </div>`;
+    } else {
+      // Pega os dois períodos mais recentes
+      const pA = STATE.ads.length >= 2 ? STATE.ads[STATE.ads.length-2] : STATE.ads[0];
+      const pB = STATE.ads[STATE.ads.length-1];
+      const adsA = adsAggregate(pA.rows);
+      const adsB = adsAggregate(pB.rows);
+
+      // KPIs totais
+      const tRA=adsA.reduce((s,a)=>s+a.receita,0), tIA=adsA.reduce((s,a)=>s+a.invest,0);
+      const tCA=adsA.reduce((s,a)=>s+a.cliques,0), tVA=adsA.reduce((s,a)=>s+a.vendasTotal,0);
+      const tRB=adsB.reduce((s,a)=>s+a.receita,0), tIB=adsB.reduce((s,a)=>s+a.invest,0);
+      const tCB=adsB.reduce((s,a)=>s+a.cliques,0), tVB=adsB.reduce((s,a)=>s+a.vendasTotal,0);
+      const roasA=tIA>0?tRA/tIA:0, roasB=tIB>0?tRB/tIB:0;
+      const acosA=tRA>0?tIA/tRA*100:0, acosB=tRB>0?tIB/tRB*100:0;
+      const cvrA=tCA>0?tVA/tCA*100:0, cvrB=tCB>0?tVB/tCB*100:0;
+      const heroesA=adsA.filter(a=>a.roas>=20).length, heroesB=adsB.filter(a=>a.roas>=20).length;
+      const subfA=adsA.filter(a=>a.roas>=20&&a.invest<200).length;
+      const subfB=adsB.filter(a=>a.roas>=20&&a.invest<200).length;
+
+      const fR=n=>'R$ '+Math.round(n).toLocaleString('pt-BR');
+      const fRk=n=>n>=1000?'R$ '+(n/1000).toFixed(1).replace('.',',')+'k':fR(n);
+      const sg=n=>n>0?'+':'';
+      const dRec=tRB-tRA, dRoas=roasB-roasA, dAcos=acosB-acosA, dCvr=cvrB-cvrA, dInv=tIB-tIA;
+
+      // Mapa por título para cruzar anúncios
+      const mapA={}, mapB={};
+      adsA.forEach(a=>mapA[a.titulo]=a);
+      adsB.forEach(a=>mapB[a.titulo]=a);
+
+      // Maiores altas por delta ROAS
+      const altas = Object.keys(mapB).filter(t=>mapA[t])
+        .map(t=>({titulo:t, rA:mapA[t].roas, rB:mapB[t].roas, recA:mapA[t].receita, recB:mapB[t].receita, delta:mapB[t].roas-mapA[t].roas}))
+        .filter(x=>x.delta>0).sort((a,b)=>b.delta-a.delta).slice(0,6);
+
+      // Maiores quedas
+      const quedas = Object.keys(mapB).filter(t=>mapA[t])
+        .map(t=>({titulo:t, rA:mapA[t].roas, rB:mapB[t].roas, recA:mapA[t].receita, recB:mapB[t].receita, delta:mapB[t].roas-mapA[t].roas}))
+        .filter(x=>x.delta<0).sort((a,b)=>a.delta-b.delta).slice(0,6);
+
+      // Novos em B (não existiam em A)
+      const novos = adsB.filter(a=>!mapA[a.titulo]).sort((a,b)=>b.roas-a.roas).slice(0,5);
+
+      // Saíram (existiam em A, não estão em B com receita)
+      const saiu = adsA.filter(a=>!mapB[a.titulo]||mapB[a.titulo].receita<10).sort((a,b)=>b.roas-a.roas).slice(0,5);
+
+      // Turnaround mais dramático
+      const turnaround = altas.length ? altas[0] : null;
+      const urgente = saiu.filter(a=>a.roas>=20).length ? saiu.filter(a=>a.roas>=20)[0] : null;
+
+      // Insight automático
+      const pct = tRA>0?((tRB-tRA)/tRA*100):0;
+      const sentido = pct>=0?'cresceu':'caiu';
+      html+=`<div style="display:flex;gap:12px;padding:14px 16px;border-radius:12px;background:rgba(232,119,34,0.07);border:0.5px solid rgba(232,119,34,0.3);margin-bottom:20px;">
+        <div style="font-size:20px;flex-shrink:0">💡</div>
+        <div style="font-size:13px;color:var(--text,#f0f0f0);line-height:1.65;">
+          <strong style="color:#E87722;display:block;margin-bottom:3px">${pB.label} vs ${pA.label}</strong>
+          Receita ${sentido} <strong style="color:${pct>=0?'#2ecc71':'#e74c3c'}">${pct>=0?'+':''}${pct.toFixed(0)}%</strong> (${fRk(tRA)} → ${fRk(tRB)}).
+          ROAS ${dRoas>=0?'melhorou':'piorou'} de ${roasA.toFixed(1)}x para ${roasB.toFixed(1)}x.
+          ${turnaround?`Maior virada: <strong style="color:#2ecc71">${adsShortName(turnaround.titulo)}</strong> saltou de ${turnaround.rA.toFixed(1)}x para ${turnaround.rB.toFixed(1)}x ROAS.`:''}
+          ${urgente?`Atenção: <strong style="color:#e74c3c">${adsShortName(urgente.titulo)}</strong> era herói em ${pA.label} e zerou em ${pB.label}.`:''}
+        </div>
+      </div>`;
+
+      // KPIs lado a lado
+      html+=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:24px;">
+        ${[
+          ['💰 Receita', fRk(tRA), fRk(tRB), dRec>=0, sg(dRec)+fRk(Math.abs(dRec))],
+          ['📈 ROAS', roasA.toFixed(1)+'x', roasB.toFixed(1)+'x', dRoas>=0, sg(dRoas)+Math.abs(dRoas).toFixed(1)+'x'],
+          ['🎯 ACOS', acosA.toFixed(2)+'%', acosB.toFixed(2)+'%', dAcos<=0, sg(dAcos)+Math.abs(dAcos).toFixed(2)+'pp'],
+          ['🔄 CVR', cvrA.toFixed(1)+'%', cvrB.toFixed(1)+'%', dCvr>=0, sg(dCvr)+Math.abs(dCvr).toFixed(1)+'pp'],
+          ['🏆 Heróis', heroesA+'', heroesB+'', heroesB>=heroesA, sg(heroesB-heroesA)+(heroesB-heroesA)],
+          ['💸 Investimento', fRk(tIA), fRk(tIB), dInv<=0, sg(dInv)+fRk(Math.abs(dInv))],
+        ].map(([label,vA,vB,good,delta])=>`
+          <div style="background:var(--bg2,#141414);border:1px solid var(--border,#2a2a2a);border-radius:14px;padding:14px 16px;">
+            <div style="font-size:11px;color:var(--text3,#666);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">${label}</div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;">
+              <span style="font-size:13px;color:var(--text2,#aaa)">${vA}</span>
+              <span style="font-size:20px;font-weight:500;color:var(--text,#f0f0f0)">${vB}</span>
+            </div>
+            <span style="display:inline-block;font-size:11px;padding:2px 8px;border-radius:12px;margin-top:4px;background:${good?'rgba(46,204,113,0.12)':'rgba(231,76,60,0.12)'};color:${good?'#2ecc71':'#e74c3c'}">${delta}</span>
+          </div>`).join('')}
+      </div>`;
+
+      // Tabs de detalhe
+      html+=`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;" id="compTabBar">
+        <button class="ads-filter-btn active" onclick="adsCompTab('altas',this)">⬆️ Maiores altas (${altas.length})</button>
+        <button class="ads-filter-btn" onclick="adsCompTab('quedas',this)">⬇️ Maiores quedas (${quedas.length})</button>
+        <button class="ads-filter-btn" onclick="adsCompTab('novos',this)">✨ Novos (${novos.length})</button>
+        <button class="ads-filter-btn" onclick="adsCompTab('saiu',this)">👻 Saíram (${saiu.length})</button>
+      </div>`;
+
+      // Tabela altas (default visível)
+      const buildRow = (titulo, rA, rB, recA, recB, tipo) => {
+        const delta = rB - rA;
+        const cor = tipo==='alta'?'#2ecc71':'#e74c3c';
+        return `<tr>
+          <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${titulo}">${adsShortName(titulo)}</td>
+          <td>${rA.toFixed(1)}x</td>
+          <td style="color:${cor};font-weight:500">${rB.toFixed(1)}x</td>
+          <td style="color:${cor}">${delta>0?'+':''}${delta.toFixed(1)}x</td>
+          <td style="color:var(--text2,#aaa)">${fR(recA)}</td>
+          <td style="color:${cor}">${fR(recB)}</td>
+        </tr>`;
+      };
+
+      const tblHeader = `<thead><tr>
+        <th style="text-align:left">Anúncio</th>
+        <th style="text-align:right">${pA.label.slice(0,12)}</th>
+        <th style="text-align:right">${pB.label.slice(0,12)}</th>
+        <th style="text-align:right">Δ ROAS</th>
+        <th style="text-align:right">Receita A</th>
+        <th style="text-align:right">Receita B</th>
+      </tr></thead>`;
+
+      const tblAltas = `<div id="comp-altas" style=""><div class="table-wrap"><table class="data-table">${tblHeader}<tbody>${altas.map(x=>buildRow(x.titulo,x.rA,x.rB,x.recA,x.recB,'alta')).join('')}</tbody></table></div></div>`;
+      const tblQuedas = `<div id="comp-quedas" style="display:none"><div class="table-wrap"><table class="data-table">${tblHeader}<tbody>${quedas.map(x=>buildRow(x.titulo,x.rA,x.rB,x.recA,x.recB,'queda')).join('')}</tbody></table></div></div>`;
+      const tblNovos = `<div id="comp-novos" style="display:none"><div class="table-wrap"><table class="data-table">
+        <thead><tr><th style="text-align:left">Anúncio novo em ${pB.label.slice(0,12)}</th><th style="text-align:right">ROAS</th><th style="text-align:right">Receita</th><th style="text-align:right">Investimento</th></tr></thead>
+        <tbody>${novos.map(a=>`<tr><td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${a.titulo}">${adsShortName(a.titulo)}</td><td style="text-align:right;color:${a.roas>=20?'#2ecc71':'var(--text,#f0f0f0)'};font-weight:${a.roas>=20?'500':'400'}">${a.roas.toFixed(1)}x</td><td style="text-align:right">${fR(a.receita)}</td><td style="text-align:right">${fR(a.invest)}</td></tr>`).join('')}</tbody>
+      </table></div></div>`;
+      const tblSaiu = `<div id="comp-saiu" style="display:none"><div class="table-wrap"><table class="data-table">
+        <thead><tr><th style="text-align:left">Anúncio em ${pA.label.slice(0,12)}</th><th style="text-align:right">ROAS era</th><th style="text-align:right">Receita era</th><th style="text-align:right">Status</th></tr></thead>
+        <tbody>${saiu.map(a=>`<tr><td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${a.titulo}">${adsShortName(a.titulo)}</td><td style="text-align:right;color:${a.roas>=20?'#2ecc71':'var(--text,#f0f0f0)'}">${a.roas.toFixed(1)}x</td><td style="text-align:right">${fR(a.receita)}</td><td style="text-align:right"><span style="font-size:10px;padding:2px 8px;border-radius:12px;background:rgba(231,76,60,0.12);color:#e74c3c">${a.roas>=20?'Herói perdido':'Saiu'}</span></td></tr>`).join('')}</tbody>
+      </table></div></div>`;
+
+      html += tblAltas + tblQuedas + tblNovos + tblSaiu;
+    }
+  }
+
   main.innerHTML=html;
+
+  // Tabs do comparativo — roda após innerHTML
+  if(ADS_VIEW==='comparativo'){
+    window.adsCompTab = (tab, btn) => {
+      ['altas','quedas','novos','saiu'].forEach(t=>{
+        const el=document.getElementById('comp-'+t);
+        if(el) el.style.display = t===tab?'':'none';
+      });
+      document.querySelectorAll('#compTabBar .ads-filter-btn').forEach(b=>b.classList.remove('active'));
+      if(btn) btn.classList.add('active');
+    };
+  }
 }
 
 // ── Carrega arquivo ───────────────────────────
