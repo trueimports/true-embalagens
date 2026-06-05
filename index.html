@@ -606,7 +606,7 @@ function setFab(i){
   STATE.fab=i;
   document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',i===j));
   document.getElementById('moCtrl').style.display=i===0?'flex':'none';
-  document.getElementById('monthBar').style.display=(i===3||i===4||i===5||i===6||i===7)?'none':'flex';
+  document.getElementById('monthBar').style.display=(i===3||i===4||i===5||i===6)?'none':'flex';
   render();
 }
 
@@ -2724,54 +2724,76 @@ function kgPrimiciaEnvelopesProducao(){
 }
 
 function calcSaldoInsumos(){
-  const lancamentos = STATE.insumos || [];
+  const mes = STATE.selMonth; // ex: "06/2026"
+  const todosLanc = STATE.insumos || [];
 
-  // Acumula por destino/origem
-  const envios   = {}; // destino → kg total enviado
-  const retornos = {}; // origem  → kg total retornado (manual)
+  // Filtra lançamentos manuais pelo mês selecionado
+  function noMes(l){
+    if(!mes) return true;
+    const m = extractMonth(l.data);
+    return m === mes;
+  }
 
-  lancamentos.forEach(l => {
-    if(l.tipo === 'ENVIO'){
-      envios[l.destino] = (envios[l.destino]||0) + l.kg;
-    } else if(l.tipo === 'RETORNO'){
-      // ALP Envelope NÃO entra aqui — é automático da aba ALP
-      // Mas ALP Bobina, ALP Tubos, Fabiano Bobina, Toninho Grão Reciclado sim
-      retornos[l.destino] = (retornos[l.destino]||0) + l.kg;
-    }
+  // Saldo acumulado ATÉ o mês anterior (saldo anterior)
+  // Para cada terceiro: enviado_anterior - recebido_anterior
+  function saldoAnterior(terceiro){
+    if(!mes) return 0;
+    const [mm, yy] = mes.split('/').map(Number);
+    const envAnt = todosLanc
+      .filter(l => l.tipo==='ENVIO' && l.destino===terceiro)
+      .filter(l => { const m=extractMonth(l.data); if(!m) return false; const [lm,ly]=m.split('/').map(Number); return ly<yy||(ly===yy&&lm<mm); })
+      .reduce((s,l)=>s+l.kg, 0);
+    const retAnt = todosLanc
+      .filter(l => l.tipo==='RETORNO' && l.destino===terceiro)
+      .filter(l => { const m=extractMonth(l.data); if(!m) return false; const [lm,ly]=m.split('/').map(Number); return ly<yy||(ly===yy&&lm<mm); })
+      .reduce((s,l)=>s+l.kg, 0);
+    // ALP: desconta também envelopes automáticos anteriores
+    const alpAnt = terceiro==='ALP'
+      ? STATE.f1.filter(r=>{ const m=extractMonth(r.data); if(!m) return false; const [lm,ly]=m.split('/').map(Number); return ly<yy||(ly===yy&&lm<mm); }).reduce((s,r)=>s+r.kg,0)
+      : 0;
+    return envAnt - retAnt - alpAnt;
+  }
+
+  const lancMes = todosLanc.filter(noMes);
+
+  // Envios e retornos manuais do mês
+  const envios   = {};
+  const retornos = {};
+  lancMes.forEach(l => {
+    if(l.tipo==='ENVIO')   envios[l.destino]   = (envios[l.destino]  ||0) + l.kg;
+    if(l.tipo==='RETORNO') retornos[l.destino] = (retornos[l.destino]||0) + l.kg;
   });
 
-  // ALP: retorno automático de envelopes via aba ALP
-  const alpEnvAuto = kgAlpEnvelopesRecebidos();
+  // ALP: envelopes automáticos do mês (aba ALP filtrada pelo mês)
+  const alpEnvAuto = STATE.f1
+    .filter(r => !mes || extractMonth(r.data)===mes)
+    .reduce((s,r)=>s+r.kg, 0);
 
-  // Primícia: bobinas recebidas (de ALP + Fabiano) menos envelopes produzidos
-  const bobinasPrimicia = lancamentos
-    .filter(l => l.tipo === 'RETORNO' && (l.destino === 'ALP' || l.destino === 'Fabiano') && l.insumo === 'Bobina')
+  // Primícia: bobinas recebidas no mês vs envelopes produzidos no mês
+  const bobinasPrimicia = lancMes
+    .filter(l => l.tipo==='RETORNO' && (l.destino==='ALP'||l.destino==='Fabiano') && l.insumo==='Bobina')
     .reduce((s,l)=>s+l.kg, 0);
-  const envPrimicia = kgPrimiciaEnvelopesProducao();
+  const envPrimicia = STATE.f2
+    .filter(r => !mes || extractMonth(r.data)===mes)
+    .reduce((s,r)=>s+r.kg, 0);
   const saldoBobinaPrimicia = bobinasPrimicia - envPrimicia;
 
   const terceiros = ['ALP','Fabiano','Toninho'];
   const saldos = terceiros.map(t => {
+    const anterior  = saldoAnterior(t);
     const enviado   = envios[t]   || 0;
     const retManual = retornos[t] || 0;
-    const retAuto   = t === 'ALP' ? alpEnvAuto : 0;
+    const retAuto   = t==='ALP' ? alpEnvAuto : 0;
     const recebido  = retManual + retAuto;
-    const saldo     = enviado - recebido;
-    return { terceiro: t, enviado, recebido, retManual, retAuto, saldo };
+    const saldo     = anterior + enviado - recebido;
+    return { terceiro:t, anterior, enviado, recebido, retManual, retAuto, saldo };
   });
 
-  // Totais gerais
   const totalEnviado  = saldos.reduce((s,x)=>s+x.enviado,  0);
   const totalRecebido = saldos.reduce((s,x)=>s+x.recebido, 0);
   const totalSaldo    = saldos.reduce((s,x)=>s+x.saldo,    0);
 
-  // Estoque Primícia: insumos comprados (sem destino definido = estoque próprio)
-  // convenção: lançamentos com destino "Primícia" e tipo "RETORNO" = entrada de MP comprada
-  const mpEntrada = lancamentos
-    .filter(l => l.tipo === 'RETORNO' && l.destino === 'Primícia')
-    .reduce((s,l)=>s+l.kg, 0);
-
-  return { saldos, totalEnviado, totalRecebido, totalSaldo, bobinasPrimicia, envPrimicia, saldoBobinaPrimicia, alpEnvAuto, lancamentos };
+  return { saldos, totalEnviado, totalRecebido, totalSaldo, bobinasPrimicia, envPrimicia, saldoBobinaPrimicia, alpEnvAuto, lancamentos: lancMes, todosLanc };
 }
 
 // ── TAB INSUMOS ──────────────────────────────────────
@@ -2817,7 +2839,35 @@ function insAtualizarFormulario(){
   }
 }
 
-async function insSalvar(){
+async function insExcluir(idx){
+  const l = STATE.insumos[idx];
+  if(!l) return;
+  if(!confirm(`Excluir lançamento?\n${l.tipo} · ${l.destino} · ${l.insumo} · ${insKgFmt(l.kg)}\nData: ${l.data}`)) return;
+
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method:'POST',
+      body: JSON.stringify({ action:'deleteInsumo', index: idx, data:l.data, tipo:l.tipo, destino:l.destino, insumo:l.insumo, kg:l.kg }),
+      headers:{'Content-Type':'application/json'}
+    });
+    const json = await res.json();
+    if(json.success){
+      STATE.insumos.splice(idx, 1);
+      insToast('Lançamento excluído.','ok');
+      renderInsumos();
+    } else {
+      // Fallback: remove localmente mesmo sem Apps Script confirmado
+      STATE.insumos.splice(idx, 1);
+      insToast('Removido localmente (sincronize o Apps Script)','info');
+      renderInsumos();
+    }
+  } catch(e) {
+    // Remove localmente mesmo sem conexão
+    STATE.insumos.splice(idx, 1);
+    insToast('Removido localmente.','info');
+    renderInsumos();
+  }
+}
   const data   = document.getElementById('insData').value;
   const dest   = document.getElementById('insDest').value;
   const insumo = document.getElementById('insInsumo').value;
@@ -2930,12 +2980,18 @@ function renderInsumos(){
 
   const icons = { ALP:'🏭', Fabiano:'⚙️', Toninho:'♻️' };
   S.saldos.forEach(s => {
-    const pct = s.enviado > 0 ? Math.min(100, s.recebido/s.enviado*100) : 0;
-    const cor  = s.saldo <= 0 ? 'var(--green)' : s.saldo/Math.max(s.enviado,1) > 0.3 ? 'var(--red)' : 'var(--yellow)';
+    const pct = (s.anterior + s.enviado) > 0 ? Math.min(100, s.recebido/(s.anterior+s.enviado)*100) : 0;
+    const cor  = s.saldo <= 0 ? 'var(--green)' : s.saldo/(Math.max(s.anterior+s.enviado,1)) > 0.3 ? 'var(--red)' : 'var(--yellow)';
     html += `<div class="ins-saldo-card">
-      <div class="ins-saldo-title">${icons[s.terceiro]||'🏢'} ${s.terceiro}</div>
-      <div class="ins-saldo-row">
-        <span class="ins-saldo-row-label">Enviado</span>
+      <div class="ins-saldo-title">${icons[s.terceiro]||'🏢'} ${s.terceiro}</div>`;
+    if(s.anterior > 0){
+      html += `<div class="ins-saldo-row">
+        <span class="ins-saldo-row-label">Saldo anterior</span>
+        <span class="ins-saldo-row-val" style="color:var(--yellow)">${insKgFmt(s.anterior)}</span>
+      </div>`;
+    }
+    html += `<div class="ins-saldo-row">
+        <span class="ins-saldo-row-label">Enviado no mês</span>
         <span class="ins-saldo-row-val" style="color:var(--text)">${insKgFmt(s.enviado)}</span>
       </div>
       <div class="ins-saldo-row">
@@ -3019,7 +3075,7 @@ function renderInsumos(){
       </div>
       <div class="ins-form-group">
         <label class="ins-form-label">Kg</label>
-        <input class="ins-form-input" type="number" id="insKg" placeholder="0.00" step="0.1" min="0">
+        <input class="ins-form-input" type="number" id="insKg" placeholder="ex: 1860" step="0.001" min="0">
       </div>
       <div class="ins-form-group">
         <label class="ins-form-label">Observação</label>
@@ -3062,9 +3118,11 @@ function renderInsumos(){
     html += `<div class="empty">Nenhum lançamento encontrado.<br><span style="font-size:12px">Use o formulário acima para registrar o primeiro lançamento.</span></div>`;
   } else {
     html += `<div class="table-wrap"><table class="data-table"><thead><tr>
-      <th>Data</th><th>Tipo</th><th>Terceiro</th><th>Insumo</th><th>Kg</th><th>Obs</th>
+      <th>Data</th><th>Tipo</th><th>Terceiro</th><th>Insumo</th><th>Kg</th><th>Obs</th><th></th>
     </tr></thead><tbody>`;
-    hist.forEach(l => {
+    hist.forEach((l, i) => {
+      // índice real no array STATE.insumos para exclusão
+      const realIdx = STATE.insumos.indexOf(l);
       html += `<tr>
         <td style="color:var(--text3);font-size:12px">${l.data}</td>
         <td><span class="${l.tipo==='ENVIO'?'ins-tipo-envio':'ins-tipo-retorno'}">${l.tipo}</span></td>
@@ -3072,11 +3130,12 @@ function renderInsumos(){
         <td><span class="ins-insumo-tag">${l.insumo}</span></td>
         <td>${insKgFmt(l.kg)}</td>
         <td style="color:var(--text3);font-size:12px">${l.obs||'—'}</td>
+        <td><button onclick="insExcluir(${realIdx})" style="background:transparent;border:1px solid rgba(231,76,60,.3);color:var(--red);border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;transition:all .2s" onmouseover="this.style.background='rgba(231,76,60,.15)'" onmouseout="this.style.background='transparent'">✕</button></td>
       </tr>`;
     });
     // Linha de total
     const totalHist = hist.reduce((s,l)=>s+l.kg,0);
-    html += `<tr class="total-row"><td>TOTAL</td><td></td><td></td><td></td><td>${insKgFmt(totalHist)}</td><td></td></tr>`;
+    html += `<tr class="total-row"><td>TOTAL</td><td></td><td></td><td></td><td>${insKgFmt(totalHist)}</td><td></td><td></td></tr>`;
     html += `</tbody></table></div>`;
   }
   html += `</div>`; // fim section histórico
