@@ -195,51 +195,8 @@ body{min-height:100vh;padding-bottom:80px;}
 .tag-ruim{background:rgba(231,76,60,.15);color:var(--red);}
 
 
-/* ── INSUMOS ──────────────────────────────────────── */
-.ins-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
-.ins-saldo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
-.ins-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden;}
-.ins-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--orange),var(--orange2));}
-.ins-card-label{font-size:11px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
-.ins-card-val{font-family:'DM Mono',monospace;font-size:26px;font-weight:500;color:var(--text);line-height:1;}
-.ins-card-sub{font-size:12px;color:var(--text3);margin-top:5px;}
-.ins-saldo-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 22px;position:relative;overflow:hidden;}
-.ins-saldo-title{font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text2);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
-.ins-saldo-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);}
-.ins-saldo-row:last-child{border-bottom:none;}
-.ins-saldo-row-label{font-size:13px;color:var(--text2);}
-.ins-saldo-row-val{font-family:'DM Mono',monospace;font-size:14px;font-weight:700;}
-.ins-saldo-total{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:2px solid var(--border2);}
-.ins-saldo-total-label{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
-.ins-saldo-total-val{font-family:'DM Mono',monospace;font-size:18px;font-weight:700;}
-.ins-saldo-bar{height:5px;background:var(--bg3);border-radius:3px;margin-top:14px;overflow:hidden;}
-.ins-saldo-bar-fill{height:100%;border-radius:3px;background:var(--orange);transition:width .5s ease;}
-.ins-form-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:24px;}
-.ins-form-title{font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
-.ins-form-tabs{display:flex;gap:6px;margin-bottom:20px;}
-.ins-form-tab{padding:7px 18px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text3);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.5px;transition:all .2s;}
-.ins-form-tab.active{background:var(--orange-dim);color:var(--orange);border-color:var(--orange-glow);}
-.ins-form-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:end;}
-.ins-form-group{display:flex;flex-direction:column;gap:5px;}
-.ins-form-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;}
-.ins-form-input{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:14px;padding:9px 12px;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;}
-.ins-form-input:focus{border-color:var(--orange);box-shadow:0 0 0 3px var(--orange-dim);}
-.ins-form-input option{background:var(--bg3);}
-.ins-form-btn{padding:10px 24px;border-radius:9px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:var(--orange);color:#fff;transition:all .2s;white-space:nowrap;height:40px;}
-.ins-form-btn:hover{background:var(--orange2);}
-.ins-form-btn:disabled{opacity:.5;cursor:not-allowed;}
-.ins-hist-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
-.ins-hist-filter select,.ins-hist-filter input{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'Syne',sans-serif;font-size:12px;padding:6px 10px;outline:none;}
-.ins-hist-filter select:focus,.ins-hist-filter input:focus{border-color:var(--orange);}
-.ins-tipo-envio{color:var(--orange);font-weight:700;font-size:11px;background:var(--orange-dim);padding:2px 9px;border-radius:20px;}
-.ins-tipo-retorno{color:var(--green);font-weight:700;font-size:11px;background:var(--green-dim);padding:2px 9px;border-radius:20px;}
-.ins-insumo-tag{font-size:11px;padding:2px 8px;border-radius:6px;background:var(--bg3);color:var(--text2);font-family:'DM Mono',monospace;}
-.ins-toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:700;display:none;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.5);}
-.ins-toast.ok{background:var(--green);color:#fff;}
-.ins-toast.err{background:var(--red);color:#fff;}
-.ins-toast.info{background:var(--orange);color:#fff;}
-
-/* ── MERCADO ADS ──────────────────────────────────── */.ads-upload-zone{border:2px dashed var(--border2);border-radius:14px;padding:48px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg2);margin-bottom:28px;}
+/* ── MERCADO ADS ──────────────────────────────────── */
+.ads-upload-zone{border:2px dashed var(--border2);border-radius:14px;padding:48px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg2);margin-bottom:28px;}
 .ads-upload-zone:hover{border-color:var(--orange);background:var(--orange-dim);}
 .ads-upload-icon{font-size:32px;margin-bottom:12px;}
 .ads-upload-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;}
@@ -276,8 +233,8 @@ body{min-height:100vh;padding-bottom:80px;}
 </head>
 <body>
 
-<div id="insToast" class="ins-toast"></div>
-<div class="header">  <div class="logo">
+<div class="header">
+  <div class="logo">
     <div class="logo-icon">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <rect x="2" y="5" width="16" height="16" rx="2" stroke="#E87722" stroke-width="2"/>
@@ -313,7 +270,6 @@ body{min-height:100vh;padding-bottom:80px;}
   <div class="tab" onclick="setFab(4)">Produtividade</div>
   <div class="tab" onclick="setFab(5)">💰 Vendas Diretas</div>
   <div class="tab" onclick="setFab(6)">📊 Mercado Ads</div>
-  <div class="tab" onclick="setFab(7)">📦 Insumos</div>
 </div>
 
 <div class="month-bar" id="monthBar"></div>
@@ -349,7 +305,6 @@ let STATE={
   ads:[],
   selPeriodoAds:null,
   paidComissao:JSON.parse(localStorage.getItem('truePaidComissao')||'{}'),
-  insumos:[], // { data, tipo, destino, insumo, kg, obs }
 };
 
 function getFator(){return parseFloat(document.getElementById('fatorKg').value)||14.50;}
@@ -468,48 +423,39 @@ function parseRows(csv, hasmo){
   return result;
 }
 
-async function fetchAba(nome, timeout=15000){
-  const ctrl = new AbortController();
-  const timer = setTimeout(()=>ctrl.abort(), timeout);
-  try {
-    const r = await fetch(`${SCRIPT_URL}?aba=${nome}`, {signal: ctrl.signal});
-    clearTimeout(timer);
-    if(!r.ok) throw new Error(nome+' erro '+r.status);
-    return r.text();
-  } catch(e) {
-    clearTimeout(timer);
-    throw e;
-  }
-}
-
 async function syncSheets(){
   const dot=document.getElementById('syncDot');
   const msg=document.getElementById('syncMsg');
   dot.className='sync-dot loading';
-  msg.textContent='Conectando ao Google Sheets...';
+  msg.textContent='Sincronizando com Google Sheets...';
   try{
     msg.textContent='Buscando ALP...';
-    const r1 = await fetchAba('alp');
+    const r1 = await fetch(`${SCRIPT_URL}?aba=alp`,{signal:AbortSignal.timeout(3000)}).then(r=>{
+      if(!r.ok) throw new Error('ALP erro '+r.status);
+      return r.text();
+    });
     msg.textContent='Buscando Primícia...';
-    const r2 = await fetchAba('primicia');
+    const r2 = await fetch(`${SCRIPT_URL}?aba=primicia`,{signal:AbortSignal.timeout(3000)}).then(r=>{
+      if(!r.ok) throw new Error('Primícia erro '+r.status);
+      return r.text();
+    });
     msg.textContent='Buscando Vendas Diretas...';
-    const r3 = await fetchAba('vendas');
-    msg.textContent='Buscando Insumos...';
-    const r4 = await fetchAba('insumos').catch(()=>null);
+    const r3 = await fetch(`${SCRIPT_URL}?aba=vendas`,{signal:AbortSignal.timeout(3000)}).then(r=>{
+      if(!r.ok) throw new Error('Vendas erro '+r.status);
+      return r.text();
+    });
     STATE.f1=parseRows(r1,true);
     STATE.f2=parseRows(r2,false);
     STATE.vendas=parseVendas(r3);
-    if(r4) STATE.insumos=parseInsumos(r4);
     buildMonths();
     dot.className='sync-dot';
-    msg.textContent=`✓ Conectado · ALP: ${STATE.f1.length} lotes · Primícia: ${STATE.f2.length} lotes · Vendas: ${STATE.vendas.length} pedidos · Insumos: ${STATE.insumos.length} lançamentos`;
+    msg.textContent=`✓ Conectado · ALP: ${STATE.f1.length} lotes · Primícia: ${STATE.f2.length} lotes · Vendas: ${STATE.vendas.length} pedidos`;
     document.getElementById('syncTime').textContent='Atualizado às '+new Date().toLocaleTimeString('pt-BR');
     render();
   }catch(e){
     dot.className='sync-dot error';
-    msg.textContent='Erro ao conectar: '+e.message+' — clique em Atualizar para tentar novamente.';
+    msg.textContent='Erro: '+e.message;
     console.error(e);
-    render();
   }
 }
 
@@ -630,7 +576,6 @@ function render(){
   if(STATE.fab===4){ renderProdutividade(); return; }
   if(STATE.fab===5){ renderVendas(); return; }
   if(STATE.fab===6){ renderAds(); return; }
-  if(STATE.fab===7){ renderInsumos(); return; }
   renderMonthBar();
   const rows=getRows();
   // Se não há dados ainda, mostra tela de espera sem spinner
@@ -2678,476 +2623,6 @@ function renderOperacional(){
 
   main.innerHTML=html;
 }
-
-
-// ══════════════════════════════════════════════════════
-//  INSUMOS — parse, cálculos, render, formulário
-// ══════════════════════════════════════════════════════
-
-function parseInsumos(csv){
-  const lines = parseCSV(csv);
-  const result = [];
-  let startRow = 1;
-  for(let i=0;i<Math.min(5,lines.length);i++){
-    const low = lines[i].map(c=>c.toLowerCase());
-    if(low.includes('data')||low.includes('tipo')) { startRow=i+1; break; }
-  }
-  for(let i=startRow;i<lines.length;i++){
-    const c = lines[i];
-    if(!c[0]||!c[0].trim()) continue;
-    const raw = c[0].trim();
-    let data = '';
-    if(raw.match(/^\d{1,2}\/\d{1,2}/)){
-      data = raw.split('/').slice(0,2).map(p=>p.padStart(2,'0')).join('/');
-    } else if(raw.includes('GMT')||raw.match(/^[A-Za-z]{3}\s/)){
-      const d=new Date(raw);
-      if(!isNaN(d)) data=String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0');
-    }
-    if(!data) continue;
-    const tipo    = (c[1]||'').trim().toUpperCase();   // ENVIO | RETORNO
-    const destino = (c[2]||'').trim();                 // ALP | Fabiano | Toninho | Primícia
-    const insumo  = (c[3]||'').trim();                 // Grão | Pigmento | Dessecante | Bobina | Aparas | Grão Reciclado | Tubos | Envelope
-    const kgRaw   = String(c[4]||'').replace(',','.').trim();
-    const kg      = parseFloat(kgRaw) || 0;
-    if(!tipo||!destino||!insumo||kg<=0) continue;
-    const obs = (c[5]||'').trim();
-    result.push({ data, tipo, destino, insumo, kg, obs });
-  }
-  return result;
-}
-
-// KG total da ALP (envelopes já registrados na aba ALP) — fonte automática
-function kgAlpEnvelopesRecebidos(){
-  return STATE.f1.reduce((s,r)=>s+r.kg, 0);
-}
-
-// KG total da Primícia produzido (envelopes registrados na aba Primícia) — abate bobinas
-function kgPrimiciaEnvelopesProducao(){
-  return STATE.f2.reduce((s,r)=>s+r.kg, 0);
-}
-
-function calcSaldoInsumos(){
-  const mes = STATE.selMonth; // ex: "06/2026"
-  const todosLanc = STATE.insumos || [];
-
-  // Filtra lançamentos manuais pelo mês selecionado
-  function noMes(l){
-    if(!mes) return true;
-    const m = extractMonth(l.data);
-    return m === mes;
-  }
-
-  // Saldo acumulado ATÉ o mês anterior (saldo anterior)
-  // Para cada terceiro: enviado_anterior - recebido_anterior
-  function saldoAnterior(terceiro){
-    if(!mes) return 0;
-    const [mm, yy] = mes.split('/').map(Number);
-    const envAnt = todosLanc
-      .filter(l => l.tipo==='ENVIO' && l.destino===terceiro)
-      .filter(l => { const m=extractMonth(l.data); if(!m) return false; const [lm,ly]=m.split('/').map(Number); return ly<yy||(ly===yy&&lm<mm); })
-      .reduce((s,l)=>s+l.kg, 0);
-    const retAnt = todosLanc
-      .filter(l => l.tipo==='RETORNO' && l.destino===terceiro)
-      .filter(l => { const m=extractMonth(l.data); if(!m) return false; const [lm,ly]=m.split('/').map(Number); return ly<yy||(ly===yy&&lm<mm); })
-      .reduce((s,l)=>s+l.kg, 0);
-    // ALP: desconta também envelopes automáticos anteriores
-    const alpAnt = terceiro==='ALP'
-      ? STATE.f1.filter(r=>{ const m=extractMonth(r.data); if(!m) return false; const [lm,ly]=m.split('/').map(Number); return ly<yy||(ly===yy&&lm<mm); }).reduce((s,r)=>s+r.kg,0)
-      : 0;
-    return envAnt - retAnt - alpAnt;
-  }
-
-  const lancMes = todosLanc.filter(noMes);
-
-  // Envios e retornos manuais do mês
-  const envios   = {};
-  const retornos = {};
-  lancMes.forEach(l => {
-    if(l.tipo==='ENVIO')   envios[l.destino]   = (envios[l.destino]  ||0) + l.kg;
-    if(l.tipo==='RETORNO') retornos[l.destino] = (retornos[l.destino]||0) + l.kg;
-  });
-
-  // ALP: envelopes automáticos do mês (aba ALP filtrada pelo mês)
-  const alpEnvAuto = STATE.f1
-    .filter(r => !mes || extractMonth(r.data)===mes)
-    .reduce((s,r)=>s+r.kg, 0);
-
-  // Primícia: bobinas recebidas no mês vs envelopes produzidos no mês
-  const bobinasPrimicia = lancMes
-    .filter(l => l.tipo==='RETORNO' && (l.destino==='ALP'||l.destino==='Fabiano') && l.insumo==='Bobina')
-    .reduce((s,l)=>s+l.kg, 0);
-  const envPrimicia = STATE.f2
-    .filter(r => !mes || extractMonth(r.data)===mes)
-    .reduce((s,r)=>s+r.kg, 0);
-  const saldoBobinaPrimicia = bobinasPrimicia - envPrimicia;
-
-  const terceiros = ['ALP','Fabiano','Toninho'];
-  const saldos = terceiros.map(t => {
-    const anterior  = saldoAnterior(t);
-    const enviado   = envios[t]   || 0;
-    const retManual = retornos[t] || 0;
-    const retAuto   = t==='ALP' ? alpEnvAuto : 0;
-    const recebido  = retManual + retAuto;
-    const saldo     = anterior + enviado - recebido;
-    return { terceiro:t, anterior, enviado, recebido, retManual, retAuto, saldo };
-  });
-
-  const totalEnviado  = saldos.reduce((s,x)=>s+x.enviado,  0);
-  const totalRecebido = saldos.reduce((s,x)=>s+x.recebido, 0);
-  const totalSaldo    = saldos.reduce((s,x)=>s+x.saldo,    0);
-
-  return { saldos, totalEnviado, totalRecebido, totalSaldo, bobinasPrimicia, envPrimicia, saldoBobinaPrimicia, alpEnvAuto, lancamentos: lancMes, todosLanc };
-}
-
-// ── TAB INSUMOS ──────────────────────────────────────
-let INS_TAB = 'ENVIO'; // tab ativa do formulário
-let INS_FILTER_TIPO = '';
-let INS_FILTER_DEST = '';
-
-function insSetTab(t){
-  INS_TAB = t;
-  document.querySelectorAll('.ins-form-tab').forEach(el => {
-    el.classList.toggle('active', el.dataset.tab === t);
-  });
-  // Atualiza label do botão e opções do select Insumo
-  insAtualizarFormulario();
-}
-
-function insAtualizarFormulario(){
-  const selInsumo = document.getElementById('insInsumo');
-  const selDest   = document.getElementById('insDest');
-  if(!selInsumo||!selDest) return;
-
-  if(INS_TAB === 'ENVIO'){
-    selInsumo.innerHTML = `
-      <option value="Grão">Grão</option>
-      <option value="Pigmento">Pigmento</option>
-      <option value="Dessecante">Dessecante</option>
-      <option value="Aparas">Aparas</option>`;
-    selDest.innerHTML = `
-      <option value="ALP">ALP</option>
-      <option value="Fabiano">Fabiano</option>
-      <option value="Toninho">Toninho</option>`;
-    document.getElementById('insFormBtn').textContent = '↑ REGISTRAR ENVIO';
-  } else {
-    selInsumo.innerHTML = `
-      <option value="Bobina">Bobina</option>
-      <option value="Tubos">Tubos</option>
-      <option value="Grão Reciclado">Grão Reciclado</option>`;
-    selDest.innerHTML = `
-      <option value="ALP">ALP</option>
-      <option value="Fabiano">Fabiano</option>
-      <option value="Toninho">Toninho</option>`;
-    document.getElementById('insFormBtn').textContent = '↓ REGISTRAR RETORNO';
-  }
-}
-
-async function insExcluir(idx){
-  const l = STATE.insumos[idx];
-  if(!l) return;
-  if(!confirm(`Excluir lançamento?\n${l.tipo} · ${l.destino} · ${l.insumo} · ${insKgFmt(l.kg)}\nData: ${l.data}`)) return;
-
-  try {
-    const res = await fetch(SCRIPT_URL, {
-      method:'POST',
-      body: JSON.stringify({ action:'deleteInsumo', index: idx, data:l.data, tipo:l.tipo, destino:l.destino, insumo:l.insumo, kg:l.kg }),
-      headers:{'Content-Type':'application/json'}
-    });
-    const json = await res.json();
-    if(json.success){
-      STATE.insumos.splice(idx, 1);
-      insToast('Lançamento excluído.','ok');
-      renderInsumos();
-    } else {
-      // Fallback: remove localmente mesmo sem Apps Script confirmado
-      STATE.insumos.splice(idx, 1);
-      insToast('Removido localmente (sincronize o Apps Script)','info');
-      renderInsumos();
-    }
-  } catch(e) {
-    // Remove localmente mesmo sem conexão
-    STATE.insumos.splice(idx, 1);
-    insToast('Removido localmente.','info');
-    renderInsumos();
-  }
-}
-  const data   = document.getElementById('insData').value;
-  const dest   = document.getElementById('insDest').value;
-  const insumo = document.getElementById('insInsumo').value;
-  const kg     = parseFloat(document.getElementById('insKg').value);
-  const obs    = document.getElementById('insObs').value.trim();
-
-  if(!data)           return insToast('Informe a data.','err');
-  if(!dest)           return insToast('Selecione o destino/origem.','err');
-  if(!insumo)         return insToast('Selecione o insumo.','err');
-  if(isNaN(kg)||kg<=0) return insToast('Informe um kg válido.','err');
-
-  const btn = document.getElementById('insFormBtn');
-  btn.disabled = true;
-  btn.textContent = 'SALVANDO...';
-
-  const payload = {
-    action: 'addInsumo',
-    data: data.split('-').reverse().join('/'), // converte yyyy-mm-dd → dd/mm/yyyy
-    tipo: INS_TAB,
-    destino: dest,
-    insumo,
-    kg,
-    obs
-  };
-
-  try {
-    const res = await fetch(SCRIPT_URL, {
-      method:'POST',
-      body: JSON.stringify(payload),
-      headers:{'Content-Type':'application/json'}
-    });
-    const json = await res.json();
-    if(json.success){
-      // Adiciona localmente para feedback imediato
-      const [dd,mm] = payload.data.split('/');
-      STATE.insumos.push({ data:`${dd}/${mm}`, tipo:INS_TAB, destino:dest, insumo, kg, obs });
-      insToast('Lançamento salvo!','ok');
-      document.getElementById('insKg').value = '';
-      document.getElementById('insObs').value = '';
-      renderInsumos();
-    } else {
-      insToast('Erro: '+(json.error||'falha ao salvar'),'err');
-    }
-  } catch(e) {
-    // Fallback: salva localmente sem persistir (para teste sem Apps Script)
-    const [dd,mm] = payload.data.split('/');
-    STATE.insumos.push({ data:`${dd}/${mm}`, tipo:INS_TAB, destino:dest, insumo, kg, obs });
-    insToast('Salvo localmente (Apps Script não conectado)','info');
-    document.getElementById('insKg').value = '';
-    document.getElementById('insObs').value = '';
-    renderInsumos();
-  } finally {
-    btn.disabled = false;
-    insAtualizarFormulario();
-  }
-}
-
-function insToast(msg, tipo){
-  const t = document.getElementById('insToast');
-  t.textContent = msg;
-  t.className = 'ins-toast '+tipo;
-  t.style.display = 'block';
-  setTimeout(()=>{ t.style.display='none'; }, 3000);
-}
-
-function insKgFmt(n){
-  if(!n&&n!==0) return '—';
-  return n.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:1})+' kg';
-}
-
-function renderInsumos(){
-  const main = document.getElementById('main');
-  const S = calcSaldoInsumos();
-  const hoje = new Date().toISOString().split('T')[0];
-
-  // ── KPIs ──
-  const totalLancamentos = STATE.insumos.length;
-  const totalEnvios   = STATE.insumos.filter(l=>l.tipo==='ENVIO').reduce((s,l)=>s+l.kg,0);
-  const totalRetornos = STATE.insumos.filter(l=>l.tipo==='RETORNO').reduce((s,l)=>s+l.kg,0) + S.alpEnvAuto;
-
-  let html = '';
-
-  // KPIs
-  html += `<div class="ins-grid">
-    <div class="ins-card">
-      <div class="ins-card-label">Total Enviado</div>
-      <div class="ins-card-val">${insKgFmt(totalEnvios)}</div>
-      <div class="ins-card-sub">todos os terceiros</div>
-    </div>
-    <div class="ins-card">
-      <div class="ins-card-label">Total Retornado</div>
-      <div class="ins-card-val">${insKgFmt(totalRetornos)}</div>
-      <div class="ins-card-sub">manual + ALP auto</div>
-    </div>
-    <div class="ins-card">
-      <div class="ins-card-label">Saldo a Receber</div>
-      <div class="ins-card-val" style="color:${S.totalSaldo>0?'var(--yellow)':'var(--green)'}">${insKgFmt(S.totalSaldo)}</div>
-      <div class="ins-card-sub">enviado − recebido</div>
-    </div>
-    <div class="ins-card">
-      <div class="ins-card-label">Bobinas Primícia</div>
-      <div class="ins-card-val" style="color:${S.saldoBobinaPrimicia>0?'var(--blue)':'var(--text)'}">${insKgFmt(S.saldoBobinaPrimicia)}</div>
-      <div class="ins-card-sub">recebido − produzido</div>
-    </div>
-  </div>`;
-
-  // Saldo por terceiro
-  html += `<div class="section-header"><div class="section-title">⚖️ Saldo por Terceiro</div></div>`;
-  html += `<div class="ins-saldo-grid">`;
-
-  const icons = { ALP:'🏭', Fabiano:'⚙️', Toninho:'♻️' };
-  S.saldos.forEach(s => {
-    const pct = (s.anterior + s.enviado) > 0 ? Math.min(100, s.recebido/(s.anterior+s.enviado)*100) : 0;
-    const cor  = s.saldo <= 0 ? 'var(--green)' : s.saldo/(Math.max(s.anterior+s.enviado,1)) > 0.3 ? 'var(--red)' : 'var(--yellow)';
-    html += `<div class="ins-saldo-card">
-      <div class="ins-saldo-title">${icons[s.terceiro]||'🏢'} ${s.terceiro}</div>`;
-    if(s.anterior > 0){
-      html += `<div class="ins-saldo-row">
-        <span class="ins-saldo-row-label">Saldo anterior</span>
-        <span class="ins-saldo-row-val" style="color:var(--yellow)">${insKgFmt(s.anterior)}</span>
-      </div>`;
-    }
-    html += `<div class="ins-saldo-row">
-        <span class="ins-saldo-row-label">Enviado no mês</span>
-        <span class="ins-saldo-row-val" style="color:var(--text)">${insKgFmt(s.enviado)}</span>
-      </div>
-      <div class="ins-saldo-row">
-        <span class="ins-saldo-row-label">Retornado (manual)</span>
-        <span class="ins-saldo-row-val" style="color:var(--text2)">${insKgFmt(s.retManual)}</span>
-      </div>`;
-    if(s.terceiro === 'ALP'){
-      html += `<div class="ins-saldo-row">
-        <span class="ins-saldo-row-label">Envelopes ALP (auto)</span>
-        <span class="ins-saldo-row-val" style="color:var(--blue)">${insKgFmt(s.retAuto)}</span>
-      </div>`;
-    }
-    html += `<div class="ins-saldo-total">
-        <span class="ins-saldo-total-label">Saldo a receber</span>
-        <span class="ins-saldo-total-val" style="color:${cor}">${insKgFmt(s.saldo)}</span>
-      </div>
-      <div class="ins-saldo-bar">
-        <div class="ins-saldo-bar-fill" style="width:${pct.toFixed(1)}%;background:${pct>=100?'var(--green)':pct>=50?'var(--orange)':'var(--red)'}"></div>
-      </div>
-      <div style="font-size:10px;color:var(--text3);margin-top:5px;font-family:'DM Mono',monospace">${pct.toFixed(0)}% retornado</div>
-    </div>`;
-  });
-
-  // Card Primícia — ciclo bobina → envelope
-  const pctPrim = S.bobinasPrimicia > 0 ? Math.min(100, S.envPrimicia/S.bobinasPrimicia*100) : 0;
-  html += `<div class="ins-saldo-card" style="grid-column:1/-1;border-color:rgba(91,138,245,.35)">
-    <div class="ins-saldo-title">🏠 Primícia — Ciclo Bobina → Envelope</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
-      <div>
-        <div class="ins-saldo-row-label" style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Bobinas Recebidas</div>
-        <div style="font-family:'DM Mono',monospace;font-size:20px;font-weight:700;color:var(--blue)">${insKgFmt(S.bobinasPrimicia)}</div>
-        <div style="font-size:11px;color:var(--text3);margin-top:2px">de ALP + Fabiano</div>
-      </div>
-      <div>
-        <div class="ins-saldo-row-label" style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Produzido (Envelopes)</div>
-        <div style="font-family:'DM Mono',monospace;font-size:20px;font-weight:700;color:var(--orange)">${insKgFmt(S.envPrimicia)}</div>
-        <div style="font-size:11px;color:var(--text3);margin-top:2px">aba Primícia (auto)</div>
-      </div>
-      <div>
-        <div class="ins-saldo-row-label" style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Saldo Bobina</div>
-        <div style="font-family:'DM Mono',monospace;font-size:20px;font-weight:700;color:${S.saldoBobinaPrimicia>0?'var(--yellow)':'var(--green)'}">${insKgFmt(S.saldoBobinaPrimicia)}</div>
-        <div style="font-size:11px;color:var(--text3);margin-top:2px">aguardando corte</div>
-      </div>
-    </div>
-    <div class="ins-saldo-bar" style="margin-top:16px">
-      <div class="ins-saldo-bar-fill" style="width:${pctPrim.toFixed(1)}%;background:var(--blue)"></div>
-    </div>
-    <div style="font-size:10px;color:var(--text3);margin-top:5px;font-family:'DM Mono',monospace">${pctPrim.toFixed(0)}% das bobinas já virou envelope</div>
-  </div>`;
-
-  html += `</div>`; // fim ins-saldo-grid
-
-  // Formulário de lançamento
-  html += `<div class="ins-form-wrap">
-    <div class="ins-form-title">✏️ Novo Lançamento</div>
-    <div class="ins-form-tabs">
-      <button class="ins-form-tab active" data-tab="ENVIO" onclick="insSetTab('ENVIO')">↑ Envio para Terceiro</button>
-      <button class="ins-form-tab" data-tab="RETORNO" onclick="insSetTab('RETORNO')">↓ Retorno de Terceiro</button>
-    </div>
-    <div class="ins-form-grid">
-      <div class="ins-form-group">
-        <label class="ins-form-label">Data</label>
-        <input class="ins-form-input" type="date" id="insData" value="${hoje}">
-      </div>
-      <div class="ins-form-group">
-        <label class="ins-form-label">Destino / Origem</label>
-        <select class="ins-form-input" id="insDest">
-          <option value="ALP">ALP</option>
-          <option value="Fabiano">Fabiano</option>
-          <option value="Toninho">Toninho</option>
-        </select>
-      </div>
-      <div class="ins-form-group">
-        <label class="ins-form-label">Insumo</label>
-        <select class="ins-form-input" id="insInsumo">
-          <option value="Grão">Grão</option>
-          <option value="Pigmento">Pigmento</option>
-          <option value="Dessecante">Dessecante</option>
-          <option value="Aparas">Aparas</option>
-        </select>
-      </div>
-      <div class="ins-form-group">
-        <label class="ins-form-label">Kg</label>
-        <input class="ins-form-input" type="number" id="insKg" placeholder="ex: 1860" step="0.001" min="0">
-      </div>
-      <div class="ins-form-group">
-        <label class="ins-form-label">Observação</label>
-        <input class="ins-form-input" type="text" id="insObs" placeholder="Opcional">
-      </div>
-    </div>
-    <div style="margin-top:16px;display:flex;align-items:center;gap:16px;">
-      <button class="ins-form-btn" id="insFormBtn" onclick="insSalvar()">↑ REGISTRAR ENVIO</button>
-      <span style="font-size:12px;color:var(--text3)">⚠️ Envelopes ALP são lançados automaticamente via aba ALP</span>
-    </div>
-  </div>`;
-
-  // Histórico
-  let hist = [...(STATE.insumos||[])];
-  if(INS_FILTER_TIPO) hist = hist.filter(l=>l.tipo===INS_FILTER_TIPO);
-  if(INS_FILTER_DEST) hist = hist.filter(l=>l.destino===INS_FILTER_DEST);
-  hist.sort((a,b)=>b.data.localeCompare(a.data));
-
-  html += `<div class="section">
-    <div class="section-header">
-      <div class="section-title">📋 Histórico de Lançamentos</div>
-      <div class="section-badge">${hist.length} registros</div>
-    </div>
-    <div class="ins-hist-filter">
-      <select onchange="INS_FILTER_TIPO=this.value;renderInsumos()">
-        <option value="">Todos os tipos</option>
-        <option value="ENVIO" ${INS_FILTER_TIPO==='ENVIO'?'selected':''}>Envio</option>
-        <option value="RETORNO" ${INS_FILTER_TIPO==='RETORNO'?'selected':''}>Retorno</option>
-      </select>
-      <select onchange="INS_FILTER_DEST=this.value;renderInsumos()">
-        <option value="">Todos os terceiros</option>
-        <option value="ALP" ${INS_FILTER_DEST==='ALP'?'selected':''}>ALP</option>
-        <option value="Fabiano" ${INS_FILTER_DEST==='Fabiano'?'selected':''}>Fabiano</option>
-        <option value="Toninho" ${INS_FILTER_DEST==='Toninho'?'selected':''}>Toninho</option>
-      </select>
-      <button class="btn btn-ghost btn-sm" onclick="INS_FILTER_TIPO='';INS_FILTER_DEST='';renderInsumos()">✕ Limpar</button>
-    </div>`;
-
-  if(!hist.length){
-    html += `<div class="empty">Nenhum lançamento encontrado.<br><span style="font-size:12px">Use o formulário acima para registrar o primeiro lançamento.</span></div>`;
-  } else {
-    html += `<div class="table-wrap"><table class="data-table"><thead><tr>
-      <th>Data</th><th>Tipo</th><th>Terceiro</th><th>Insumo</th><th>Kg</th><th>Obs</th><th></th>
-    </tr></thead><tbody>`;
-    hist.forEach((l, i) => {
-      // índice real no array STATE.insumos para exclusão
-      const realIdx = STATE.insumos.indexOf(l);
-      html += `<tr>
-        <td style="color:var(--text3);font-size:12px">${l.data}</td>
-        <td><span class="${l.tipo==='ENVIO'?'ins-tipo-envio':'ins-tipo-retorno'}">${l.tipo}</span></td>
-        <td style="font-weight:700">${l.destino}</td>
-        <td><span class="ins-insumo-tag">${l.insumo}</span></td>
-        <td>${insKgFmt(l.kg)}</td>
-        <td style="color:var(--text3);font-size:12px">${l.obs||'—'}</td>
-        <td><button onclick="insExcluir(${realIdx})" style="background:transparent;border:1px solid rgba(231,76,60,.3);color:var(--red);border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;transition:all .2s" onmouseover="this.style.background='rgba(231,76,60,.15)'" onmouseout="this.style.background='transparent'">✕</button></td>
-      </tr>`;
-    });
-    // Linha de total
-    const totalHist = hist.reduce((s,l)=>s+l.kg,0);
-    html += `<tr class="total-row"><td>TOTAL</td><td></td><td></td><td></td><td>${insKgFmt(totalHist)}</td><td></td><td></td></tr>`;
-    html += `</tbody></table></div>`;
-  }
-  html += `</div>`; // fim section histórico
-
-  main.innerHTML = html;
-}
-
-// ── Sem auto-init: use o botão Atualizar ──
-
 
 </script>
 </body>
