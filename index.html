@@ -955,7 +955,7 @@ async function etqConvert(){
   const dpmm = document.getElementById('etqDpmm').value;
   const w    = document.getElementById('etqWidth').value;
   const h    = document.getElementById('etqHeight').value;
-  const URL  = `https://api.labelary.com/v1/printers/${dpmm}dpmm/labels/${w}x${h}/`;
+  const LABELARY_URL = `https://api.labelary.com/v1/printers/${dpmm}dpmm/labels/${w}x${h}/`;
   const BATCH = 50;
 
   const batches = [];
@@ -973,7 +973,7 @@ async function etqConvert(){
     const end   = start+batches[i].length-1;
     if(i>0) await new Promise(r=>setTimeout(r,380));
     try{
-      const resp = await fetch(URL, {
+      const resp = await fetch(LABELARY_URL, {
         method:'POST',
         headers:{'Content-Type':'application/x-www-form-urlencoded','Accept':'application/pdf'},
         body: batchZpl,
