@@ -852,9 +852,21 @@ function renderEtiquetas(){
     etqSetStatus('idle', `${ETQ.labels.length} etiquetas prontas para converter.`);
   }
   if(ETQ.blob){
+    const outName = ETQ.fileName.replace(/\.(txt|zpl)$/i,'')+'.pdf';
+    const sizeKB  = Math.round(ETQ.blob.size/1024);
     document.getElementById('etqDownload').classList.add('visible');
     document.getElementById('etqBtnReset').classList.add('visible');
-    document.getElementById('etqDlName').textContent = ETQ.fileName.replace(/\.(txt|zpl)$/i,'')+'.pdf';
+    document.getElementById('etqDlName').textContent = outName;
+    document.getElementById('etqDlMeta').textContent = `${ETQ.labels.length} etiquetas · ${sizeKB} KB`;
+    document.getElementById('etqBtnDl').onclick = ()=>{
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(ETQ.blob);
+      a.download = outName;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(()=>{ URL.revokeObjectURL(a.href); document.body.removeChild(a); }, 1000);
+    };
+    etqSetStatus('done', `Pronto! ${ETQ.labels.length} etiquetas convertidas.`);
   }
 }
 
@@ -1010,7 +1022,9 @@ async function etqConvert(){
       const a = document.createElement('a');
       a.href = URL.createObjectURL(ETQ.blob);
       a.download = outName;
+      document.body.appendChild(a);
       a.click();
+      setTimeout(()=>{ URL.revokeObjectURL(a.href); document.body.removeChild(a); }, 1000);
     };
 
     etqSetStatus('done', `Pronto! ${ok} etiquetas convertidas.${fail?' ('+fail+' falharam)':''}`);
