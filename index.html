@@ -757,25 +757,6 @@ function render(){
 // ════════════════════════════════════════════════
 //  ABA ETIQUETAS FULL
 // ════════════════════════════════════════════════
-
-// ── SKU catalog — persiste no localStorage ──
-const SKU_STORE_KEY = 'trueEtiquetasSKU_v1';
-function skuLoad(){ try{ return JSON.parse(localStorage.getItem(SKU_STORE_KEY)||'[]'); }catch(e){ return []; } }
-function skuSave(list){ localStorage.setItem(SKU_STORE_KEY, JSON.stringify(list)); }
-function skuDelete(id){ skuSave(skuLoad().filter(s=>s.id!==id)); renderEtiquetas(); }
-
-// ── Extrai medida e qtd/pacote do nome do SKU ──
-function skuParseInfo(name){
-  // Medida: ex "26x36", "40x50", "20x30"
-  const medMatch = name.match(/(\d{2,3})[xX](\d{2,3})/);
-  const medida = medMatch ? `${medMatch[1]}x${medMatch[2]}` : '—';
-  // Qtd por pacote: "1000 Unid", "500 Unidades", "250 Uni"
-  const qtyMatch = name.match(/(\d+)\s*[Uu]ni/);
-  const qtdPacote = qtyMatch ? parseInt(qtyMatch[1]) : '—';
-  return { medida, qtdPacote };
-}
-
-// ── ZPL converter state (session only) ──
 const ETQ = {
   labels: [],
   blob: null,
@@ -783,119 +764,11 @@ const ETQ = {
 };
 
 function renderEtiquetas(){
-  const skus = skuLoad();
-  const main = document.getElementById('main');
-
-  // ── SUB-TABS ──
-  const subTab = window._etqSubTab || 'sku';
-
-  let html = `<div style="max-width:760px;margin:0 auto;">
-
-  <!-- Sub-tabs -->
-  <div style="display:flex;gap:0;background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:28px;">
-    <button onclick="window._etqSubTab='sku';renderEtiquetas()" style="flex:1;padding:13px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;background:${subTab==='sku'?'var(--orange)':'transparent'};color:${subTab==='sku'?'#fff':'var(--text3)'};">🏷️ Etiquetas SKU</button>
-    <button onclick="window._etqSubTab='full';renderEtiquetas()" style="flex:1;padding:13px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;background:${subTab==='full'?'var(--orange)':'transparent'};color:${subTab==='full'?'#fff':'var(--text3)'};">📦 Conversor Full ZPL</button>
-  </div>`;
-
-  if(subTab === 'sku'){
-    // ════ SEÇÃO SKU ════
-    html += `
-    <!-- Upload zona -->
-    <div style="border:2px dashed var(--border2);border-radius:14px;padding:32px;text-align:center;cursor:pointer;background:var(--bg2);position:relative;margin-bottom:16px;transition:border-color .2s;" id="skuDropZone">
-      <input type="file" id="skuFileInput" accept=".pdf" multiple style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;">
-      <div style="font-size:32px;margin-bottom:10px">🏷️</div>
-      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:5px">Adicionar etiquetas ao catálogo</div>
-      <div style="font-size:12px;color:var(--text3)">Arraste os PDFs ou clique para selecionar · múltiplos arquivos aceitos</div>
-      <div style="margin-top:10px;font-size:11px;color:var(--text3)">Os SKUs ficam salvos mesmo após fechar o navegador</div>
-    </div>`;
-
-    if(skus.length === 0){
-      html += `<div style="padding:48px;text-align:center;background:var(--bg2);border:1px solid var(--border);border-radius:14px;color:var(--text3);">
-        <div style="font-size:36px;margin-bottom:12px">📂</div>
-        <div style="font-size:14px;font-weight:700;color:var(--text2);margin-bottom:6px">Nenhum SKU cadastrado ainda</div>
-        <div style="font-size:12px;line-height:1.7">Arraste os PDFs das etiquetas acima para cadastrar seu catálogo.<br>Cada arquivo vira um SKU disponível para impressão.</div>
-      </div>`;
-    } else {
-      // Grid de SKUs
-      html += `<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">`;
-      skus.forEach(sku => {
-        const info = skuParseInfo(sku.name);
-        html += `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:14px;" id="skucard-${sku.id}">
-          <!-- Checkbox OS -->
-          <input type="checkbox" id="oschk-${sku.id}"
-            style="width:18px;height:18px;accent-color:var(--orange);cursor:pointer;flex-shrink:0;">
-          <!-- Info -->
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${sku.name}</div>
-            <div style="display:flex;gap:12px;margin-top:4px;">
-              <span style="font-size:11px;color:var(--orange);font-family:'DM Mono',monospace;font-weight:600;">${info.medida}</span>
-              <span style="font-size:11px;color:var(--text3);">${info.qtdPacote} un/pacote</span>
-            </div>
-          </div>
-          <!-- Qtd pacotes -->
-          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0;">
-            <span style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;">Pacotes</span>
-            <input type="number" min="1" max="9999" value="1" id="qty-${sku.id}"
-              style="width:70px;background:var(--bg);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:'DM Mono',monospace;font-size:15px;padding:6px 8px;text-align:center;outline:none;">
-          </div>
-          <!-- Ações -->
-          <div style="display:flex;gap:6px;flex-shrink:0;">
-            <button onclick="skuPrint('${sku.id}')"
-              style="background:var(--orange);color:#fff;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border:none;border-radius:8px;padding:8px 12px;cursor:pointer;white-space:nowrap;">
-              ⬇ PDF
-            </button>
-            <button onclick="skuDelete('${sku.id}')"
-              style="background:transparent;color:var(--text3);border:1px solid var(--border);border-radius:8px;padding:8px 10px;cursor:pointer;font-size:13px;"
-              title="Remover">✕</button>
-          </div>
-        </div>`;
-      });
-      html += `</div>`;
-
-      // ── Campos da OS + botões ──
-      html += `
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:12px;">
-        <div style="font-size:11px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;">Ordem de Serviço</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
-          <div style="display:flex;flex-direction:column;gap:5px;">
-            <label style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;">Data do Full</label>
-            <input type="date" id="osData"
-              style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:8px 10px;outline:none;">
-          </div>
-          <div style="display:flex;flex-direction:column;gap:5px;">
-            <label style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;">Nº do Full / Envio</label>
-            <input type="text" id="osNumero" placeholder="ex: 69303648"
-              style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:8px 10px;outline:none;">
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:5px;">
-          <label style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;">Observações</label>
-          <textarea id="osObs" rows="2" placeholder="Informações adicionais..."
-            style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:'Syne',sans-serif;font-size:13px;padding:8px 10px;outline:none;resize:vertical;"></textarea>
-        </div>
-      </div>
-
-      <div style="display:flex;gap:10px;">
-        <button onclick="skuGerarOS()"
-          style="flex:1;background:var(--blue);color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border:none;border-radius:10px;padding:15px;cursor:pointer;">
-          🗒 Gerar OS para impressão
-        </button>
-        <button onclick="skuPrintAll()"
-          style="flex:1;background:var(--green);color:#000;font-family:'Syne',sans-serif;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border:none;border-radius:10px;padding:15px;cursor:pointer;">
-          📥 Baixar etiquetas
-        </button>
-        <button onclick="if(confirm('Remover todos os SKUs?')){localStorage.removeItem(SKU_STORE_KEY);renderEtiquetas();}"
-          style="background:transparent;color:var(--text3);border:1px solid var(--border);border-radius:10px;padding:15px 14px;cursor:pointer;font-family:'DM Mono',monospace;font-size:12px;">
-          🗑
-        </button>
-      </div>`;
-    }
-
-  } else {
-    // ════ SEÇÃO CONVERSOR FULL ZPL ════
-    html += `
-    <div style="margin-bottom:20px;">
-      <div style="font-size:13px;color:var(--text3);line-height:1.6">Importe o arquivo <strong style="color:var(--text2)">.txt</strong> ou <strong style="color:var(--text2)">.zpl</strong> gerado pelo Meli e baixe um <strong style="color:var(--orange)">PDF único</strong> com todas as etiquetas.</div>
+  document.getElementById('main').innerHTML=`
+  <div class="etq-wrap">
+    <div style="margin-bottom:24px;">
+      <div style="font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);margin-bottom:6px;">📦 Etiquetas Full — Mercado Livre</div>
+      <div style="font-size:13px;color:var(--text3);line-height:1.6">Importe o arquivo <strong style="color:var(--text2)">.txt</strong> ou <strong style="color:var(--text2)">.zpl</strong> gerado pelo Meli e baixe um <strong style="color:var(--orange)">PDF único</strong> pronto para imprimir na térmica.</div>
     </div>
 
     <div class="etq-drop" id="etqDrop">
@@ -958,285 +831,44 @@ function renderEtiquetas(){
       <button class="etq-btn-dl" id="etqBtnDl">⬇ Baixar PDF</button>
     </div>
 
-    <button class="etq-btn-reset" id="etqBtnReset" onclick="etqReset()">↺ Converter outro arquivo</button>`;
+    <button class="etq-btn-reset" id="etqBtnReset" onclick="etqReset()">↺ Converter outro arquivo</button>
+  </div>`;
+
+  // Inicializa eventos
+  const drop = document.getElementById('etqDrop');
+  const inp  = document.getElementById('etqFileInput');
+
+  drop.addEventListener('dragover', e=>{ e.preventDefault(); drop.classList.add('drag-over'); });
+  drop.addEventListener('dragleave', ()=>drop.classList.remove('drag-over'));
+  drop.addEventListener('drop', e=>{ e.preventDefault(); drop.classList.remove('drag-over'); if(e.dataTransfer.files[0]) etqHandleFile(e.dataTransfer.files[0]); });
+  inp.addEventListener('change', ()=>{ if(inp.files[0]) etqHandleFile(inp.files[0]); });
+
+  // Restaura estado se já tinha arquivo
+  if(ETQ.labels.length){
+    document.getElementById('etqInfoBar').classList.add('visible');
+    document.getElementById('etqFileNameLabel').textContent = ETQ.fileName;
+    document.getElementById('etqLabelCount').textContent = `${ETQ.labels.length} etiquetas · ${Math.ceil(ETQ.labels.length/50)} lotes`;
+    document.getElementById('etqBtnConvert').classList.add('visible');
+    etqSetStatus('idle', `${ETQ.labels.length} etiquetas prontas para converter.`);
   }
-
-  html += `</div>`;
-  main.innerHTML = html;
-
-  if(subTab === 'sku'){
-    // ── Drag & drop para SKU ──
-    const zone = document.getElementById('skuDropZone');
-    const inp  = document.getElementById('skuFileInput');
-    if(zone){
-      zone.addEventListener('dragover', e=>{ e.preventDefault(); zone.style.borderColor='var(--orange)'; });
-      zone.addEventListener('dragleave', ()=>{ zone.style.borderColor=''; });
-      zone.addEventListener('drop', e=>{ e.preventDefault(); zone.style.borderColor=''; skuAddFiles(e.dataTransfer.files); });
-      inp.addEventListener('change', ()=>skuAddFiles(inp.files));
-    }
-  } else {
-    // ── Drag & drop para ZPL ──
-    const drop = document.getElementById('etqDrop');
-    const inp  = document.getElementById('etqFileInput');
-    if(drop){
-      drop.addEventListener('dragover', e=>{ e.preventDefault(); drop.classList.add('drag-over'); });
-      drop.addEventListener('dragleave', ()=>drop.classList.remove('drag-over'));
-      drop.addEventListener('drop', e=>{ e.preventDefault(); drop.classList.remove('drag-over'); if(e.dataTransfer.files[0]) etqHandleFile(e.dataTransfer.files[0]); });
-      inp.addEventListener('change', ()=>{ if(inp.files[0]) etqHandleFile(inp.files[0]); });
-    }
-    // Restaura estado conversor
-    if(ETQ.labels.length){
-      document.getElementById('etqInfoBar').classList.add('visible');
-      document.getElementById('etqFileNameLabel').textContent = ETQ.fileName;
-      document.getElementById('etqLabelCount').textContent = `${ETQ.labels.length} etiquetas · ${Math.ceil(ETQ.labels.length/50)} lotes`;
-      document.getElementById('etqBtnConvert').classList.add('visible');
-      etqSetStatus('idle', `${ETQ.labels.length} etiquetas prontas para converter.`);
-    }
-    if(ETQ.blob){
-      const outName = ETQ.fileName.replace(/\.(txt|zpl)$/i,'')+'.pdf';
-      const sizeKB  = Math.round(ETQ.blob.size/1024);
-      document.getElementById('etqDownload').classList.add('visible');
-      document.getElementById('etqBtnReset').classList.add('visible');
-      document.getElementById('etqDlName').textContent = outName;
-      document.getElementById('etqDlMeta').textContent = `${ETQ.labels.length} etiquetas · ${sizeKB} KB`;
-      document.getElementById('etqBtnDl').onclick = ()=>{
-        const a = document.createElement('a');
-        a.href = window.URL.createObjectURL(ETQ.blob);
-        a.download = outName;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(()=>{ window.URL.revokeObjectURL(a.href); document.body.removeChild(a); }, 1000);
-      };
-      etqSetStatus('done', `Pronto! ${ETQ.labels.length} etiquetas convertidas.`);
-    }
-  }
-}
-
-// ── Adiciona PDFs ao catálogo ──
-function skuAddFiles(files){
-  const list = skuLoad();
-  let added = 0;
-  const toRead = Array.from(files).filter(f=>f.type==='application/pdf'||f.name.toLowerCase().endsWith('.pdf'));
-  if(!toRead.length){ alert('Selecione arquivos PDF.'); return; }
-
-  let pending = toRead.length;
-  toRead.forEach(file => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      // Evita duplicata pelo nome
-      const exists = list.find(s=>s.name===file.name);
-      if(!exists){
-        list.push({
-          id: Date.now()+'_'+Math.random().toString(36).slice(2,7),
-          name: file.name.replace(/\.pdf$/i,''),
-          data: e.target.result, // base64 dataURL
-          size: file.size,
-          added: new Date().toLocaleDateString('pt-BR'),
-        });
-        added++;
-      }
-      pending--;
-      if(pending===0){
-        skuSave(list);
-        renderEtiquetas();
-      }
+  if(ETQ.blob){
+    const outName = ETQ.fileName.replace(/\.(txt|zpl)$/i,'')+'.pdf';
+    const sizeKB  = Math.round(ETQ.blob.size/1024);
+    document.getElementById('etqDownload').classList.add('visible');
+    document.getElementById('etqBtnReset').classList.add('visible');
+    document.getElementById('etqDlName').textContent = outName;
+    document.getElementById('etqDlMeta').textContent = `${ETQ.labels.length} etiquetas · ${sizeKB} KB`;
+    document.getElementById('etqBtnDl').onclick = ()=>{
+      const a = document.createElement('a');
+      a.href = window.URL.createObjectURL(ETQ.blob);
+      a.download = outName;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(()=>{ window.URL.revokeObjectURL(a.href); document.body.removeChild(a); }, 1000);
     };
-    reader.readAsDataURL(file);
-  });
-}
-
-// ── Baixa PDF de 1 SKU com N cópias ──
-async function skuPrint(id){
-  const skus = skuLoad();
-  const sku  = skus.find(s=>s.id===id);
-  if(!sku) return;
-  const qtyEl = document.getElementById('qty-'+id);
-  const qty   = Math.max(1, parseInt(qtyEl?.value||'1'));
-
-  const btn = document.querySelector(`#skucard-${id} button`);
-  if(btn){ btn.textContent='⏳ Gerando...'; btn.disabled=true; }
-
-  try{
-    const PDFLib = await etqLoadPdfLib();
-    // Carrega o PDF original do base64
-    const base64 = sku.data.split(',')[1];
-    const srcBytes = Uint8Array.from(atob(base64), c=>c.charCodeAt(0));
-    const srcDoc = await PDFLib.PDFDocument.load(srcBytes);
-    const merged = await PDFLib.PDFDocument.create();
-    for(let i=0; i<qty; i++){
-      const pages = await merged.copyPages(srcDoc, srcDoc.getPageIndices());
-      pages.forEach(p=>merged.addPage(p));
-    }
-    const outBytes = await merged.save();
-    const blob = new Blob([outBytes],{type:'application/pdf'});
-    const a = document.createElement('a');
-    a.href = window.URL.createObjectURL(blob);
-    a.download = `${sku.name}_${qty}x.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(()=>{ window.URL.revokeObjectURL(a.href); document.body.removeChild(a); }, 1000);
-  }catch(e){
-    alert('Erro ao gerar PDF: '+e.message);
+    etqSetStatus('done', `Pronto! ${ETQ.labels.length} etiquetas convertidas.`);
   }
-  if(btn){ btn.textContent='⬇ Baixar'; btn.disabled=false; }
 }
-
-// ── Baixa todos os SKUs em um único PDF ──
-async function skuPrintAll(){
-  const skus = skuLoad();
-  if(!skus.length) return;
-  const btn = document.querySelector('button[onclick="skuPrintAll()"]');
-  if(btn){ btn.textContent='⏳ Gerando PDF...'; btn.disabled=true; }
-  try{
-    const PDFLib = await etqLoadPdfLib();
-    const merged = await PDFLib.PDFDocument.create();
-    for(const sku of skus){
-      const qtyEl = document.getElementById('qty-'+sku.id);
-      const qty   = Math.max(1, parseInt(qtyEl?.value||'1'));
-      const base64 = sku.data.split(',')[1];
-      const srcBytes = Uint8Array.from(atob(base64), c=>c.charCodeAt(0));
-      const srcDoc = await PDFLib.PDFDocument.load(srcBytes);
-      for(let i=0; i<qty; i++){
-        const pages = await merged.copyPages(srcDoc, srcDoc.getPageIndices());
-        pages.forEach(p=>merged.addPage(p));
-      }
-    }
-    const outBytes = await merged.save();
-    const blob = new Blob([outBytes],{type:'application/pdf'});
-    const a = document.createElement('a');
-    a.href = window.URL.createObjectURL(blob);
-    a.download = `etiquetas-sku-${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(()=>{ window.URL.revokeObjectURL(a.href); document.body.removeChild(a); }, 1000);
-  }catch(e){
-    alert('Erro ao gerar PDF: '+e.message);
-  }
-  if(btn){ btn.textContent='📥 Baixar todos (com quantidades definidas)'; btn.disabled=false; }
-}
-
-// ── Gera OS em PDF para impressão ──
-async function skuGerarOS(){
-  const skus = skuLoad();
-  if(!skus.length){ alert('Nenhum SKU cadastrado.'); return; }
-
-  const data    = document.getElementById('osData')?.value || '';
-  const numero  = document.getElementById('osNumero')?.value || '';
-  const obs     = document.getElementById('osObs')?.value || '';
-
-  const dataFmt = data ? new Date(data+'T12:00:00').toLocaleDateString('pt-BR') : '___/___/______';
-  const numFmt  = numero || '____________________';
-
-  // Monta itens — todos os SKUs com qty > 0
-  const itens = skus.map(sku => {
-    const info = skuParseInfo(sku.name);
-    const qty  = Math.max(1, parseInt(document.getElementById('qty-'+sku.id)?.value||'1'));
-    const totalEnv = info.qtdPacote !== '—' ? qty * info.qtdPacote : '—';
-    return { sku: sku.name, medida: info.medida, qtdPacote: info.qtdPacote, qtdPacotes: qty, totalEnv };
-  });
-
-  // ── Gera HTML da OS e converte via print ──
-  const linhas = itens.map((it, i) => `
-    <tr>
-      <td style="padding:10px 12px;border-bottom:1px solid #e0e0e0;font-family:monospace;font-size:13px;color:#111;">${it.sku}</td>
-      <td style="padding:10px 12px;border-bottom:1px solid #e0e0e0;text-align:center;font-weight:600;color:#333;">${it.medida}</td>
-      <td style="padding:10px 12px;border-bottom:1px solid #e0e0e0;text-align:center;color:#333;">${it.qtdPacote}</td>
-      <td style="padding:10px 12px;border-bottom:1px solid #e0e0e0;text-align:center;font-weight:700;font-size:15px;">${it.qtdPacotes}</td>
-      <td style="padding:10px 12px;border-bottom:1px solid #e0e0e0;text-align:center;color:#333;">${it.totalEnv !== '—' ? Number(it.totalEnv).toLocaleString('pt-BR') : '—'}</td>
-      <td style="padding:10px 12px;border-bottom:1px solid #e0e0e0;text-align:center;">
-        <div style="width:22px;height:22px;border:2px solid #333;border-radius:4px;display:inline-block;"></div>
-      </td>
-    </tr>`).join('');
-
-  const totalPacotes = itens.reduce((s,i)=>s+i.qtdPacotes,0);
-
-  const html = `<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>OS Full ${numFmt}</title>
-<style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: 'Arial', sans-serif; background:#fff; color:#111; padding:32px 40px; }
-  @media print { body { padding:16px 24px; } .no-print { display:none; } }
-  .header { display:flex; justify-content:space-between; align-items:flex-start; border-bottom:3px solid #E87722; padding-bottom:16px; margin-bottom:20px; }
-  .logo-title { font-size:22px; font-weight:900; letter-spacing:-0.5px; }
-  .logo-title span { color:#E87722; }
-  .logo-sub { font-size:11px; color:#888; letter-spacing:2px; text-transform:uppercase; margin-top:3px; }
-  .os-meta { text-align:right; }
-  .os-num { font-size:20px; font-weight:800; color:#E87722; }
-  .os-date { font-size:13px; color:#666; margin-top:4px; }
-  .os-badge { display:inline-block; background:#fff3e0; color:#E87722; border:1px solid #E87722; font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; letter-spacing:1px; text-transform:uppercase; margin-top:6px; }
-  h2 { font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#888; margin-bottom:10px; }
-  table { width:100%; border-collapse:collapse; margin-bottom:24px; }
-  thead tr { background:#f5f5f5; }
-  th { padding:10px 12px; text-align:left; font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#555; border-bottom:2px solid #ddd; }
-  th.center { text-align:center; }
-  .total-row td { background:#fff8f0; font-weight:700; border-top:2px solid #E87722; padding:10px 12px; }
-  .obs-box { border:1px solid #ddd; border-radius:8px; padding:14px 16px; min-height:70px; }
-  .obs-label { font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#888; margin-bottom:8px; }
-  .footer { display:flex; justify-content:space-between; margin-top:32px; padding-top:16px; border-top:1px solid #eee; }
-  .sign-line { width:180px; text-align:center; }
-  .sign-line div { border-top:1px solid #333; padding-top:6px; font-size:11px; color:#888; margin-top:32px; }
-  .btn-print { position:fixed; bottom:24px; right:24px; background:#E87722; color:#fff; font-family:Arial,sans-serif; font-size:14px; font-weight:700; border:none; border-radius:10px; padding:14px 24px; cursor:pointer; box-shadow:0 4px 16px rgba(232,119,34,0.4); }
-</style>
-</head>
-<body>
-  <div class="header">
-    <div>
-      <div class="logo-title">True Embalagens<span>.</span></div>
-      <div class="logo-sub">Ordem de Serviço — Full</div>
-    </div>
-    <div class="os-meta">
-      <div class="os-num">Full #${numFmt}</div>
-      <div class="os-date">Data: ${dataFmt}</div>
-      <div class="os-badge">Mercado Livre Full</div>
-    </div>
-  </div>
-
-  <h2>Itens do Full</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>SKU</th>
-        <th class="center">Medida</th>
-        <th class="center">Un/Pacote</th>
-        <th class="center">Qtd Pacotes</th>
-        <th class="center">Total Envelopes</th>
-        <th class="center">✓ Concluído</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${linhas}
-      <tr class="total-row">
-        <td colspan="3">TOTAL</td>
-        <td style="text-align:center">${totalPacotes}</td>
-        <td style="text-align:center">${itens.reduce((s,i)=>s+(i.totalEnv!=='—'?Number(i.totalEnv):0),0).toLocaleString('pt-BR')}</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div class="obs-label">Observações</div>
-  <div class="obs-box">${obs ? obs.replace(/
-/g,'<br>') : '&nbsp;'}</div>
-
-  <div class="footer">
-    <div class="sign-line"><div>Responsável pela separação</div></div>
-    <div class="sign-line"><div>Conferência / Expedição</div></div>
-    <div style="font-size:11px;color:#bbb;align-self:flex-end;">Gerado em ${new Date().toLocaleString('pt-BR')} · True Embalagens</div>
-  </div>
-
-  <button class="btn-print no-print" onclick="window.print()">🖨 Imprimir OS</button>
-</body>
-</html>`;
-
-  const win = window.open('', '_blank');
-  if(!win){ alert('Permita popups para gerar a OS.'); return; }
-  win.document.write(html);
-  win.document.close();
-}
-
 
 function etqHandleFile(file){
   ETQ.fileName = file.name;
