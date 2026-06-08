@@ -38,8 +38,8 @@ body{min-height:100vh;padding-bottom:80px;}
 .btn-sm{padding:5px 12px;font-size:11px;border-radius:6px;}
 .btn-paid{background:var(--green-dim);color:var(--green);border:1px solid rgba(46,204,113,0.3);}
 .btn-unpaid{background:var(--bg3);color:var(--text3);border:1px solid var(--border2);}
-.tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);padding:0 40px;}
-.tab{padding:15px 28px;font-size:13px;font-weight:700;color:var(--text3);cursor:pointer;letter-spacing:1px;text-transform:uppercase;border-bottom:3px solid transparent;margin-bottom:-1px;transition:all .2s;}
+.tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);padding:0 40px;overflow-x:auto;}
+.tab{padding:15px 22px;font-size:12px;font-weight:700;color:var(--text3);cursor:pointer;letter-spacing:1px;text-transform:uppercase;border-bottom:3px solid transparent;margin-bottom:-1px;transition:all .2s;white-space:nowrap;}
 .tab:hover{color:var(--text2);}
 .tab.active{color:var(--orange);border-bottom-color:var(--orange);}
 .month-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 40px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
@@ -194,7 +194,6 @@ body{min-height:100vh;padding-bottom:80px;}
 .tag-atencao{background:rgba(230,179,0,.15);color:#e6b300;}
 .tag-ruim{background:rgba(231,76,60,.15);color:var(--red);}
 
-
 /* ── MERCADO ADS ──────────────────────────────────── */
 .ads-upload-zone{border:2px dashed var(--border2);border-radius:14px;padding:48px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg2);margin-bottom:28px;}
 .ads-upload-zone:hover{border-color:var(--orange);background:var(--orange-dim);}
@@ -229,6 +228,51 @@ body{min-height:100vh;padding-bottom:80px;}
 .ads-delta-up{background:rgba(46,204,113,0.13);color:#2ecc71;}
 .ads-delta-down{background:rgba(231,76,60,0.13);color:#e74c3c;}
 
+/* ── ETIQUETAS FULL ──────────────────────────────── */
+.etq-wrap{max-width:700px;margin:0 auto;}
+.etq-drop{border:2px dashed var(--border2);border-radius:14px;padding:56px 32px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:var(--bg2);position:relative;margin-bottom:20px;}
+.etq-drop:hover,.etq-drop.drag-over{border-color:var(--orange);background:var(--orange-dim);}
+.etq-drop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.etq-drop-icon{font-size:40px;margin-bottom:14px;display:block;}
+.etq-drop-label{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.etq-drop-hint{font-size:12px;color:var(--text3);}
+.etq-config{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:16px;}
+.etq-config-title{font-size:11px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;}
+.etq-config-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.etq-field{display:flex;flex-direction:column;gap:6px;}
+.etq-field label{font-size:11px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;}
+.etq-field select,.etq-field input[type=number]{background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:8px 10px;outline:none;width:100%;transition:border-color .2s;}
+.etq-field select:focus,.etq-field input[type=number]:focus{border-color:var(--orange);}
+.etq-info-bar{background:rgba(232,119,34,0.07);border:1px solid rgba(232,119,34,0.2);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--orange);display:none;justify-content:space-between;margin-bottom:12px;}
+.etq-info-bar.visible{display:flex;}
+.etq-status{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:13px;color:var(--text3);display:none;align-items:center;gap:10px;margin-bottom:8px;}
+.etq-status.visible{display:flex;}
+.etq-sdot{width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0;}
+.etq-sdot.proc{background:var(--orange);animation:pulse 0.8s ease-in-out infinite alternate;}
+.etq-sdot.done{background:var(--green);}
+.etq-sdot.err{background:var(--red);}
+.etq-progress{margin-bottom:8px;display:none;}
+.etq-progress.visible{display:block;}
+.etq-prog-track{width:100%;height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.etq-prog-fill{height:100%;background:var(--orange);width:0%;transition:width .3s ease;border-radius:2px;}
+.etq-prog-label{font-size:11px;color:var(--text3);margin-top:5px;text-align:right;}
+.etq-log{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:11px;color:var(--text3);line-height:1.8;max-height:110px;overflow-y:auto;display:none;margin-bottom:8px;}
+.etq-log.visible{display:block;}
+.etq-log .ok{color:var(--green);}
+.etq-log .fail{color:var(--red);}
+.etq-btn-convert{width:100%;background:var(--orange);color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border:none;border-radius:10px;padding:17px;cursor:pointer;transition:background .15s;display:none;margin-bottom:10px;}
+.etq-btn-convert.visible{display:block;}
+.etq-btn-convert:hover{background:var(--orange2);}
+.etq-btn-convert:disabled{background:var(--border);color:var(--text3);cursor:not-allowed;}
+.etq-download{background:rgba(46,204,113,0.07);border:1px solid rgba(46,204,113,0.25);border-radius:12px;padding:20px;display:none;align-items:center;justify-content:space-between;gap:14px;margin-bottom:10px;}
+.etq-download.visible{display:flex;}
+.etq-dl-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--green);}
+.etq-dl-meta{font-size:12px;color:var(--text3);margin-top:3px;}
+.etq-btn-dl{background:var(--green);color:#000;font-family:'Syne',sans-serif;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border:none;border-radius:8px;padding:11px 18px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .15s;}
+.etq-btn-dl:hover{background:#1abf52;}
+.etq-btn-reset{width:100%;background:transparent;border:1px solid var(--border);color:var(--text3);font-family:'DM Mono',monospace;font-size:12px;padding:9px;border-radius:8px;cursor:pointer;transition:border-color .2s,color .2s;display:none;}
+.etq-btn-reset.visible{display:block;}
+.etq-btn-reset:hover{border-color:var(--text2);color:var(--text);}
 </style>
 </head>
 <body>
@@ -270,6 +314,7 @@ body{min-height:100vh;padding-bottom:80px;}
   <div class="tab" onclick="setFab(4)">Produtividade</div>
   <div class="tab" onclick="setFab(5)">💰 Vendas Diretas</div>
   <div class="tab" onclick="setFab(6)">📊 Mercado Ads</div>
+  <div class="tab" onclick="setFab(7)">📦 Etiquetas Full</div>
 </div>
 
 <div class="month-bar" id="monthBar"></div>
@@ -313,11 +358,8 @@ function ceilCents(n){return Math.ceil(n*100)/100;}
 function fmt(n){return 'R$ '+n.toFixed(2).replace('.',',');}
 function fmtN(n){return n.toLocaleString('pt-BR');}
 
-// Converte "461.400" → 461.4 kg (ponto = separador decimal de kg)
 function parseKg(s){
   if(!s) return 0;
-  // Planilha usa ponto como separador de milhar com 3 casas: "159.000"=159kg, "461.400"=461.4kg
-  // Remove espaços, converte ponto para nada e divide por 1000
   const clean = String(s).replace(/\s/g,'');
   const num = parseFloat(clean.replace('.',''));
   if(isNaN(num)) return 0;
@@ -326,7 +368,6 @@ function parseKg(s){
 
 function parseMil(s){
   if(!s) return 0;
-  // Mesmo padrão do kg: "12.000"=12mil, "131.250"=131.25mil → divide por 1000
   const clean = String(s).replace(/\s/g,'').replace(',','.');
   const num = parseFloat(clean.replace('.',''));
   if(isNaN(num)) return 0;
@@ -346,7 +387,6 @@ function monthLabel(m){
   return n[parseInt(mm)]+' '+yy;
 }
 
-// Parse CSV respeitando campos entre aspas
 function parseCSV(text){
   const lines=text.split('\n').map(l=>l.trim()).filter(l=>l);
   return lines.map(line=>{
@@ -365,7 +405,6 @@ function parseRows(csv, hasmo){
   const rows=parseCSV(csv);
   const result=[];
   let id=1;
-  // Acha linha de cabeçalho (contém "data" ou "kg")
   let startRow=1;
   for(let i=0;i<Math.min(5,rows.length);i++){
     if(rows[i].some(c=>c.toLowerCase()==='data'||c.toLowerCase()==='kg')){
@@ -375,43 +414,31 @@ function parseRows(csv, hasmo){
   for(let i=startRow;i<rows.length;i++){
     const c=rows[i];
     if(!c[0]||!c[0].trim()) continue;
-
-    // Formata data — aceita "dd/mm", "dd/mm/yyyy" e formato JS Date completo
     let data='';
     const raw=c[0].trim();
     if(raw.match(/^\d{1,2}\/\d{1,2}/)){
-      // Formato original: "03/03" ou "03/03/2025"
       data=raw.split('/').slice(0,2).map(p=>p.padStart(2,'0')).join('/');
     } else if(raw.includes('GMT')||raw.match(/^[A-Za-z]{3}\s/)){
-      // Formato Apps Script: "Tue Mar 03 2026 00:00:00 GMT-0300..."
       const d=new Date(raw);
       if(!isNaN(d)){
         data=String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0');
       }
     }
     if(!data) continue;
-
-    // KG: Apps Script retorna inteiro "495000" = 495kg → divide por 1000
     const kgRaw=String(c[1]||'').trim();
     const kg=parseFloat(kgRaw)/1000;
     if(!kg||isNaN(kg)) continue;
-
     const fardos=parseInt(c[2])||0;
     const med=c[3]?c[3].trim().toUpperCase().replace(/X/gi,'x'):'';
     if(!med) continue;
-
-    // Milheiros: mesma lógica — "32500" = 32.5 mil → divide por 1000
     const milRaw=String(c[4]||'').trim();
     const mil=parseFloat(milRaw)/1000;
     if(!mil||isNaN(mil)) continue;
-
     let mo=0;
     if(hasmo&&c[5]){
       const ms=String(c[5]).replace(/[R$\s]/g,'').replace(',','.').replace(/\.(?=.*\.)/g,'');
       mo=parseFloat(ms)||0;
     }
-    // Colunas extras: ALP tem MO na col 5, então maquina começa na 6
-    // Primícia NÃO tem MO, então maquina começa na 5
     const baseIdx = hasmo ? 6 : 5;
     const maquina = c[baseIdx]   ? String(c[baseIdx]).trim().toUpperCase() : '';
     const turno   = c[baseIdx+1] ? String(c[baseIdx+1]).trim() : '';
@@ -490,17 +517,13 @@ function consolidate(rows){
 }
 
 function calcCusto(kg,mil){
-  // kg por mil unidades = kg/mil
-  // custo/mil = (kg/mil) * fator
   return ceilCents((kg/mil)*getFator());
 }
 
-// ── NOVO: kg por unidade = kg total / (mil * 1000)  →  resultado em kg ──
 function kgPorUnidade(kg, mil){
   return kg / (mil * 1000);
 }
 
-// ── NOVO: kg por milheiro = kg total / mil  →  resultado em kg ──
 function kgPorMilheiro(kg, mil){
   return kg / mil;
 }
@@ -540,7 +563,6 @@ function getAlerts(rows){
   const cons=consolidate(rows);
   const alerts=[];
   cons.forEach(c=>{
-    // média em kg/unidade
     const media=kgPorUnidade(c.kg, c.mil);
     rows.filter(r=>r.med===c.med).forEach(r=>{
       const lote=kgPorUnidade(r.kg, r.mil);
@@ -555,7 +577,7 @@ function setFab(i){
   STATE.fab=i;
   document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',i===j));
   document.getElementById('moCtrl').style.display=i===0?'flex':'none';
-  document.getElementById('monthBar').style.display=(i===3||i===4||i===5||i===6)?'none':'flex';
+  document.getElementById('monthBar').style.display=(i===3||i===4||i===5||i===6||i===7)?'none':'flex';
   render();
 }
 
@@ -576,14 +598,14 @@ function render(){
   if(STATE.fab===4){ renderProdutividade(); return; }
   if(STATE.fab===5){ renderVendas(); return; }
   if(STATE.fab===6){ renderAds(); return; }
+  if(STATE.fab===7){ renderEtiquetas(); return; }
   renderMonthBar();
   const rows=getRows();
-  // Se não há dados ainda, mostra tela de espera sem spinner
   if(!rows.length && !STATE.f1.length && !STATE.f2.length){
     document.getElementById('main').innerHTML=`<div style="padding:80px;text-align:center;color:var(--text3)">
       <div style="font-size:40px;margin-bottom:16px">📡</div>
       <div style="font-size:16px;font-weight:700;color:var(--text2);margin-bottom:8px">Sem dados carregados</div>
-      <div style="font-size:13px;line-height:1.7">Clique em <strong style="color:var(--orange)">↻ Atualizar</strong> para conectar ao Google Sheets,<br>ou acesse a aba <strong style="color:var(--orange)">📊 Mercado Ads</strong> para importar relatórios.</div>
+      <div style="font-size:13px;line-height:1.7">Clique em <strong style="color:var(--orange)">↻ Atualizar</strong> para conectar ao Google Sheets.</div>
     </div>`;
     return;
   }
@@ -600,7 +622,6 @@ function render(){
   const totalFardos=cons.reduce((s,c)=>s+c.fardos,0);
   const alerts=getAlerts(rows);
 
-  // KPIs
   let html=`<div class="kpis">
     <div class="kpi"><div class="kpi-icon">⚖️</div><div class="kpi-label">Peso Total</div><div class="kpi-val">${totalKg.toLocaleString('pt-BR',{maximumFractionDigits:0})} kg</div><div class="kpi-sub">${rows.length} lotes · ${monthLabel(STATE.selMonth)}</div></div>
     <div class="kpi"><div class="kpi-icon">📦</div><div class="kpi-label">Unidades</div><div class="kpi-val">${(totalMil*1000).toLocaleString('pt-BR')}</div><div class="kpi-sub">${totalMil.toLocaleString('pt-BR')} milheiros</div></div>
@@ -616,7 +637,6 @@ function render(){
   }
   html+=`</div>`;
 
-  // Alertas — mensagem agora em kg/unidade
   if(alerts.length){
     html+=`<div class="alerts">`;
     alerts.forEach(a=>{
@@ -625,13 +645,11 @@ function render(){
     html+=`</div>`;
   }
 
-  // Gráfico
   const sorted=[...cons].sort((a,b)=>b.mil-a.mil).slice(0,14);
   const maxMil=Math.max(...sorted.map(c=>c.mil),1);
   html+=`<div class="chart-wrap"><div class="section-header"><div class="section-title">Milheiros por medida</div><div class="section-badge">${fabLabel} · ${monthLabel(STATE.selMonth)}</div></div>
   <div class="chart-bars">${sorted.map(c=>{const h=Math.max(6,Math.round((c.mil/maxMil)*120));return`<div class="bar-group"><div class="bar" style="height:${h}px" title="${c.med}: ${c.mil.toLocaleString('pt-BR')} mil"></div><div class="bar-lbl">${c.med}</div></div>`;}).join('')}</div></div>`;
 
-  // Tabela custo — colunas g/unidade e g/mil → kg/unidade e kg/mil
   const prevLbl=prevMonthLabel?monthLabel(prevMonthLabel):null;
   html+=`<div class="section"><div class="section-header"><div class="section-title">Custo por medida</div><div class="section-badge">Fator R$ ${getFator().toFixed(2).replace('.',',')} · ${monthLabel(STATE.selMonth)}</div></div>
   <div class="table-wrap"><table class="data-table"><thead><tr>
@@ -640,8 +658,8 @@ function render(){
 
   cons.forEach(c=>{
     const custo=calcCusto(c.kg,c.mil);
-    const kgU=kgPorUnidade(c.kg, c.mil);       // kg por unidade
-    const kgMil=kgPorMilheiro(c.kg, c.mil);    // kg por milheiro
+    const kgU=kgPorUnidade(c.kg, c.mil);
+    const kgMil=kgPorMilheiro(c.kg, c.mil);
     const refAbril=ABRIL_REF[c.med];
     let varHtml='<span class="badge b-new">—</span>';
     if(prevMap[c.med]){
@@ -668,7 +686,6 @@ function render(){
   html+=`<tr class="total-row"><td>TOTAL</td><td>${totalKg.toLocaleString('pt-BR',{maximumFractionDigits:1})}</td><td>${fmtN(totalFardos)}</td><td>${totalMil.toLocaleString('pt-BR')}</td><td>${fmtN(totalMil*1000)}</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>`;
   html+=`</tbody></table></div></div>`;
 
-  // Boletos ALP
   if(isALP){
     const bols=getBoletos(STATE.f1.filter(r=>extractMonth(r.data)===STATE.selMonth));
     const totPend=bols.reduce((s,b)=>s+(!b.b1.paid?b.b1.val:0)+(!b.b2.paid?b.b2.val:0),0);
@@ -711,7 +728,6 @@ function render(){
     html+=`</div>`;
   }
 
-  // Lotes — coluna g/unidade → kg/unidade
   if(!isCons){
     html+=`<div class="section"><div class="section-header"><div class="section-title">Lotes do período</div><div class="section-badge">${rows.length} registros</div></div>
     <div class="table-wrap"><table class="data-table"><thead><tr>
@@ -738,24 +754,283 @@ function render(){
   document.getElementById('main').innerHTML=html;
 }
 
+// ════════════════════════════════════════════════
+//  ABA ETIQUETAS FULL
+// ════════════════════════════════════════════════
+const ETQ = {
+  labels: [],
+  blob: null,
+  fileName: '',
+};
 
-// ── Horas por lote proporcional ao kg (global — usada em Operacional, Ranking e Produtividade)
-// Ex: Erika 600kg 26x36 + 200kg 12x18 no mesmo Turno Dia (10h) → 7.5h e 2.5h
-function calcHorasProporcional(allRows, hTurno){
-  const ch = r => `${r.operador||''}|${r.turno||''}|${r.data||''}`;
-  const kgPorTurno = {};
-  allRows.forEach(r=>{ const k=ch(r); kgPorTurno[k]=(kgPorTurno[k]||0)+r.kg; });
-  return allRows.map(r=>{
-    const totalKgTurno = kgPorTurno[ch(r)] || r.kg;
-    const proporcao = totalKgTurno > 0 ? r.kg / totalKgTurno : 1;
-    return { ...r, horasLote: hTurno * proporcao };
+function renderEtiquetas(){
+  document.getElementById('main').innerHTML=`
+  <div class="etq-wrap">
+    <div style="margin-bottom:24px;">
+      <div style="font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);margin-bottom:6px;">📦 Etiquetas Full — Mercado Livre</div>
+      <div style="font-size:13px;color:var(--text3);line-height:1.6">Importe o arquivo <strong style="color:var(--text2)">.txt</strong> ou <strong style="color:var(--text2)">.zpl</strong> gerado pelo Meli e baixe um <strong style="color:var(--orange)">PDF único</strong> pronto para imprimir na térmica.</div>
+    </div>
+
+    <div class="etq-drop" id="etqDrop">
+      <input type="file" id="etqFileInput" accept=".txt,.zpl">
+      <span class="etq-drop-icon">📄</span>
+      <div class="etq-drop-label">Solte o arquivo ZPL aqui</div>
+      <div class="etq-drop-hint">ou clique para selecionar · .txt ou .zpl</div>
+    </div>
+
+    <div class="etq-info-bar" id="etqInfoBar">
+      <span id="etqFileNameLabel">—</span>
+      <span id="etqLabelCount">—</span>
+    </div>
+
+    <div class="etq-config">
+      <div class="etq-config-title">Configurações da Impressora</div>
+      <div class="etq-config-grid">
+        <div class="etq-field">
+          <label>Densidade (dpmm)</label>
+          <select id="etqDpmm">
+            <option value="8" selected>8 dpmm (203 DPI)</option>
+            <option value="12">12 dpmm (300 DPI)</option>
+            <option value="6">6 dpmm (152 DPI)</option>
+            <option value="24">24 dpmm (600 DPI)</option>
+          </select>
+        </div>
+        <div class="etq-field">
+          <label>Largura (pol.)</label>
+          <input type="number" id="etqWidth" value="4" step="0.5" min="1" max="15">
+        </div>
+        <div class="etq-field">
+          <label>Altura (pol.)</label>
+          <input type="number" id="etqHeight" value="6" step="0.5" min="1" max="15">
+        </div>
+      </div>
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:11px;color:var(--text3)">
+        💡 <strong style="color:var(--text2)">Tomate MDK-007 / 10×15 cm:</strong> densidade 8 dpmm · largura 4 · altura 6
+      </div>
+    </div>
+
+    <div class="etq-status" id="etqStatus">
+      <div class="etq-sdot" id="etqSDot"></div>
+      <span id="etqStatusText">Aguardando arquivo...</span>
+    </div>
+
+    <div class="etq-progress" id="etqProgress">
+      <div class="etq-prog-track"><div class="etq-prog-fill" id="etqProgFill"></div></div>
+      <div class="etq-prog-label" id="etqProgLabel">0 / 0 lotes</div>
+    </div>
+
+    <div class="etq-log" id="etqLog"></div>
+
+    <button class="etq-btn-convert" id="etqBtnConvert" onclick="etqConvert()">Gerar PDF</button>
+
+    <div class="etq-download" id="etqDownload">
+      <div>
+        <div class="etq-dl-name" id="etqDlName">etiquetas.pdf</div>
+        <div class="etq-dl-meta" id="etqDlMeta">—</div>
+      </div>
+      <button class="etq-btn-dl" id="etqBtnDl">⬇ Baixar PDF</button>
+    </div>
+
+    <button class="etq-btn-reset" id="etqBtnReset" onclick="etqReset()">↺ Converter outro arquivo</button>
+  </div>`;
+
+  // Inicializa eventos
+  const drop = document.getElementById('etqDrop');
+  const inp  = document.getElementById('etqFileInput');
+
+  drop.addEventListener('dragover', e=>{ e.preventDefault(); drop.classList.add('drag-over'); });
+  drop.addEventListener('dragleave', ()=>drop.classList.remove('drag-over'));
+  drop.addEventListener('drop', e=>{ e.preventDefault(); drop.classList.remove('drag-over'); if(e.dataTransfer.files[0]) etqHandleFile(e.dataTransfer.files[0]); });
+  inp.addEventListener('change', ()=>{ if(inp.files[0]) etqHandleFile(inp.files[0]); });
+
+  // Restaura estado se já tinha arquivo
+  if(ETQ.labels.length){
+    document.getElementById('etqInfoBar').classList.add('visible');
+    document.getElementById('etqFileNameLabel').textContent = ETQ.fileName;
+    document.getElementById('etqLabelCount').textContent = `${ETQ.labels.length} etiquetas · ${Math.ceil(ETQ.labels.length/50)} lotes`;
+    document.getElementById('etqBtnConvert').classList.add('visible');
+    etqSetStatus('idle', `${ETQ.labels.length} etiquetas prontas para converter.`);
+  }
+  if(ETQ.blob){
+    document.getElementById('etqDownload').classList.add('visible');
+    document.getElementById('etqBtnReset').classList.add('visible');
+    document.getElementById('etqDlName').textContent = ETQ.fileName.replace(/\.(txt|zpl)$/i,'')+'.pdf';
+  }
+}
+
+function etqHandleFile(file){
+  ETQ.fileName = file.name;
+  const reader = new FileReader();
+  reader.onload = e => {
+    ETQ.labels = etqSplitZPL(e.target.result);
+    document.getElementById('etqInfoBar').classList.add('visible');
+    document.getElementById('etqFileNameLabel').textContent = file.name;
+    document.getElementById('etqLabelCount').textContent = `${ETQ.labels.length} etiquetas · ${Math.ceil(ETQ.labels.length/50)} lotes`;
+    document.getElementById('etqBtnConvert').classList.add('visible');
+    etqSetStatus('idle', `${ETQ.labels.length} etiquetas encontradas. Pronto para gerar PDF.`);
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function etqSplitZPL(content){
+  const labels = [];
+  let current = '';
+  const parts = content.split(/(\^XZ)/i);
+  for(const part of parts){
+    current += part;
+    if(/\^XZ/i.test(part)){
+      const t = current.trim();
+      if(t && /\^XA/i.test(t)) labels.push(t);
+      current = '';
+    }
+  }
+  if(current.trim() && /\^XA/i.test(current)) labels.push(current.trim());
+  return labels;
+}
+
+function etqSetStatus(type, msg){
+  const bar = document.getElementById('etqStatus');
+  const dot = document.getElementById('etqSDot');
+  const txt = document.getElementById('etqStatusText');
+  if(!bar) return;
+  bar.classList.add('visible');
+  dot.className = 'etq-sdot';
+  txt.textContent = msg;
+  if(type==='proc') dot.classList.add('proc');
+  else if(type==='done') dot.classList.add('done');
+  else if(type==='err') dot.classList.add('err');
+}
+
+function etqAddLog(msg, cls){
+  const log = document.getElementById('etqLog');
+  if(!log) return;
+  log.classList.add('visible');
+  const line = document.createElement('div');
+  line.textContent = msg;
+  if(cls) line.className = cls;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+}
+
+async function etqLoadPdfLib(){
+  if(window.PDFLib) return window.PDFLib;
+  return new Promise((res,rej)=>{
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js';
+    s.onload = ()=>res(window.PDFLib);
+    s.onerror = rej;
+    document.head.appendChild(s);
   });
 }
 
+async function etqConvert(){
+  if(!ETQ.labels.length) return;
 
-// ══════════════════════════════════════════════
+  const btn     = document.getElementById('etqBtnConvert');
+  const progW   = document.getElementById('etqProgress');
+  const progF   = document.getElementById('etqProgFill');
+  const progL   = document.getElementById('etqProgLabel');
+  const logEl   = document.getElementById('etqLog');
+
+  btn.disabled  = true;
+  btn.textContent = 'Gerando...';
+  progW.classList.add('visible');
+  logEl.innerHTML = '';
+  logEl.classList.add('visible');
+  document.getElementById('etqDownload').classList.remove('visible');
+  document.getElementById('etqBtnReset').classList.remove('visible');
+
+  const dpmm = document.getElementById('etqDpmm').value;
+  const w    = document.getElementById('etqWidth').value;
+  const h    = document.getElementById('etqHeight').value;
+  const URL  = `https://api.labelary.com/v1/printers/${dpmm}dpmm/labels/${w}x${h}/`;
+  const BATCH = 50;
+
+  const batches = [];
+  for(let i=0; i<ETQ.labels.length; i+=BATCH)
+    batches.push(ETQ.labels.slice(i, i+BATCH));
+
+  etqSetStatus('proc', `Convertendo ${ETQ.labels.length} etiquetas em ${batches.length} lotes...`);
+
+  const pdfBuffers = [];
+  let ok=0, fail=0;
+
+  for(let i=0; i<batches.length; i++){
+    const batchZpl = batches[i].join('\n');
+    const start = i*BATCH+1;
+    const end   = start+batches[i].length-1;
+    if(i>0) await new Promise(r=>setTimeout(r,380));
+    try{
+      const resp = await fetch(URL, {
+        method:'POST',
+        headers:{'Content-Type':'application/x-www-form-urlencoded','Accept':'application/pdf'},
+        body: batchZpl,
+      });
+      if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      pdfBuffers.push(await resp.arrayBuffer());
+      ok += batches[i].length;
+      etqAddLog(`✓ Lote ${i+1}/${batches.length} — etiquetas ${start}–${end}`, 'ok');
+    }catch(e){
+      fail += batches[i].length;
+      etqAddLog(`✗ Lote ${i+1}/${batches.length} — ERRO: ${e.message}`, 'fail');
+    }
+    const pct = Math.round(((i+1)/batches.length)*100);
+    progF.style.width = pct+'%';
+    progL.textContent = `${i+1} / ${batches.length} lotes (${pct}%)`;
+    etqSetStatus('proc', `Lote ${i+1} de ${batches.length} — ${ok} OK${fail?', '+fail+' erro':''}`);
+  }
+
+  if(!pdfBuffers.length){
+    etqSetStatus('err','Nenhum lote convertido. Verifique o arquivo ZPL.');
+    btn.disabled=false; btn.textContent='Gerar PDF'; return;
+  }
+
+  etqSetStatus('proc','Mesclando PDFs...');
+
+  try{
+    const PDFLib = await etqLoadPdfLib();
+    const merged = await PDFLib.PDFDocument.create();
+    for(const buf of pdfBuffers){
+      const doc = await PDFLib.PDFDocument.load(buf);
+      const pages = await merged.copyPages(doc, doc.getPageIndices());
+      pages.forEach(p=>merged.addPage(p));
+    }
+    const bytes = await merged.save();
+    ETQ.blob = new Blob([bytes],{type:'application/pdf'});
+
+    const outName = ETQ.fileName.replace(/\.(txt|zpl)$/i,'')+'.pdf';
+    const sizeKB  = Math.round(bytes.byteLength/1024);
+
+    document.getElementById('etqDlName').textContent = outName;
+    document.getElementById('etqDlMeta').textContent = `${ok} etiquetas · ${sizeKB} KB${fail?' · '+fail+' com erro':''}`;
+    document.getElementById('etqDownload').classList.add('visible');
+    document.getElementById('etqBtnReset').classList.add('visible');
+
+    document.getElementById('etqBtnDl').onclick = ()=>{
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(ETQ.blob);
+      a.download = outName;
+      a.click();
+    };
+
+    etqSetStatus('done', `Pronto! ${ok} etiquetas convertidas.${fail?' ('+fail+' falharam)':''}`);
+  }catch(e){
+    etqSetStatus('err','Erro ao mesclar: '+e.message);
+  }
+
+  btn.disabled=false; btn.textContent='Gerar PDF';
+}
+
+function etqReset(){
+  ETQ.labels=[];
+  ETQ.blob=null;
+  ETQ.fileName='';
+  renderEtiquetas();
+}
+
+// ════════════════════════════════════════════════
 //  UTILS VENDAS
-// ══════════════════════════════════════════════
+// ════════════════════════════════════════════════
 function diasUteisNoMes(mesRef){
   if(!mesRef) return 22;
   const [mm,yy]=mesRef.split('/').map(Number);
@@ -774,9 +1049,6 @@ function diasUteisDecorridos(mesRef){
   const [mm,yy]=mesRef.split('/').map(Number);
   const ano=yy<100?2000+yy:yy;
   const hoje=new Date();
-  // Se o mês selecionado ainda está em curso, conta só até hoje
-  // Se já fechou, conta o mês todo
-  // Normaliza ano: 25 → 2025, 2025 → 2025
   const anoNorm=ano<100?2000+ano:ano;
   const eMesAtual=(hoje.getFullYear()===anoNorm && hoje.getMonth()+1===mm);
   const limDia=eMesAtual?hoje.getDate():new Date(anoNorm,mm,0).getDate();
@@ -788,9 +1060,6 @@ function diasUteisDecorridos(mesRef){
   return Math.max(uteis,1);
 }
 
-// ══════════════════════════════════════════════
-//  PARSE VENDAS DIRETAS
-// ══════════════════════════════════════════════
 function parseVendas(csv){
   const rows=parseCSV(csv);
   const result=[];
@@ -818,8 +1087,6 @@ function parseVendas(csv){
     const prazo=(c[6]||'').trim();
     const freteCusto=parseFloat(String(c[7]||'').replace(/[R$\s\-]/g,'').replace(',','.'))||0;
     if(!valorTotal) continue;
-
-    // Parse itens — aceita: 10mil | 1.5mil | 500uni | 250uni
     const itens=[];
     itensRaw.split('/').forEach(part=>{
       const p=part.trim().split(':');
@@ -832,20 +1099,13 @@ function parseVendas(csv){
       const precoTotal=parseFloat(p[2].trim().replace(',','.'))||0;
       if(med&&qtdMil&&precoTotal) itens.push({med,qtdMil,precoTotal});
     });
-
-    // Comissão — base usa frete cobrado do cliente
     const temComissao=!['ramon'].includes(vendedor.toLowerCase().trim());
     const baseComissao=valorTotal-freteCobrado;
     const comissao=temComissao?ceilCents(baseComissao*0.05):0;
-
-    // Parcelas
     const parcelas=calcParcelas(data,valorTotal,prazo);
-
-    // Quinzena e mês
     const [dd]=data.split('/').map(Number);
     const quinzena=dd<=15?'primeira':'segunda';
     const mesRef=extractMonth(data);
-
     result.push({data,vendedor,cliente,itensRaw,itens,valorTotal,freteCobrado,freteCusto,prazo,baseComissao,comissao,temComissao,parcelas,quinzena,mesRef});
   }
   return result;
@@ -904,9 +1164,6 @@ function tagMargem(pct){
   return `<span class="tag-margem tag-ruim">${pct.toFixed(1)}%</span>`;
 }
 
-// ══════════════════════════════════════════════
-//  RENDER VENDAS DIRETAS
-// ══════════════════════════════════════════════
 const CUSTO_VENDEDOR={thiago:2000,enzo:2000};
 const MEDALS=['🥇','🥈','🥉'];
 
@@ -926,7 +1183,6 @@ function renderVendas(){
   const selMes=STATE.selMesVenda;
   const vendas=vendas_do_mes(selMes);
 
-  // ── KPIs ──
   const totalFat   = vendas.reduce((s,v)=>s+v.valorTotal,0);
   const totalFretC = vendas.reduce((s,v)=>s+v.freteCobrado,0);
   const totalFretK = vendas.reduce((s,v)=>s+v.freteCusto,0);
@@ -936,13 +1192,11 @@ function renderVendas(){
   const margemMedia= totalFat?((totalLiq/totalFat)*100):0;
   const ticketMed  = vendas.length?totalFat/vendas.length:0;
 
-  // Projeção faturamento — baseada em dias com vendas lançadas (não depende de data do sistema)
   const diasComVendas = new Set(vendas.map(v=>v.data)).size || 1;
   const mediaDiaria = totalFat / diasComVendas;
   const projecao = ceilCents(mediaDiaria * 22);
   const projecaoLucro = ceilCents(projecao * (margemMedia/100));
   const decorrDU = diasComVendas;
-  const totalDU = 22;
 
   let html=`
   <div style="background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 40px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
@@ -979,7 +1233,6 @@ function renderVendas(){
       <div class="kpi-sub">com margem de ${margemMedia.toFixed(1)}%</div></div>
   </div>`;
 
-  // ── Cards vendedores ──
   const byVend={};
   vendas.forEach(v=>{
     const k=v.vendedor.toLowerCase().trim()||'—';
@@ -1032,14 +1285,12 @@ function renderVendas(){
   });
   html+=`</div></div>`;
 
-  // ── Fechamento quinzenal ──
   const VENDEDORES_COM_COM=['thiago','guilherme','enzo','rodolfo'];
   html+=`<div class="section">
     <div class="section-header"><div class="section-title">📅 Fechamento Quinzenal</div><div class="section-badge">${monthLabel(selMes)}</div></div>
     <div class="quinzena-grid">`;
 
   VENDEDORES_COM_COM.forEach(vend=>{
-    const nomeD=vend.charAt(0).toUpperCase()+vend.slice(1);
     const [mm1,yy1]=(selMes||'06/2025').split('/');
     const q1=vendas.filter(v=>v.vendedor.toLowerCase().trim()===vend&&v.quinzena==='primeira');
     const q2=vendas.filter(v=>v.vendedor.toLowerCase().trim()===vend&&v.quinzena==='segunda');
@@ -1053,14 +1304,14 @@ function renderVendas(){
     const dataQ1=`15/${mm1}/${yy1}`;
     const dataQ2=`01/${String(next.getMonth()+1).padStart(2,'0')}/${next.getFullYear()}`;
     if(tQ1>0) html+=`<div class="quinzena-card${pagoQ1?' pago':''}">
-      <div class="quinzena-title">1ª Quinzena · ${nomeD}</div>
+      <div class="quinzena-title">1ª Quinzena · ${vend.charAt(0).toUpperCase()+vend.slice(1)}</div>
       <div class="quinzena-vendedor">${q1.length} venda${q1.length>1?'s':''} · dias 1–15</div>
       <div class="quinzena-valor${pagoQ1?' pago':''}">${fmt(tQ1)}</div>
       <div class="quinzena-periodo">${pagoQ1?'✓ Pago':'Pagar em '+dataQ1}</div>
       <div class="quinzena-actions"><button class="btn btn-sm ${pagoQ1?'btn-paid':'btn-unpaid'}" onclick="togglePaidComissao('${keyQ1}')">${pagoQ1?'✓ Pago':'Marcar pago'}</button></div>
     </div>`;
     if(tQ2>0) html+=`<div class="quinzena-card${pagoQ2?' pago':''}">
-      <div class="quinzena-title">2ª Quinzena · ${nomeD}</div>
+      <div class="quinzena-title">2ª Quinzena · ${vend.charAt(0).toUpperCase()+vend.slice(1)}</div>
       <div class="quinzena-vendedor">${q2.length} venda${q2.length>1?'s':''} · dias 16–31</div>
       <div class="quinzena-valor${pagoQ2?' pago':''}">${fmt(tQ2)}</div>
       <div class="quinzena-periodo">${pagoQ2?'✓ Pago':'Pagar em '+dataQ2}</div>
@@ -1069,7 +1320,6 @@ function renderVendas(){
   });
   html+=`</div></div>`;
 
-  // ── Tabela pedidos ──
   html+=`<div class="section">
     <div class="section-header"><div class="section-title">📋 Pedidos</div><div class="section-badge">${vendas.length} registros</div></div>
     <div class="table-wrap"><table class="data-table"><thead><tr>
@@ -1112,26 +1362,18 @@ function togglePaidComissao(key){
 
 document.getElementById('moCtrl').style.display='flex';
 
-// Tenta conectar ao Sheets — se falhar, não bloqueia
-// Sync em background — não bloqueia a UI
-// Inicializa dashboard — Sheets só conecta ao clicar em Atualizar
 document.getElementById('syncDot').className='sync-dot error';
 document.getElementById('syncMsg').textContent='Clique em Atualizar para conectar ao Google Sheets.';
 document.getElementById('main').innerHTML='';
 render();
 
-// ══════════════════════════════════════════════
-// ══════════════════════════════════════════════
+// ════════════════════════════════════════
 //  ABA MERCADO ADS
-// ══════════════════════════════════════════════
-
-// ══════════════════════════════════════════════
-//  MERCADO ADS — ENGINE COMPLETO
-// ══════════════════════════════════════════════
+// ════════════════════════════════════════
 
 const ADS_BENCHMARK = { receita:244888, investimento:15390, roas:15.9, acos:6.28 };
 let ADS_FILTER = 'todos';
-let ADS_VIEW   = 'anuncios'; // 'anuncios' | 'campanhas' | 'acoes' | 'isolamento'
+let ADS_VIEW   = 'anuncios';
 
 function adsClass(roas){
   if(roas>=20) return {label:'Herói',    css:'ads-class-hero'};
@@ -1152,7 +1394,6 @@ function adsShortName(titulo){
     .slice(0,54);
 }
 
-// ── Parser XLSX ──────────────────────────────
 function parseAdsXLSX(arrayBuffer){
   const XLSX = window.XLSX;
   const wb   = XLSX.read(arrayBuffer,{type:'array'});
@@ -1180,7 +1421,6 @@ function parseAdsXLSX(arrayBuffer){
     desde:fi('desde'), ate:fi('até')||fi('ate'),
   };
 
-  // Detecta período e dias
   let periodoLabel='', datas=[];
   for(let i=0;i<headerRow;i++){
     for(const cell of raw[i]){
@@ -1202,7 +1442,6 @@ function parseAdsXLSX(arrayBuffer){
     return null;
   }
 
-  // Tenta detectar datas desde/até nas linhas de dados
   let minDate=null,maxDate=null;
   const pn=v=>{const n=parseFloat(String(v).replace(',','.')); return isNaN(n)?0:n;};
   const rows=[];
@@ -1212,7 +1451,6 @@ function parseAdsXLSX(arrayBuffer){
     const receita=pn(r[idx.receita]);
     const invest =pn(r[idx.invest]);
     if(receita===0&&invest===0) continue;
-    // datas
     if(idx.desde>=0&&r[idx.desde]){
       const d=parsePTDate(String(r[idx.desde]));
       if(d){ if(!minDate||d<minDate) minDate=d; }
@@ -1237,19 +1475,13 @@ function parseAdsXLSX(arrayBuffer){
   if(minDate&&maxDate){
     dias=Math.max(1,Math.round((maxDate-minDate)/(1000*60*60*24))+1);
   }
-
-  // Label limpo
-  if(!periodoLabel && rows.length){
-    periodoLabel = 'Período importado';
-  }
-  // Simplifica label longo
+  if(!periodoLabel && rows.length) periodoLabel = 'Período importado';
   const labelMatch = periodoLabel.match(/(\d{2}[- ][a-zç]+[- ]\d{4})/gi);
   if(labelMatch&&labelMatch.length>=2) periodoLabel=labelMatch[0]+' → '+labelMatch[1];
 
   return {rows, periodoLabel, dias};
 }
 
-// ── Agrega por anúncio ───────────────────────
 function adsAggregate(rows){
   const map={};
   rows.forEach(r=>{
@@ -1259,7 +1491,6 @@ function adsAggregate(rows){
     map[r.titulo].cliques    +=r.cliques;
     map[r.titulo].vendasTotal+=r.vendasTotal;
     map[r.titulo].impressoes +=r.impressoes;
-    // Mantém campanha da primeira ocorrência com mais investimento
     if(r.invest > (map[r.titulo]._maxInv||0)){ map[r.titulo].campanha=r.campanha; map[r.titulo]._maxInv=r.invest; }
   });
   return Object.values(map).map(a=>{
@@ -1270,7 +1501,6 @@ function adsAggregate(rows){
   }).filter(a=>a.invest>5||a.receita>5).sort((a,b)=>b.roas-a.roas);
 }
 
-// ── Agrega por campanha ──────────────────────
 function adsCampanhas(rows){
   const map={};
   rows.forEach(r=>{
@@ -1285,7 +1515,6 @@ function adsCampanhas(rows){
   return Object.values(map).map(c=>{
     c.roas=c.invest>0?c.receita/c.invest:0;
     c.acos=c.receita>0?c.invest/c.receita*100:0;
-    // ROAS máx e mín dos anúncios
     const adsAgg = adsAggregate(c.anuncios);
     c.adsAgg=adsAgg;
     c.roasMax=adsAgg.length?Math.max(...adsAgg.map(a=>a.roas)):0;
@@ -1295,7 +1524,6 @@ function adsCampanhas(rows){
   }).filter(c=>c.invest>5||c.receita>5).sort((a,b)=>b.roas-a.roas);
 }
 
-// ── Detecta heróis candidatos a isolamento ───
 function adsDetectIsolamento(campanhas){
   const candidatos=[];
   campanhas.forEach(c=>{
@@ -1305,79 +1533,43 @@ function adsDetectIsolamento(campanhas){
       const outros=c.adsAgg.filter(x=>x.titulo!==a.titulo&&x.invest>5);
       if(!outros.length) return;
       const roasOutros=outros.reduce((s,x)=>s+x.roas,0)/outros.length;
-      if(roasOutros>10) return; // campanha já é boa, não precisa isolar
+      if(roasOutros>10) return;
       const pctBudget=c.invest>0?a.invest/c.invest:0;
-      if(pctBudget>0.6) return; // já recebe a maior parte
+      if(pctBudget>0.6) return;
       candidatos.push({
-        anuncio: a,
-        campanha: c,
-        roasCampanha: c.roas,
-        roasOutros,
-        pctBudget,
-        potencial: a.receita/a.invest * (c.invest*0.4), // estimativa se receber 40% a mais
+        anuncio: a, campanha: c,
+        roasCampanha: c.roas, roasOutros, pctBudget,
+        potencial: a.receita/a.invest * (c.invest*0.4),
       });
     });
   });
   return candidatos.sort((a,b)=>b.anuncio.roas-a.anuncio.roas);
 }
 
-// ── Gera listas de ação ──────────────────────
 function adsGerarAcoes(ads, campanhas, dias){
   const acoes={pausar:[],aumentar:[],isolar:[]};
-
-  // 1. PAUSAR — anúncios com ROAS < 5x e invest > 0
   ads.filter(a=>a.invest>10&&a.roas<5).sort((a,b)=>a.roas-b.roas).forEach(a=>{
-    acoes.pausar.push({
-      titulo: adsShortName(a.titulo),
-      campanha: a.campanha,
-      roas: a.roas,
-      invest: a.invest,
-      receita: a.receita,
-      economia: a.invest,
-    });
+    acoes.pausar.push({titulo:adsShortName(a.titulo),campanha:a.campanha,roas:a.roas,invest:a.invest,receita:a.receita,economia:a.invest});
   });
-
-  // 2. AUMENTAR BUDGET — heróis com invest < threshold
   const totalInvest=ads.reduce((s,a)=>s+a.invest,0);
   const budgetDiario=totalInvest/dias;
   ads.filter(a=>a.roas>=20).sort((a,b)=>b.roas-a.roas).forEach(a=>{
-    const budgetIdeal=Math.min(a.receita*0.08, budgetDiario*0.5); // 8% ACOS ideal ou 50% budget diário
+    const budgetIdeal=Math.min(a.receita*0.08, budgetDiario*0.5);
     const gap=budgetIdeal-a.invest;
     if(gap>20){
-      acoes.aumentar.push({
-        titulo: adsShortName(a.titulo),
-        campanha: a.campanha,
-        roas: a.roas,
-        investAtual: a.invest,
-        investSugerido: Math.round(budgetIdeal),
-        aumento: Math.round(gap),
-        receitaEstimada: Math.round(gap*a.roas),
-      });
+      acoes.aumentar.push({titulo:adsShortName(a.titulo),campanha:a.campanha,roas:a.roas,investAtual:a.invest,investSugerido:Math.round(budgetIdeal),aumento:Math.round(gap),receitaEstimada:Math.round(gap*a.roas)});
     }
   });
-
-  // 3. ISOLAR — candidatos detectados
-  const candidatos=adsDetectIsolamento(campanhas);
-  candidatos.forEach(c=>{
-    acoes.isolar.push({
-      titulo: adsShortName(c.anuncio.titulo),
-      campanha: c.campanha.campanha,
-      roas: c.anuncio.roas,
-      roasCampanha: c.roasCampanha,
-      pctBudget: c.pctBudget,
-      potencial: Math.round(c.potencial),
-    });
+  adsDetectIsolamento(campanhas).forEach(c=>{
+    acoes.isolar.push({titulo:adsShortName(c.anuncio.titulo),campanha:c.campanha.campanha,roas:c.anuncio.roas,roasCampanha:c.roasCampanha,pctBudget:c.pctBudget,potencial:Math.round(c.potencial)});
   });
-
   return acoes;
 }
 
-// ── Formatos ─────────────────────────────────
 const fmtR  = n=>'R$\u00a0'+Math.round(n).toLocaleString('pt-BR');
 const fmtRk = n=>n>=1000?'R$\u00a0'+(n/1000).toFixed(1).replace('.',',')+'k':fmtR(n);
 const sign  = n=>n>=0?'+':'';
 
-// ── RENDER PRINCIPAL ─────────────────────────
 function renderAds(){
   const main=document.getElementById('main');
 
@@ -1394,9 +1586,9 @@ function renderAds(){
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-top:0">
         <div style="font-size:11px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Fluxo recomendado — 3 checkpoints por mês</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
-          ${[['📅 Dia 10','Exporta 1º→10º','Identifica cortes urgentes e heróis subfinanciados. Age no budget.'],
-             ['📅 Dia 20','Exporta 1º→20º','Valida se ajustes funcionaram. Amplifica heróis que aceleraram.'],
-             ['📅 Fechamento','Exporta mês completo','Análise final. Benchmark atualizado. Estratégia do mês seguinte.']
+          ${[['📅 Dia 10','Exporta 1º→10º','Identifica cortes urgentes e heróis subfinanciados.'],
+             ['📅 Dia 20','Exporta 1º→20º','Valida se ajustes funcionaram. Amplifica heróis.'],
+             ['📅 Fechamento','Exporta mês completo','Análise final. Benchmark atualizado.']
             ].map(([t,p,d])=>`<div style="background:var(--bg3);border-radius:10px;padding:14px;">
             <div style="font-size:13px;font-weight:700;color:var(--orange);margin-bottom:4px">${t}</div>
             <div style="font-size:11px;color:var(--text2);font-weight:600;margin-bottom:6px">${p}</div>
@@ -1442,7 +1634,6 @@ function renderAds(){
 
   let html='';
 
-  // ── Barra de períodos + botão importar ──
   html+=`<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
     <div class="ads-period-bar" style="margin-bottom:0;flex:1;">
       <span class="ads-period-label">Período</span>
@@ -1455,7 +1646,6 @@ function renderAds(){
     </div>
   </div>`;
 
-  // ── KPIs ──
   html+=`<div class="kpis">
     <div class="kpi"><div class="kpi-icon">💰</div><div class="kpi-label">Receita via Ads</div>
       <div class="kpi-val">${fmtRk(totRec)}</div>
@@ -1477,36 +1667,22 @@ function renderAds(){
       <div class="kpi-sub">${acoes.pausar.length} pausar · ${acoes.aumentar.length} escalar · ${acoes.isolar.length} isolar</div></div>
   </div>`;
 
-  // ── Alertas de ação imediata ──
   const totalEconomia=acoes.pausar.reduce((s,a)=>s+a.economia,0);
   const totalPotencial=acoes.aumentar.reduce((s,a)=>s+a.receitaEstimada,0);
   if(acoes.pausar.length||acoes.aumentar.length||acoes.isolar.length){
     html+=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:24px;">`;
-    if(acoes.pausar.length) html+=`<div class="ads-insight" style="margin-bottom:0">
-      <div class="ads-insight-icon">✂️</div>
-      <div class="ads-insight-body"><strong style="color:var(--red)">Pausar agora — ${acoes.pausar.length} anúncios</strong>
-      Libera <strong>${fmtR(totalEconomia)}</strong> de budget desperdiçado em anúncios abaixo de 5x ROAS.</div></div>`;
-    if(acoes.aumentar.length) html+=`<div class="ads-insight" style="margin-bottom:0">
-      <div class="ads-insight-icon">🚀</div>
-      <div class="ads-insight-body"><strong style="color:var(--green)">Escalar — ${acoes.aumentar.length} heróis subfinanciados</strong>
-      Potencial de <strong>+${fmtR(totalPotencial)}</strong> em receita incremental com reforço de budget.</div></div>`;
-    if(acoes.isolar.length) html+=`<div class="ads-insight" style="margin-bottom:0">
-      <div class="ads-insight-icon">⭐</div>
-      <div class="ads-insight-body"><strong style="color:var(--yellow)">Isolar — ${acoes.isolar.length} herói(s) prontos para voar sozinhos</strong>
-      Anúncios com ROAS >25x presos em campanhas com anúncios fracos. Criar campanha exclusiva.</div></div>`;
+    if(acoes.pausar.length) html+=`<div class="ads-insight" style="margin-bottom:0"><div class="ads-insight-icon">✂️</div><div class="ads-insight-body"><strong style="color:var(--red)">Pausar agora — ${acoes.pausar.length} anúncios</strong>Libera <strong>${fmtR(totalEconomia)}</strong> de budget desperdiçado.</div></div>`;
+    if(acoes.aumentar.length) html+=`<div class="ads-insight" style="margin-bottom:0"><div class="ads-insight-icon">🚀</div><div class="ads-insight-body"><strong style="color:var(--green)">Escalar — ${acoes.aumentar.length} heróis subfinanciados</strong>Potencial de <strong>+${fmtR(totalPotencial)}</strong> em receita incremental.</div></div>`;
+    if(acoes.isolar.length) html+=`<div class="ads-insight" style="margin-bottom:0"><div class="ads-insight-icon">⭐</div><div class="ads-insight-body"><strong style="color:var(--yellow)">Isolar — ${acoes.isolar.length} herói(s) prontos para voar sozinhos</strong>Anúncios com ROAS >25x presos em campanhas com anúncios fracos.</div></div>`;
     html+=`</div>`;
   }
 
-  // ── Navegação de views ──
   html+=`<div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
     ${[['anuncios','📋 Anúncios'],['campanhas','🗂️ Campanhas'],['acoes','⚡ Plano de Ação'],['isolamento','⭐ Isolar Heróis'],['comparativo','📊 Comparativo']].map(([v,l])=>
-      `<button class="ads-filter-btn${ADS_VIEW===v?' active':''}" onclick="ADS_VIEW='${v}';renderAds()">${l}${v==='acoes'&&(acoes.pausar.length+acoes.aumentar.length+acoes.isolar.length)>0?' ('+( acoes.pausar.length+acoes.aumentar.length+acoes.isolar.length)+')':''}</button>`
+      `<button class="ads-filter-btn${ADS_VIEW===v?' active':''}" onclick="ADS_VIEW='${v}';renderAds()">${l}${v==='acoes'&&(acoes.pausar.length+acoes.aumentar.length+acoes.isolar.length)>0?' ('+(acoes.pausar.length+acoes.aumentar.length+acoes.isolar.length)+')':''}</button>`
     ).join('')}
   </div>`;
 
-  // ════════════════════════════════════════
-  //  VIEW: ANÚNCIOS
-  // ════════════════════════════════════════
   if(ADS_VIEW==='anuncios'){
     const maxRoas=Math.max(...ads.map(a=>a.roas),1);
     let filtered=ads;
@@ -1520,10 +1696,8 @@ function renderAds(){
         .map(([v,l,n])=>`<button class="ads-filter-btn${ADS_FILTER===v?' active':''}" onclick="ADS_FILTER='${v}';renderAds()">${l} (${n})</button>`).join('')}
     </div>`;
 
-    html+=`<div class="section"><div class="section-header">
-      <div class="section-title">Ranking por ROAS — ${period.label}</div>
-      <div class="section-badge">${filtered.length} anúncios</div>
-    </div><div class="table-wrap"><table class="data-table">
+    html+=`<div class="section"><div class="section-header"><div class="section-title">Ranking por ROAS</div><div class="section-badge">${filtered.length} anúncios</div></div>
+    <div class="table-wrap"><table class="data-table">
     <thead><tr><th>Anúncio</th><th>Campanha</th><th>Classe</th><th>ROAS</th><th>Receita</th><th>Investimento</th><th>ACOS</th><th>CVR</th><th>Vendas</th></tr></thead><tbody>`;
 
     filtered.forEach(a=>{
@@ -1532,360 +1706,118 @@ function renderAds(){
       const isS=a.roas>=20&&a.invest<200;
       html+=`<tr>
         <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${a.titulo}">${adsShortName(a.titulo)}</td>
-        <td style="font-size:11px;color:var(--text3);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.campanha||'—'}</td>
+        <td style="font-size:11px;color:var(--text3)">${a.campanha||'—'}</td>
         <td><span class="${cls.css}">${cls.label}</span>${isS?` <span class="ads-class-sub">subfin.</span>`:''}</td>
         <td><span class="ads-roas-bar" style="width:${bw}px"></span><span style="font-family:'DM Mono',monospace;font-weight:700;color:${a.roas>=20?'var(--green)':a.roas>=8?'var(--text)':'var(--red)'}">${a.roas.toFixed(1)}x</span></td>
-        <td style="color:var(--text)">${fmtR(a.receita)}</td>
-        <td>${fmtR(a.invest)}</td>
+        <td>${fmtR(a.receita)}</td><td>${fmtR(a.invest)}</td>
         <td style="color:${a.acos<=6.28?'var(--green)':a.acos<=10?'var(--orange)':'var(--red)'}">${a.acos.toFixed(1)}%</td>
         <td>${a.cvr.toFixed(1)}%</td>
-        <td style="font-family:'DM Mono',monospace">${a.vendasTotal.toLocaleString('pt-BR')}</td>
+        <td>${a.vendasTotal.toLocaleString('pt-BR')}</td>
       </tr>`;
     });
-    html+=`<tr class="total-row"><td>TOTAL</td><td>—</td><td>—</td>
-      <td><strong>${roasG.toFixed(1)}x</strong></td>
-      <td>${fmtR(totRec)}</td><td>${fmtR(totInv)}</td>
-      <td>${acosG.toFixed(2)}%</td><td>${cvrG.toFixed(1)}%</td><td>${totVend.toLocaleString('pt-BR')}</td></tr>`;
+    html+=`<tr class="total-row"><td>TOTAL</td><td>—</td><td>—</td><td><strong>${roasG.toFixed(1)}x</strong></td><td>${fmtR(totRec)}</td><td>${fmtR(totInv)}</td><td>${acosG.toFixed(2)}%</td><td>${cvrG.toFixed(1)}%</td><td>${totVend.toLocaleString('pt-BR')}</td></tr>`;
     html+=`</tbody></table></div></div>`;
 
-    // Mini comparativo vs benchmark
     html+=`<div class="ads-compare-grid"><div class="ads-compare-card">
-      <div class="ads-compare-title">vs Benchmark mai/2026</div>
+      <div class="ads-compare-title">vs Benchmark</div>
       ${[['Receita',fmtRk(totRec),dRec>=0,sign(dRec)+fmtRk(Math.abs(dRec))],
          ['ROAS',roasG.toFixed(1)+'x',dRoas>=0,sign(dRoas)+Math.abs(dRoas).toFixed(1)+'x'],
          ['ACOS',acosG.toFixed(2)+'%',dAcos<=0,sign(dAcos)+Math.abs(dAcos).toFixed(2)+'pp'],
          ['Investimento',fmtRk(totInv),totInv<=ADS_BENCHMARK.investimento,sign(totInv-ADS_BENCHMARK.investimento)+fmtRk(Math.abs(totInv-ADS_BENCHMARK.investimento))],
-        ].map(([l,v,g,d])=>`<div class="ads-compare-row">
-          <span class="ads-compare-label">${l}</span><span class="ads-compare-val">${v}</span>
-          <span class="ads-compare-delta ${g?'ads-delta-up':'ads-delta-down'}">${d}</span></div>`).join('')}
+        ].map(([l,v,g,d])=>`<div class="ads-compare-row"><span class="ads-compare-label">${l}</span><span class="ads-compare-val">${v}</span><span class="ads-compare-delta ${g?'ads-delta-up':'ads-delta-down'}">${d}</span></div>`).join('')}
     </div><div class="ads-compare-card">
       <div class="ads-compare-title">Budget por classificação</div>
-      ${[['Heróis ≥20x',heroes,true],['Saudáveis 8–20x',healthy,false],['Alerta 5–8x',alertA,false],['Corte <5x',cut,false]]
+      ${[['Heróis ≥20x',heroes],['Saudáveis 8–20x',healthy],['Alerta 5–8x',alertA],['Corte <5x',cut]]
         .map(([l,arr])=>{const inv=arr.reduce((s,a)=>s+a.invest,0);const pct=totInv>0?inv/totInv*100:0;
-          return `<div class="ads-compare-row"><span class="ads-compare-label">${l}</span>
-          <span class="ads-compare-val">${fmtR(inv)}</span>
-          <span style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">${pct.toFixed(0)}%</span></div>`;}).join('')}
+          return `<div class="ads-compare-row"><span class="ads-compare-label">${l}</span><span class="ads-compare-val">${fmtR(inv)}</span><span style="font-size:11px;color:var(--text3)">${pct.toFixed(0)}%</span></div>`;}).join('')}
     </div></div>`;
-  }
-
-  // ════════════════════════════════════════
-  //  VIEW: CAMPANHAS
-  // ════════════════════════════════════════
-  else if(ADS_VIEW==='campanhas'){
-    html+=`<div class="section"><div class="section-header">
-      <div class="section-title">Performance por campanha</div>
-      <div class="section-badge">${campanhas.length} campanhas</div>
-    </div><div class="table-wrap"><table class="data-table">
-    <thead><tr><th>Campanha</th><th>ROAS médio</th><th>ROAS máx/mín</th><th>Receita</th><th>Investimento</th><th>Anúncios</th><th>Diagnóstico</th></tr></thead><tbody>`;
-
+  } else if(ADS_VIEW==='campanhas'){
+    html+=`<div class="section"><div class="section-header"><div class="section-title">Performance por campanha</div><div class="section-badge">${campanhas.length} campanhas</div></div>
+    <div class="table-wrap"><table class="data-table"><thead><tr><th>Campanha</th><th>ROAS médio</th><th>ROAS máx/mín</th><th>Receita</th><th>Investimento</th><th>Anúncios</th><th>Diagnóstico</th></tr></thead><tbody>`;
     campanhas.forEach(c=>{
       const cls=adsClass(c.roas);
       const spread=c.roasMax-c.roasMin;
-      let diag='', diagColor='var(--text3)';
+      let diag='',diagColor='var(--text3)';
       if(spread>20){diag='⚠️ Budget mal distribuído';diagColor='var(--yellow)';}
-      else if(c.roas>=20){diag='✅ Campanha sólida';diagColor='var(--green)';}
+      else if(c.roas>=20){diag='✅ Sólida';diagColor='var(--green)';}
       else if(c.roas>=8){diag='Saudável';diagColor='var(--text2)';}
       else if(c.roas>=5){diag='👀 Monitorar';diagColor='var(--orange)';}
-      else{diag='✂️ Revisar campanhas';diagColor='var(--red)';}
-
-      html+=`<tr>
-        <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px" title="${c.campanha}">${c.campanha||'(sem campanha)'}</td>
+      else{diag='✂️ Revisar';diagColor='var(--red)';}
+      html+=`<tr><td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.campanha||'(sem campanha)'}</td>
         <td><span class="${cls.css}">${c.roas.toFixed(1)}x</span></td>
-        <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text3)">
-          <span style="color:var(--green)">${c.roasMax.toFixed(1)}x</span> / <span style="color:${c.roasMin<5?'var(--red)':'var(--text3)'}">${c.roasMin.toFixed(1)}x</span>
-        </td>
-        <td style="color:var(--text)">${fmtR(c.receita)}</td>
-        <td>${fmtR(c.invest)}</td>
-        <td style="text-align:center;font-family:'DM Mono',monospace">${c.adsAgg.length}</td>
-        <td style="color:${diagColor};font-size:12px">${diag}</td>
-      </tr>`;
+        <td style="font-size:12px"><span style="color:var(--green)">${c.roasMax.toFixed(1)}x</span> / <span style="color:${c.roasMin<5?'var(--red)':'var(--text3)'}">${c.roasMin.toFixed(1)}x</span></td>
+        <td>${fmtR(c.receita)}</td><td>${fmtR(c.invest)}</td>
+        <td style="text-align:center">${c.adsAgg.length}</td>
+        <td style="color:${diagColor};font-size:12px">${diag}</td></tr>`;
     });
     html+=`</tbody></table></div></div>`;
-  }
-
-  // ════════════════════════════════════════
-  //  VIEW: PLANO DE AÇÃO
-  // ════════════════════════════════════════
-  else if(ADS_VIEW==='acoes'){
-    // LISTA 1 — PAUSAR
-    html+=`<div class="section"><div class="section-header">
-      <div class="section-title" style="color:var(--red)">✂️ Lista 1 — Pausar agora</div>
-      <div class="section-badge">${acoes.pausar.length} anúncios · libera ${fmtR(totalEconomia)}</div>
-    </div>`;
+  } else if(ADS_VIEW==='acoes'){
+    const te=acoes.pausar.reduce((s,a)=>s+a.economia,0);
+    const tp=acoes.aumentar.reduce((s,a)=>s+a.receitaEstimada,0);
+    html+=`<div class="section"><div class="section-header"><div class="section-title" style="color:var(--red)">✂️ Lista 1 — Pausar</div><div class="section-badge">${acoes.pausar.length} · libera ${fmtR(te)}</div></div>`;
     if(acoes.pausar.length){
-      html+=`<div class="table-wrap"><table class="data-table">
-      <thead><tr><th>Anúncio</th><th>Campanha</th><th>ROAS</th><th>Invest. desperdiçado</th><th>Receita gerada</th><th>Ação</th></tr></thead><tbody>`;
-      acoes.pausar.forEach(a=>{
-        html+=`<tr>
-          <td title="${a.titulo}">${a.titulo}</td>
-          <td style="font-size:11px;color:var(--text3)">${a.campanha||'—'}</td>
-          <td style="color:var(--red);font-family:'DM Mono',monospace;font-weight:700">${a.roas.toFixed(1)}x</td>
-          <td style="color:var(--red)">${fmtR(a.invest)}</td>
-          <td>${fmtR(a.receita)}</td>
-          <td><span class="ads-class-cut">Pausar</span></td>
-        </tr>`;
-      });
+      html+=`<div class="table-wrap"><table class="data-table"><thead><tr><th>Anúncio</th><th>Campanha</th><th>ROAS</th><th>Invest. desperdiçado</th><th>Receita gerada</th></tr></thead><tbody>`;
+      acoes.pausar.forEach(a=>html+=`<tr><td>${a.titulo}</td><td style="font-size:11px;color:var(--text3)">${a.campanha||'—'}</td><td style="color:var(--red)">${a.roas.toFixed(1)}x</td><td style="color:var(--red)">${fmtR(a.invest)}</td><td>${fmtR(a.receita)}</td></tr>`);
       html+=`</tbody></table></div>`;
-    } else html+=`<div style="padding:20px;color:var(--text3);font-size:13px">✅ Nenhum anúncio para pausar neste período.</div>`;
-    html+=`</div>`;
-
-    // LISTA 2 — AUMENTAR BUDGET
-    html+=`<div class="section"><div class="section-header">
-      <div class="section-title" style="color:var(--green)">🚀 Lista 2 — Aumentar budget</div>
-      <div class="section-badge">${acoes.aumentar.length} heróis · potencial +${fmtR(totalPotencial)}</div>
-    </div>`;
+    } else html+=`<div style="padding:16px;color:var(--text3);font-size:13px">✅ Nenhum anúncio para pausar.</div>`;
+    html+=`</div><div class="section"><div class="section-header"><div class="section-title" style="color:var(--green)">🚀 Lista 2 — Aumentar budget</div><div class="section-badge">${acoes.aumentar.length} heróis · +${fmtR(tp)}</div></div>`;
     if(acoes.aumentar.length){
-      html+=`<div class="table-wrap"><table class="data-table">
-      <thead><tr><th>Anúncio</th><th>Campanha</th><th>ROAS</th><th>Budget atual</th><th>Budget sugerido</th><th>Receita estimada</th></tr></thead><tbody>`;
-      acoes.aumentar.forEach(a=>{
-        html+=`<tr>
-          <td title="${a.titulo}">${a.titulo}</td>
-          <td style="font-size:11px;color:var(--text3)">${a.campanha||'—'}</td>
-          <td style="color:var(--green);font-family:'DM Mono',monospace;font-weight:700">${a.roas.toFixed(1)}x</td>
-          <td>${fmtR(a.investAtual)}</td>
-          <td style="color:var(--orange);font-weight:700">${fmtR(a.investSugerido)}</td>
-          <td style="color:var(--green)">+${fmtR(a.receitaEstimada)}</td>
-        </tr>`;
-      });
+      html+=`<div class="table-wrap"><table class="data-table"><thead><tr><th>Anúncio</th><th>ROAS</th><th>Budget atual</th><th>Budget sugerido</th><th>Receita estimada</th></tr></thead><tbody>`;
+      acoes.aumentar.forEach(a=>html+=`<tr><td>${a.titulo}</td><td style="color:var(--green)">${a.roas.toFixed(1)}x</td><td>${fmtR(a.investAtual)}</td><td style="color:var(--orange);font-weight:700">${fmtR(a.investSugerido)}</td><td style="color:var(--green)">+${fmtR(a.receitaEstimada)}</td></tr>`);
       html+=`</tbody></table></div>`;
-    } else html+=`<div style="padding:20px;color:var(--text3);font-size:13px">✅ Todos os heróis estão adequadamente financiados.</div>`;
+    } else html+=`<div style="padding:16px;color:var(--text3);font-size:13px">✅ Heróis adequadamente financiados.</div>`;
     html+=`</div>`;
-
-    // LISTA 3 — ISOLAR
-    html+=`<div class="section"><div class="section-header">
-      <div class="section-title" style="color:var(--yellow)">⭐ Lista 3 — Isolar em campanha própria</div>
-      <div class="section-badge">${acoes.isolar.length} candidatos</div>
-    </div>`;
-    if(acoes.isolar.length){
-      html+=`<div class="table-wrap"><table class="data-table">
-      <thead><tr><th>Anúncio</th><th>Campanha atual</th><th>ROAS anúncio</th><th>ROAS campanha</th><th>% do budget</th><th>Ação</th></tr></thead><tbody>`;
-      acoes.isolar.forEach(a=>{
-        html+=`<tr>
-          <td title="${a.titulo}">${a.titulo}</td>
-          <td style="font-size:11px;color:var(--text3)">${a.campanha||'—'}</td>
-          <td style="color:var(--green);font-family:'DM Mono',monospace;font-weight:700">${a.roas.toFixed(1)}x</td>
-          <td style="color:var(--orange);font-family:'DM Mono',monospace">${a.roasCampanha.toFixed(1)}x</td>
-          <td style="color:var(--red);font-family:'DM Mono',monospace">${(a.pctBudget*100).toFixed(0)}%</td>
-          <td><span class="ads-class-sub">Isolar</span></td>
-        </tr>`;
-      });
-      html+=`</tbody></table></div>`;
-    } else html+=`<div style="padding:20px;color:var(--text3);font-size:13px">✅ Nenhum herói preso em campanha mista neste período.</div>`;
-    html+=`</div>`;
-  }
-
-  // ════════════════════════════════════════
-  //  VIEW: ISOLAR HERÓIS (explicativo)
-  // ════════════════════════════════════════
-  else if(ADS_VIEW==='isolamento'){
+  } else if(ADS_VIEW==='isolamento'){
     const cands=adsDetectIsolamento(campanhas);
-    html+=`<div class="section"><div class="section-header">
-      <div class="section-title">⭐ Heróis prontos para voar sozinhos</div>
-      <div class="section-badge">${cands.length} candidatos identificados</div>
-    </div>`;
-    if(!cands.length){
-      html+=`<div style="padding:40px;text-align:center;color:var(--text3);font-size:14px">
-        Nenhum candidato a isolamento identificado neste período.<br>
-        <span style="font-size:12px">Critério: ROAS > 25x, em campanha com outros anúncios ROAS < 10x, recebendo menos de 60% do budget da campanha.</span>
-      </div>`;
-    }
+    html+=`<div class="section"><div class="section-header"><div class="section-title">⭐ Heróis prontos para voar sozinhos</div><div class="section-badge">${cands.length} candidatos</div></div>`;
+    if(!cands.length) html+=`<div style="padding:40px;text-align:center;color:var(--text3)">Nenhum candidato identificado neste período.</div>`;
     cands.forEach(c=>{
       html+=`<div style="background:var(--bg2);border:1px solid rgba(241,196,15,0.3);border-radius:14px;padding:20px 24px;margin-bottom:16px;">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">
-          <div style="flex:1;">
-            <div style="font-size:11px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Candidato a isolamento</div>
-            <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px">${adsShortName(c.anuncio.titulo)}</div>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;">
-              <div style="background:var(--bg3);border-radius:8px;padding:10px 12px;">
-                <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">ROAS do anúncio</div>
-                <div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:var(--green)">${c.anuncio.roas.toFixed(1)}x</div>
-              </div>
-              <div style="background:var(--bg3);border-radius:8px;padding:10px 12px;">
-                <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">ROAS da campanha</div>
-                <div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:var(--orange)">${c.roasCampanha.toFixed(1)}x</div>
-              </div>
-              <div style="background:var(--bg3);border-radius:8px;padding:10px 12px;">
-                <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">% do budget</div>
-                <div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:var(--red)">${(c.pctBudget*100).toFixed(0)}%</div>
-              </div>
-              <div style="background:var(--bg3);border-radius:8px;padding:10px 12px;">
-                <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Receita gerada</div>
-                <div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:var(--text)">${fmtRk(c.anuncio.receita)}</div>
-              </div>
-            </div>
-          </div>
+        <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px">${adsShortName(c.anuncio.titulo)}</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;">
+          ${[['ROAS anúncio',c.anuncio.roas.toFixed(1)+'x','var(--green)'],['ROAS campanha',c.roasCampanha.toFixed(1)+'x','var(--orange)'],['% do budget',(c.pctBudget*100).toFixed(0)+'%','var(--red)'],['Receita',fmtRk(c.anuncio.receita),'var(--text)']].map(([l,v,co])=>`<div style="background:var(--bg3);border-radius:8px;padding:10px 12px;"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;margin-bottom:4px">${l}</div><div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:${co}">${v}</div></div>`).join('')}
         </div>
-        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
-          <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Passo a passo no Mercado Ads</div>
-          <div style="font-size:13px;color:var(--text2);line-height:1.8;">
-            1. Acesse <strong style="color:var(--orange)">Publicidade → Campanhas</strong> e crie uma nova campanha chamada <strong style="color:var(--orange)">"HERO — ${adsShortName(c.anuncio.titulo).slice(0,30)}"</strong><br>
-            2. Adicione <strong>somente este anúncio</strong> nessa campanha<br>
-            3. Defina o budget inicial como <strong style="color:var(--orange)">${fmtR(Math.max(c.anuncio.invest*1.5, 200))}/mês</strong> (1,5x o que recebia antes)<br>
-            4. Pause ou mova o anúncio da campanha original <strong>"${c.campanha.campanha}"</strong><br>
-            5. Monitore no próximo checkpoint — o ROAS tende a subir nos primeiros 15 dias
-          </div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.8;">
+          1. Crie campanha <strong style="color:var(--orange)">"HERO — ${adsShortName(c.anuncio.titulo).slice(0,30)}"</strong><br>
+          2. Adicione <strong>somente este anúncio</strong><br>
+          3. Budget inicial: <strong style="color:var(--orange)">${fmtR(Math.max(c.anuncio.invest*1.5,200))}/mês</strong><br>
+          4. Pause o anúncio na campanha <strong>"${c.campanha.campanha}"</strong>
         </div>
       </div>`;
     });
     html+=`</div>`;
-  }
-
-  // ════════════════════════════════════════
-  //  VIEW: COMPARATIVO
-  // ════════════════════════════════════════
-  else if(ADS_VIEW==='comparativo'){
-    // Só mostra se tem 2+ períodos
-    if(STATE.ads.length < 2){
-      html+=`<div style="padding:60px;text-align:center;color:var(--color-text-secondary,#888)">
-        <div style="font-size:32px;margin-bottom:16px">📊</div>
-        <div style="font-size:15px;font-weight:500;margin-bottom:8px;color:var(--text,#f0f0f0)">Importe 2 períodos para ver o comparativo</div>
-        <div style="font-size:13px">Use o botão <strong>+ Importar período</strong> para adicionar outro mês.</div>
-      </div>`;
+  } else if(ADS_VIEW==='comparativo'){
+    if(STATE.ads.length<2){
+      html+=`<div style="padding:60px;text-align:center;color:var(--text3)"><div style="font-size:32px;margin-bottom:16px">📊</div><div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:8px">Importe 2 períodos para ver o comparativo</div></div>`;
     } else {
-      // Pega os dois períodos mais recentes
-      const pA = STATE.ads.length >= 2 ? STATE.ads[STATE.ads.length-2] : STATE.ads[0];
-      const pB = STATE.ads[STATE.ads.length-1];
-      const adsA = adsAggregate(pA.rows);
-      const adsB = adsAggregate(pB.rows);
-
-      // KPIs totais
-      const tRA=adsA.reduce((s,a)=>s+a.receita,0), tIA=adsA.reduce((s,a)=>s+a.invest,0);
-      const tCA=adsA.reduce((s,a)=>s+a.cliques,0), tVA=adsA.reduce((s,a)=>s+a.vendasTotal,0);
-      const tRB=adsB.reduce((s,a)=>s+a.receita,0), tIB=adsB.reduce((s,a)=>s+a.invest,0);
-      const tCB=adsB.reduce((s,a)=>s+a.cliques,0), tVB=adsB.reduce((s,a)=>s+a.vendasTotal,0);
-      const roasA=tIA>0?tRA/tIA:0, roasB=tIB>0?tRB/tIB:0;
-      const acosA=tRA>0?tIA/tRA*100:0, acosB=tRB>0?tIB/tRB*100:0;
-      const cvrA=tCA>0?tVA/tCA*100:0, cvrB=tCB>0?tVB/tCB*100:0;
-      const heroesA=adsA.filter(a=>a.roas>=20).length, heroesB=adsB.filter(a=>a.roas>=20).length;
-      const subfA=adsA.filter(a=>a.roas>=20&&a.invest<200).length;
-      const subfB=adsB.filter(a=>a.roas>=20&&a.invest<200).length;
-
-      const fR=n=>'R$ '+Math.round(n).toLocaleString('pt-BR');
-      const fRk=n=>n>=1000?'R$ '+(n/1000).toFixed(1).replace('.',',')+'k':fR(n);
-      const sg=n=>n>0?'+':'';
-      const dRec=tRB-tRA, dRoas=roasB-roasA, dAcos=acosB-acosA, dCvr=cvrB-cvrA, dInv=tIB-tIA;
-
-      // Mapa por título para cruzar anúncios
-      const mapA={}, mapB={};
-      adsA.forEach(a=>mapA[a.titulo]=a);
-      adsB.forEach(a=>mapB[a.titulo]=a);
-
-      // Maiores altas por delta ROAS
-      const altas = Object.keys(mapB).filter(t=>mapA[t])
-        .map(t=>({titulo:t, rA:mapA[t].roas, rB:mapB[t].roas, recA:mapA[t].receita, recB:mapB[t].receita, delta:mapB[t].roas-mapA[t].roas}))
-        .filter(x=>x.delta>0).sort((a,b)=>b.delta-a.delta).slice(0,6);
-
-      // Maiores quedas
-      const quedas = Object.keys(mapB).filter(t=>mapA[t])
-        .map(t=>({titulo:t, rA:mapA[t].roas, rB:mapB[t].roas, recA:mapA[t].receita, recB:mapB[t].receita, delta:mapB[t].roas-mapA[t].roas}))
-        .filter(x=>x.delta<0).sort((a,b)=>a.delta-b.delta).slice(0,6);
-
-      // Novos em B (não existiam em A)
-      const novos = adsB.filter(a=>!mapA[a.titulo]).sort((a,b)=>b.roas-a.roas).slice(0,5);
-
-      // Saíram (existiam em A, não estão em B com receita)
-      const saiu = adsA.filter(a=>!mapB[a.titulo]||mapB[a.titulo].receita<10).sort((a,b)=>b.roas-a.roas).slice(0,5);
-
-      // Turnaround mais dramático
-      const turnaround = altas.length ? altas[0] : null;
-      const urgente = saiu.filter(a=>a.roas>=20).length ? saiu.filter(a=>a.roas>=20)[0] : null;
-
-      // Insight automático
-      const pct = tRA>0?((tRB-tRA)/tRA*100):0;
-      const sentido = pct>=0?'cresceu':'caiu';
-      html+=`<div style="display:flex;gap:12px;padding:14px 16px;border-radius:12px;background:rgba(232,119,34,0.07);border:0.5px solid rgba(232,119,34,0.3);margin-bottom:20px;">
-        <div style="font-size:20px;flex-shrink:0">💡</div>
-        <div style="font-size:13px;color:var(--text,#f0f0f0);line-height:1.65;">
-          <strong style="color:#E87722;display:block;margin-bottom:3px">${pB.label} vs ${pA.label}</strong>
-          Receita ${sentido} <strong style="color:${pct>=0?'#2ecc71':'#e74c3c'}">${pct>=0?'+':''}${pct.toFixed(0)}%</strong> (${fRk(tRA)} → ${fRk(tRB)}).
-          ROAS ${dRoas>=0?'melhorou':'piorou'} de ${roasA.toFixed(1)}x para ${roasB.toFixed(1)}x.
-          ${turnaround?`Maior virada: <strong style="color:#2ecc71">${adsShortName(turnaround.titulo)}</strong> saltou de ${turnaround.rA.toFixed(1)}x para ${turnaround.rB.toFixed(1)}x ROAS.`:''}
-          ${urgente?`Atenção: <strong style="color:#e74c3c">${adsShortName(urgente.titulo)}</strong> era herói em ${pA.label} e zerou em ${pB.label}.`:''}
-        </div>
+      const pA=STATE.ads.length>=2?STATE.ads[STATE.ads.length-2]:STATE.ads[0];
+      const pB=STATE.ads[STATE.ads.length-1];
+      const adsA=adsAggregate(pA.rows); const adsB=adsAggregate(pB.rows);
+      const tRA=adsA.reduce((s,a)=>s+a.receita,0),tIA=adsA.reduce((s,a)=>s+a.invest,0);
+      const tRB=adsB.reduce((s,a)=>s+a.receita,0),tIB=adsB.reduce((s,a)=>s+a.invest,0);
+      const roasA=tIA>0?tRA/tIA:0,roasB=tIB>0?tRB/tIB:0;
+      const dRec2=tRB-tRA,dRoas2=roasB-roasA;
+      const pct=tRA>0?((tRB-tRA)/tRA*100):0;
+      html+=`<div style="padding:14px 16px;border-radius:12px;background:rgba(232,119,34,0.07);border:0.5px solid rgba(232,119,34,0.3);margin-bottom:20px;font-size:13px;line-height:1.65;">
+        <strong style="color:#E87722;display:block;margin-bottom:3px">${pB.label} vs ${pA.label}</strong>
+        Receita ${pct>=0?'cresceu':'caiu'} <strong style="color:${pct>=0?'#2ecc71':'#e74c3c'}">${pct>=0?'+':''}${pct.toFixed(0)}%</strong> (${fmtRk(tRA)} → ${fmtRk(tRB)}). ROAS ${dRoas2>=0?'melhorou':'piorou'} de ${roasA.toFixed(1)}x para ${roasB.toFixed(1)}x.
       </div>`;
-
-      // KPIs lado a lado
-      html+=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:24px;">
-        ${[
-          ['💰 Receita', fRk(tRA), fRk(tRB), dRec>=0, sg(dRec)+fRk(Math.abs(dRec))],
-          ['📈 ROAS', roasA.toFixed(1)+'x', roasB.toFixed(1)+'x', dRoas>=0, sg(dRoas)+Math.abs(dRoas).toFixed(1)+'x'],
-          ['🎯 ACOS', acosA.toFixed(2)+'%', acosB.toFixed(2)+'%', dAcos<=0, sg(dAcos)+Math.abs(dAcos).toFixed(2)+'pp'],
-          ['🔄 CVR', cvrA.toFixed(1)+'%', cvrB.toFixed(1)+'%', dCvr>=0, sg(dCvr)+Math.abs(dCvr).toFixed(1)+'pp'],
-          ['🏆 Heróis', heroesA+'', heroesB+'', heroesB>=heroesA, sg(heroesB-heroesA)+(heroesB-heroesA)],
-          ['💸 Investimento', fRk(tIA), fRk(tIB), dInv<=0, sg(dInv)+fRk(Math.abs(dInv))],
-        ].map(([label,vA,vB,good,delta])=>`
-          <div style="background:var(--bg2,#141414);border:1px solid var(--border,#2a2a2a);border-radius:14px;padding:14px 16px;">
-            <div style="font-size:11px;color:var(--text3,#666);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">${label}</div>
-            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;">
-              <span style="font-size:13px;color:var(--text2,#aaa)">${vA}</span>
-              <span style="font-size:20px;font-weight:500;color:var(--text,#f0f0f0)">${vB}</span>
-            </div>
-            <span style="display:inline-block;font-size:11px;padding:2px 8px;border-radius:12px;margin-top:4px;background:${good?'rgba(46,204,113,0.12)':'rgba(231,76,60,0.12)'};color:${good?'#2ecc71':'#e74c3c'}">${delta}</span>
-          </div>`).join('')}
+      html+=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+        ${[['💰 Receita',fmtRk(tRA),fmtRk(tRB),dRec2>=0,sign(dRec2)+fmtRk(Math.abs(dRec2))],
+           ['📈 ROAS',roasA.toFixed(1)+'x',roasB.toFixed(1)+'x',dRoas2>=0,sign(dRoas2)+Math.abs(dRoas2).toFixed(1)+'x'],
+           ['💸 Investimento',fmtRk(tIA),fmtRk(tIB),tIB<=tIA,sign(tIB-tIA)+fmtRk(Math.abs(tIB-tIA))],
+          ].map(([label,vA,vB,good,delta])=>`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;">
+          <div style="font-size:11px;color:var(--text3);text-transform:uppercase;margin-bottom:8px">${label}</div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;"><span style="color:var(--text2)">${vA}</span><span style="font-size:20px;font-weight:500">${vB}</span></div>
+          <span style="display:inline-block;font-size:11px;padding:2px 8px;border-radius:12px;margin-top:4px;background:${good?'rgba(46,204,113,0.12)':'rgba(231,76,60,0.12)'};color:${good?'#2ecc71':'#e74c3c'}">${delta}</span>
+        </div>`).join('')}
       </div>`;
-
-      // Tabs de detalhe
-      html+=`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;" id="compTabBar">
-        <button class="ads-filter-btn active" onclick="adsCompTab('altas',this)">⬆️ Maiores altas (${altas.length})</button>
-        <button class="ads-filter-btn" onclick="adsCompTab('quedas',this)">⬇️ Maiores quedas (${quedas.length})</button>
-        <button class="ads-filter-btn" onclick="adsCompTab('novos',this)">✨ Novos (${novos.length})</button>
-        <button class="ads-filter-btn" onclick="adsCompTab('saiu',this)">👻 Saíram (${saiu.length})</button>
-      </div>`;
-
-      // Tabela altas (default visível)
-      const buildRow = (titulo, rA, rB, recA, recB, tipo) => {
-        const delta = rB - rA;
-        const cor = tipo==='alta'?'#2ecc71':'#e74c3c';
-        return `<tr>
-          <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${titulo}">${adsShortName(titulo)}</td>
-          <td>${rA.toFixed(1)}x</td>
-          <td style="color:${cor};font-weight:500">${rB.toFixed(1)}x</td>
-          <td style="color:${cor}">${delta>0?'+':''}${delta.toFixed(1)}x</td>
-          <td style="color:var(--text2,#aaa)">${fR(recA)}</td>
-          <td style="color:${cor}">${fR(recB)}</td>
-        </tr>`;
-      };
-
-      const tblHeader = `<thead><tr>
-        <th style="text-align:left">Anúncio</th>
-        <th style="text-align:right">${pA.label.slice(0,12)}</th>
-        <th style="text-align:right">${pB.label.slice(0,12)}</th>
-        <th style="text-align:right">Δ ROAS</th>
-        <th style="text-align:right">Receita A</th>
-        <th style="text-align:right">Receita B</th>
-      </tr></thead>`;
-
-      const tblAltas = `<div id="comp-altas" style=""><div class="table-wrap"><table class="data-table">${tblHeader}<tbody>${altas.map(x=>buildRow(x.titulo,x.rA,x.rB,x.recA,x.recB,'alta')).join('')}</tbody></table></div></div>`;
-      const tblQuedas = `<div id="comp-quedas" style="display:none"><div class="table-wrap"><table class="data-table">${tblHeader}<tbody>${quedas.map(x=>buildRow(x.titulo,x.rA,x.rB,x.recA,x.recB,'queda')).join('')}</tbody></table></div></div>`;
-      const tblNovos = `<div id="comp-novos" style="display:none"><div class="table-wrap"><table class="data-table">
-        <thead><tr><th style="text-align:left">Anúncio novo em ${pB.label.slice(0,12)}</th><th style="text-align:right">ROAS</th><th style="text-align:right">Receita</th><th style="text-align:right">Investimento</th></tr></thead>
-        <tbody>${novos.map(a=>`<tr><td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${a.titulo}">${adsShortName(a.titulo)}</td><td style="text-align:right;color:${a.roas>=20?'#2ecc71':'var(--text,#f0f0f0)'};font-weight:${a.roas>=20?'500':'400'}">${a.roas.toFixed(1)}x</td><td style="text-align:right">${fR(a.receita)}</td><td style="text-align:right">${fR(a.invest)}</td></tr>`).join('')}</tbody>
-      </table></div></div>`;
-      const tblSaiu = `<div id="comp-saiu" style="display:none"><div class="table-wrap"><table class="data-table">
-        <thead><tr><th style="text-align:left">Anúncio em ${pA.label.slice(0,12)}</th><th style="text-align:right">ROAS era</th><th style="text-align:right">Receita era</th><th style="text-align:right">Status</th></tr></thead>
-        <tbody>${saiu.map(a=>`<tr><td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${a.titulo}">${adsShortName(a.titulo)}</td><td style="text-align:right;color:${a.roas>=20?'#2ecc71':'var(--text,#f0f0f0)'}">${a.roas.toFixed(1)}x</td><td style="text-align:right">${fR(a.receita)}</td><td style="text-align:right"><span style="font-size:10px;padding:2px 8px;border-radius:12px;background:rgba(231,76,60,0.12);color:#e74c3c">${a.roas>=20?'Herói perdido':'Saiu'}</span></td></tr>`).join('')}</tbody>
-      </table></div></div>`;
-
-      html += tblAltas + tblQuedas + tblNovos + tblSaiu;
     }
   }
 
   main.innerHTML=html;
-
-  // Tabs do comparativo — roda após innerHTML
-  if(ADS_VIEW==='comparativo'){
-    window.adsCompTab = (tab, btn) => {
-      ['altas','quedas','novos','saiu'].forEach(t=>{
-        const el=document.getElementById('comp-'+t);
-        if(el) el.style.display = t===tab?'':'none';
-      });
-      document.querySelectorAll('#compTabBar .ads-filter-btn').forEach(b=>b.classList.remove('active'));
-      if(btn) btn.classList.add('active');
-    };
-  }
 }
 
-// ── Carrega arquivo ───────────────────────────
 function adsLoadFile(file){
   if(!file) return;
   const msg=document.getElementById('syncMsg');
@@ -1899,21 +1831,18 @@ function adsLoadFile(file){
       try{
         const result=parseAdsXLSX(e.target.result);
         if(!result.rows||result.rows.length===0){
-          alert('Nenhum dado encontrado. Verifique se é um relatório de Anúncios Patrocinados do Mercado Ads.');
+          alert('Nenhum dado encontrado. Verifique se é um relatório de Anúncios Patrocinados.');
           dot.className='sync-dot error';
           if(msg) msg.textContent='Erro ao processar relatório Ads';
           return;
         }
-        // Label do período
         let label=result.periodoLabel||file.name.replace(/\.xlsx?$/i,'');
-        // Se já existe mesmo label, sobrescreve
         const exists=STATE.ads.findIndex(a=>a.label===label);
         if(exists>=0) STATE.ads.splice(exists,1);
         STATE.ads.push({label, rows:result.rows, dias:result.dias||30});
-        // Ordena por posição cronológica (ordem de importação)
         STATE.selPeriodoAds=STATE.ads.length-1;
         dot.className='sync-dot';
-        if(msg) msg.textContent=`✓ Ads importado · ${result.rows.length} linhas · ${label} · ${result.dias} dias`;
+        if(msg) msg.textContent=`✓ Ads importado · ${result.rows.length} linhas · ${label}`;
         document.getElementById('syncTime').textContent='Atualizado às '+new Date().toLocaleTimeString('pt-BR');
         renderAds();
       }catch(err){
@@ -1931,21 +1860,29 @@ function adsLoadFile(file){
     const s=document.createElement('script');
     s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
     s.onload=doProcess;
-    s.onerror=()=>alert('Não foi possível carregar a biblioteca XLSX. Verifique sua conexão.');
+    s.onerror=()=>alert('Não foi possível carregar XLSX. Verifique sua conexão.');
     document.head.appendChild(s);
   }
 }
 
-// ══════════════════════════════════════════════
-//  ABA PRODUTIVIDADE — Primícia
-// ══════════════════════════════════════════════
+// ════════════════════════════════════════
+//  ABA PRODUTIVIDADE
+// ════════════════════════════════════════
+function calcHorasProporcional(allRows, hTurno){
+  const ch = r => `${r.operador||''}|${r.turno||''}|${r.data||''}`;
+  const kgPorTurno = {};
+  allRows.forEach(r=>{ const k=ch(r); kgPorTurno[k]=(kgPorTurno[k]||0)+r.kg; });
+  return allRows.map(r=>{
+    const totalKgTurno = kgPorTurno[ch(r)] || r.kg;
+    const proporcao = totalKgTurno > 0 ? r.kg / totalKgTurno : 1;
+    return { ...r, horasLote: hTurno * proporcao };
+  });
+}
+
 function renderProdutividade(){
-  const HORAS_TURNO = 10; // Dia: 07-17 / Noite: 20-06
-  // Filtra por mês selecionado
+  const HORAS_TURNO = 10;
   const allProdRows = STATE.f2.filter(r => r.operador && r.operador.trim() !== '');
-  const rows = STATE.selMonth
-    ? allProdRows.filter(r => extractMonth(r.data) === STATE.selMonth)
-    : allProdRows;
+  const rows = STATE.selMonth ? allProdRows.filter(r => extractMonth(r.data) === STATE.selMonth) : allProdRows;
   const main = document.getElementById('main');
 
   if(!rows.length){
@@ -1957,673 +1894,221 @@ function renderProdutividade(){
     return;
   }
 
-  // ── Helpers ──────────────────────────────────
-  // Horas proporcional ao kg para produtividade
   const rowsProd = calcHorasProporcional(rows, HORAS_TURNO);
-
-  function groupBy(arr, key){
-    return arr.reduce((acc,r)=>{
-      const k=r[key]||'—';
-      if(!acc[k]) acc[k]={kg:0,mil:0,perda:0,lotes:0,horas:0};
-      acc[k].kg+=r.kg; acc[k].mil+=r.mil;
-      acc[k].perda+=r.perda; acc[k].lotes++;
-      acc[k].horas+=r.horasLote; // usa horas reais do lote
-      return acc;
-    },{});
-  }
-
-  const byOp    = groupBy(rowsProd,'operador');
-  const byMaq   = groupBy(rowsProd,'maquina');
-  const byMed   = groupBy(rowsProd,'med');
-  const byTurno = groupBy(rowsProd,'turno');
-  const byData  = groupBy(rowsProd,'data');
-
-  // kg/hora e mil/hora
+  function groupBy(arr, key){ return arr.reduce((acc,r)=>{ const k=r[key]||'—'; if(!acc[k])acc[k]={kg:0,mil:0,perda:0,lotes:0,horas:0}; acc[k].kg+=r.kg; acc[k].mil+=r.mil; acc[k].perda+=r.perda; acc[k].lotes++; acc[k].horas+=r.horasLote; return acc; },{}); }
+  const byOp=groupBy(rowsProd,'operador'); const byMaq=groupBy(rowsProd,'maquina');
+  const byMed=groupBy(rowsProd,'med'); const byTurno=groupBy(rowsProd,'turno'); const byData=groupBy(rowsProd,'data');
   function kgh(d){ return d.horas>0 ? d.kg/d.horas : 0; }
   function milh(d){ return d.horas>0 ? d.mil/d.horas : 0; }
+  const totalKg=rows.reduce((s,r)=>s+r.kg,0); const totalMil=rows.reduce((s,r)=>s+r.mil,0);
+  const totalH=rowsProd.reduce((s,r)=>s+r.horasLote,0);
+  const totalKgH=totalH>0?totalKg/totalH:0; const totalMilH=totalH>0?totalMil/totalH:0;
+  const melhorDia=Object.entries(byData).sort((a,b)=>kgh(b[1])-kgh(a[1]))[0];
+  const piorDia=Object.entries(byData).sort((a,b)=>kgh(a[1])-kgh(b[1]))[0];
+  const cores=['#E87722','#5b8af5','#2ecc71','#a55eea','#f1c40f'];
 
-  // Totais
-  const totalKg   = rows.reduce((s,r)=>s+r.kg,0);
-  const totalMil  = rows.reduce((s,r)=>s+r.mil,0);
-  const totalH    = rowsProd.reduce((s,r)=>s+r.horasLote,0);
-  const totalKgH  = totalH>0 ? totalKg/totalH : 0;
-  const totalMilH = totalH>0 ? totalMil/totalH : 0;
-
-  // Melhor dia
-  const melhorDia = Object.entries(byData).sort((a,b)=>kgh(b[1])-kgh(a[1]))[0];
-  const piorDia   = Object.entries(byData).sort((a,b)=>kgh(a[1])-kgh(b[1]))[0];
-
-  const cores = ['#E87722','#5b8af5','#2ecc71','#a55eea','#f1c40f','#e74c3c','#1abc9c'];
-
-  // ── KPIs ─────────────────────────────────────
   let html=`<div class="kpis">
-    <div class="kpi"><div class="kpi-icon">⚡</div><div class="kpi-label">kg/hora geral</div>
-      <div class="kpi-val" style="color:var(--orange)">${totalKgH.toFixed(1)}</div>
-      <div class="kpi-sub">média todas máquinas</div></div>
-    <div class="kpi"><div class="kpi-icon">📦</div><div class="kpi-label">Mil/hora geral</div>
-      <div class="kpi-val" style="color:var(--blue)">${totalMilH.toFixed(2)}</div>
-      <div class="kpi-sub">milheiros por hora</div></div>
-    <div class="kpi"><div class="kpi-icon">⏱️</div><div class="kpi-label">Horas registradas</div>
-      <div class="kpi-val">${totalH.toLocaleString('pt-BR')}</div>
-      <div class="kpi-sub">${rows.length} lotes · ${HORAS_TURNO}h/turno</div></div>
-    <div class="kpi"><div class="kpi-icon">🏆</div><div class="kpi-label">Melhor dia</div>
-      <div class="kpi-val" style="color:var(--green);font-size:18px">${melhorDia?melhorDia[0]:'—'}</div>
-      <div class="kpi-sub">${melhorDia?kgh(melhorDia[1]).toFixed(1)+' kg/h':''}</div></div>
-    <div class="kpi"><div class="kpi-icon">📉</div><div class="kpi-label">Dia mais fraco</div>
-      <div class="kpi-val" style="color:var(--red);font-size:18px">${piorDia?piorDia[0]:'—'}</div>
-      <div class="kpi-sub">${piorDia?kgh(piorDia[1]).toFixed(1)+' kg/h':''}</div></div>
+    <div class="kpi"><div class="kpi-icon">⚡</div><div class="kpi-label">kg/hora geral</div><div class="kpi-val" style="color:var(--orange)">${totalKgH.toFixed(1)}</div><div class="kpi-sub">média todas máquinas</div></div>
+    <div class="kpi"><div class="kpi-icon">📦</div><div class="kpi-label">Mil/hora geral</div><div class="kpi-val" style="color:var(--blue)">${totalMilH.toFixed(2)}</div><div class="kpi-sub">milheiros por hora</div></div>
+    <div class="kpi"><div class="kpi-icon">⏱️</div><div class="kpi-label">Horas registradas</div><div class="kpi-val">${totalH.toLocaleString('pt-BR')}</div><div class="kpi-sub">${rows.length} lotes · ${HORAS_TURNO}h/turno</div></div>
+    <div class="kpi"><div class="kpi-icon">🏆</div><div class="kpi-label">Melhor dia</div><div class="kpi-val" style="color:var(--green);font-size:18px">${melhorDia?melhorDia[0]:'—'}</div><div class="kpi-sub">${melhorDia?kgh(melhorDia[1]).toFixed(1)+' kg/h':''}</div></div>
+    <div class="kpi"><div class="kpi-icon">📉</div><div class="kpi-label">Dia mais fraco</div><div class="kpi-val" style="color:var(--red);font-size:18px">${piorDia?piorDia[0]:'—'}</div><div class="kpi-sub">${piorDia?kgh(piorDia[1]).toFixed(1)+' kg/h':''}</div></div>
   </div>`;
 
-  // ── Gráfico evolução diária ───────────────────
-  const diasSort = Object.entries(byData).sort((a,b)=>a[0].localeCompare(b[0]));
-  const maxDiaKgH = Math.max(...diasSort.map(d=>kgh(d[1])),1);
-  html+=`<div class="chart-wrap">
-    <div class="section-header">
-      <div class="section-title">📈 Evolução diária — kg/hora</div>
-      <div class="section-badge">${HORAS_TURNO}h por turno</div>
-    </div>
-    <div class="chart-bars" style="height:150px;margin-top:16px">`;
-  diasSort.forEach(([data,d],i)=>{
+  const diasSort=Object.entries(byData).sort((a,b)=>a[0].localeCompare(b[0]));
+  const maxDiaKgH=Math.max(...diasSort.map(d=>kgh(d[1])),1);
+  html+=`<div class="chart-wrap"><div class="section-header"><div class="section-title">📈 Evolução diária — kg/hora</div></div><div class="chart-bars" style="height:150px;margin-top:16px">`;
+  diasSort.forEach(([data,d])=>{
     const h=Math.max(6,Math.round((kgh(d)/maxDiaKgH)*140));
-    const cor = kgh(d)>=totalKgH ? 'var(--green)' : 'var(--orange-dim)';
-    html+=`<div class="bar-group">
-      <div class="bar" style="height:${h}px;background:${cor};border-color:${cor}" 
-           title="${data}: ${kgh(d).toFixed(1)} kg/h · ${d.kg.toFixed(0)} kg"></div>
-      <div class="bar-lbl">${data}</div>
-    </div>`;
-  });
-  html+=`</div>
-    <div style="display:flex;gap:16px;margin-top:10px;font-size:11px;color:var(--text3)">
-      <span style="color:var(--green)">■</span><span>Acima da média (${totalKgH.toFixed(1)} kg/h)</span>
-      <span style="color:var(--orange)">■</span><span>Abaixo da média</span>
-    </div>
-  </div>`;
-
-  // ── Grid: Operadores + Máquinas ───────────────
-  html+=`<div class="op-grid">`;
-
-  // kg/hora por operador
-  const opSort = Object.entries(byOp).sort((a,b)=>kgh(b[1])-kgh(a[1]));
-  const maxOpKgH = Math.max(...opSort.map(d=>kgh(d[1])),1);
-  html+=`<div class="section">
-    <div class="section-header">
-      <div class="section-title">👤 kg/hora por Operador</div>
-      <div class="section-badge">Turno = ${HORAS_TURNO}h</div>
-    </div>
-    <div class="table-wrap"><div style="padding:16px"><div class="bar-h-wrap">`;
-  opSort.forEach(([op,d],i)=>{
-    const v=kgh(d); const pct=v/maxOpKgH*100;
-    const cor=cores[i%cores.length];
-    const milHora=milh(d);
-    html+=`<div class="bar-h-item">
-      <div class="bar-h-label" style="width:70px">${op}</div>
-      <div class="bar-h-track">
-        <div class="bar-h-fill" style="width:${pct}%;background:${cor}">${v.toFixed(1)} kg/h</div>
-      </div>
-      <div class="bar-h-val" style="width:80px">${milHora.toFixed(2)} mil/h</div>
-    </div>`;
-  });
-  html+=`</div></div></div></div>`;
-
-  // kg/hora por máquina
-  const maqSort = Object.entries(byMaq).sort((a,b)=>kgh(b[1])-kgh(a[1]));
-  const maxMaqKgH = Math.max(...maqSort.map(d=>kgh(d[1])),1);
-  html+=`<div class="section">
-    <div class="section-header">
-      <div class="section-title">⚙️ kg/hora por Máquina</div>
-    </div>
-    <div class="table-wrap"><div style="padding:16px"><div class="bar-h-wrap">`;
-  maqSort.forEach(([maq,d],i)=>{
-    const v=kgh(d); const pct=v/maxMaqKgH*100;
-    const cor=cores[i%cores.length];
-    html+=`<div class="bar-h-item">
-      <div class="bar-h-label" style="width:70px">${maq}</div>
-      <div class="bar-h-track">
-        <div class="bar-h-fill" style="width:${pct}%;background:${cor}">${v.toFixed(1)} kg/h</div>
-      </div>
-      <div class="bar-h-val" style="width:80px">${milh(d).toFixed(2)} mil/h</div>
-    </div>`;
-  });
-  html+=`</div></div></div></div>`;
-  html+=`</div>`; // fim op-grid
-
-  // ── kg/hora por medida ────────────────────────
-  const medSort = Object.entries(byMed).sort((a,b)=>kgh(b[1])-kgh(a[1]));
-  const maxMedKgH = Math.max(...medSort.map(d=>kgh(d[1])),1);
-  html+=`<div class="section">
-    <div class="section-header">
-      <div class="section-title">📐 kg/hora por Medida</div>
-      <div class="section-badge">${medSort.length} medidas</div>
-    </div>
-    <div class="table-wrap"><div style="padding:16px 16px 8px"><div class="bar-h-wrap">`;
-  medSort.forEach(([med,d],i)=>{
-    const v=kgh(d); const pct=v/maxMedKgH*100;
-    const cor=v>=totalKgH?'var(--green)':'var(--orange)';
-    html+=`<div class="bar-h-item">
-      <div class="bar-h-label" style="width:70px;font-family:DM Mono,monospace;font-size:11px">${med}</div>
-      <div class="bar-h-track">
-        <div class="bar-h-fill" style="width:${pct}%;background:${cor}">${v.toFixed(1)} kg/h</div>
-      </div>
-      <div class="bar-h-val" style="width:90px">${milh(d).toFixed(2)} mil/h</div>
-    </div>`;
-  });
-  html+=`</div></div></div></div>`;
-
-  // ── Comparativo turno Dia vs Noite ────────────
-  const turnoSort = Object.entries(byTurno).sort((a,b)=>kgh(b[1])-kgh(a[1]));
-  html+=`<div class="op-grid">`;
-  html+=`<div class="section">
-    <div class="section-header"><div class="section-title">🌅 Turno Dia vs Noite — kg/hora</div></div>
-    <div class="turno-compare">`;
-  turnoSort.forEach(([turno,d])=>{
-    const icon=turno.toLowerCase().includes('dia')?'☀️':'🌙';
-    const v=kgh(d); const vm=milh(d);
-    const cor=v>=totalKgH?'var(--green)':'var(--orange)';
-    html+=`<div class="turno-card">
-      <div class="turno-title">${icon} Turno ${turno}</div>
-      <div class="turno-stat"><span class="turno-stat-label">kg/hora</span>
-        <span class="turno-stat-val" style="color:${cor};font-size:20px">${v.toFixed(1)}</span></div>
-      <div class="turno-stat"><span class="turno-stat-label">Milheiros/hora</span>
-        <span class="turno-stat-val">${vm.toFixed(2)}</span></div>
-      <div class="turno-stat"><span class="turno-stat-label">kg total</span>
-        <span class="turno-stat-val">${d.kg.toFixed(0)} kg</span></div>
-      <div class="turno-stat"><span class="turno-stat-label">Horas totais</span>
-        <span class="turno-stat-val">${d.horas}h</span></div>
-      <div class="turno-stat"><span class="turno-stat-label">Lotes</span>
-        <span class="turno-stat-val">${d.lotes}</span></div>
-    </div>`;
+    const cor=kgh(d)>=totalKgH?'var(--green)':'var(--orange-dim)';
+    html+=`<div class="bar-group"><div class="bar" style="height:${h}px;background:${cor};border-color:${cor}" title="${data}: ${kgh(d).toFixed(1)} kg/h"></div><div class="bar-lbl">${data}</div></div>`;
   });
   html+=`</div></div>`;
 
-  // Tabela completa operadores
-  html+=`<div class="section">
-    <div class="section-header"><div class="section-title">📊 Tabela completa — Operadores</div></div>
-    <div class="table-wrap"><table class="data-table"><thead><tr>
-      <th>Operador</th><th>Lotes</th><th>KG Total</th><th>Milheiros</th><th>Horas</th><th>kg/hora</th><th>Mil/hora</th><th>Perda kg</th><th>% Perda</th>
-    </tr></thead><tbody>`;
-  opSort.forEach(([op,d])=>{
-    const v=kgh(d); const vm=milh(d);
-    const pctP=d.kg>0?d.perda/d.kg*100:0;
-    const corKgH=v>=totalKgH?'var(--green)':'var(--orange)';
-    html+=`<tr>
-      <td style="font-weight:700">${op}</td>
-      <td>${d.lotes}</td>
-      <td>${d.kg.toFixed(0)}</td>
-      <td>${d.mil.toLocaleString('pt-BR')}</td>
-      <td>${d.horas}h</td>
-      <td style="color:${corKgH};font-weight:700">${v.toFixed(1)}</td>
-      <td>${vm.toFixed(2)}</td>
-      <td style="color:var(--red)">${d.perda.toFixed(1)}</td>
-      <td style="color:${pctP<3?'var(--green)':pctP<6?'var(--orange)':'var(--red)'}">${pctP.toFixed(1)}%</td>
-    </tr>`;
+  html+=`<div class="op-grid">`;
+  const opSort=Object.entries(byOp).sort((a,b)=>kgh(b[1])-kgh(a[1]));
+  const maxOpKgH=Math.max(...opSort.map(d=>kgh(d[1])),1);
+  html+=`<div class="section"><div class="section-header"><div class="section-title">👤 kg/hora por Operador</div></div><div class="table-wrap"><div style="padding:16px"><div class="bar-h-wrap">`;
+  opSort.forEach(([op,d],i)=>{
+    const v=kgh(d); const pct=v/maxOpKgH*100; const cor=cores[i%cores.length];
+    html+=`<div class="bar-h-item"><div class="bar-h-label" style="width:70px">${op}</div><div class="bar-h-track"><div class="bar-h-fill" style="width:${pct}%;background:${cor}">${v.toFixed(1)} kg/h</div></div><div class="bar-h-val">${milh(d).toFixed(2)} mil/h</div></div>`;
   });
-  html+=`</tbody></table></div></div>`;
-  html+=`</div>`; // fim op-grid
+  html+=`</div></div></div></div>`;
 
-
-  // ── PROJEÇÃO MENSAL ──────────────────────────────────────────────────────
-  const maqAtivas = Object.keys(byMaq).length || 1;
-
-  // Passo 1: define ano/mês selecionado
-  let anoSel, mesSel;
-  if(STATE.selMonth){
-    const [_mm, _yy] = STATE.selMonth.split('/');
-    mesSel = parseInt(_mm) - 1; // 0-indexed
-    anoSel = parseInt('20' + _yy);
-  } else {
-    const _n = new Date();
-    anoSel = _n.getFullYear();
-    mesSel = _n.getMonth();
-  }
-
-  // Passo 2: "hoje" = data mais recente nos dados (não depende do relógio do PC)
-  let diaRef = 1;
-  rowsProd.forEach(r=>{
-    const [_dd] = r.data.split('/').map(Number);
-    if(_dd > diaRef) diaRef = _dd;
+  const maqSort=Object.entries(byMaq).sort((a,b)=>kgh(b[1])-kgh(a[1]));
+  const maxMaqKgH=Math.max(...maqSort.map(d=>kgh(d[1])),1);
+  html+=`<div class="section"><div class="section-header"><div class="section-title">⚙️ kg/hora por Máquina</div></div><div class="table-wrap"><div style="padding:16px"><div class="bar-h-wrap">`;
+  maqSort.forEach(([maq,d],i)=>{
+    const v=kgh(d); const pct=v/maxMaqKgH*100; const cor=cores[i%cores.length];
+    html+=`<div class="bar-h-item"><div class="bar-h-label" style="width:70px">${maq}</div><div class="bar-h-track"><div class="bar-h-fill" style="width:${pct}%;background:${cor}">${v.toFixed(1)} kg/h</div></div><div class="bar-h-val">${milh(d).toFixed(2)} mil/h</div></div>`;
   });
+  html+=`</div></div></div></div></div>`;
 
-  const ehMesAtual  = true; // sempre trata o mês selecionado como "em andamento" se há dados
-  const ultimoDia   = new Date(anoSel, mesSel+1, 0).getDate();
+  // Projeção mensal
+  const maqAtivas=Object.keys(byMaq).length||1;
+  let anoSel,mesSel;
+  if(STATE.selMonth){const[_mm,_yy]=STATE.selMonth.split('/');mesSel=parseInt(_mm)-1;anoSel=parseInt('20'+_yy);}
+  else{const _n=new Date();anoSel=_n.getFullYear();mesSel=_n.getMonth();}
+  let diaRef=1;
+  rowsProd.forEach(r=>{const[_dd]=r.data.split('/').map(Number);if(_dd>diaRef)diaRef=_dd;});
+  const ultimoDia=new Date(anoSel,mesSel+1,0).getDate();
+  function contarUteis(inicio,fim){let u=0;for(let d=inicio;d<=fim;d++){const dow=new Date(anoSel,mesSel,d).getDay();if(dow>=1&&dow<=5)u++;}return u;}
+  const diasPassados=contarUteis(1,diaRef); const diasRestantes=contarUteis(diaRef+1,ultimoDia);
+  const totalDiasUteis=diasPassados+diasRestantes; const horasDia=20;
+  const horasRestantes=diasRestantes*horasDia*maqAtivas;
+  const kgProjetado=(totalKgH>0?totalKgH:totalKgH)*horasRestantes;
+  const kgTotalMes=totalKg+kgProjetado;
+  const pctConcluido=totalDiasUteis>0?(diasPassados/totalDiasUteis)*100:0;
+  const corBarra=pctConcluido>=80?'var(--green)':pctConcluido>=50?'var(--orange)':'var(--blue)';
 
-  // Passo 3: conta dias úteis
-  function contarUteis(inicio, fim){
-    let u = 0;
-    for(let d = inicio; d <= fim; d++){
-      const dow = new Date(anoSel, mesSel, d).getDay();
-      if(dow >= 1 && dow <= 5) u++;
-    }
-    return u;
-  }
-
-  const diasPassados   = contarUteis(1, diaRef);
-  const diasRestantes  = contarUteis(diaRef + 1, ultimoDia);
-  const totalDiasUteis = diasPassados + diasRestantes;
-
-  const horasDia       = 20; // 2 turnos × 10h
-  const horasRestantes = diasRestantes * horasDia * maqAtivas;
-  const kghGeral       = totalH > 0 ? totalKg / totalH : 0;
-  const kgProjetado    = kghGeral * horasRestantes;
-  const kgTotalMes     = totalKg + kgProjetado;
-  const pctConcluido   = totalDiasUteis > 0 ? (diasPassados / totalDiasUteis) * 100 : 0;
-  const corBarra       = pctConcluido >= 80 ? 'var(--green)' : pctConcluido >= 50 ? 'var(--orange)' : 'var(--blue)';
-
-  html += `
-  <div class="section">
-    <div class="section-header">
-      <div class="section-title">🔮 Projeção Mensal — ${monthLabel(STATE.selMonth)}</div>
-      <div class="section-badge">${maqAtivas} máq. · 2 turnos · ${horasDia}h/dia</div>
-    </div>
-    <div class="table-wrap" style="margin-bottom:16px">
-      <div style="padding:20px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-          <span style="font-size:13px;color:var(--text2);font-weight:600">Progresso do mês</span>
-          <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--text3)">${diasPassados} de ${totalDiasUteis} dias úteis</span>
-        </div>
-        <div style="background:var(--bg3);border-radius:6px;height:28px;overflow:hidden">
-          <div style="width:${pctConcluido.toFixed(1)}%;height:100%;background:${corBarra};border-radius:6px;display:flex;align-items:center;padding-left:12px;transition:width .6s">
-            <span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:700;color:#000;white-space:nowrap">${pctConcluido.toFixed(0)}% concluído</span>
-          </div>
-        </div>
-        <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">
-          <span>01/${(mesSel+1).toString().padStart(2,'0')}/${anoSel}</span>
-          <span style="color:var(--orange)">▲ dia ${diaRef}</span>
-          <span>${ultimoDia}/${(mesSel+1).toString().padStart(2,'0')}/${anoSel}</span>
-        </div>
-      </div>
-    </div>
-    <div class="kpis" style="margin-bottom:0">
-      <div class="kpi">
-        <div class="kpi-icon">✅</div>
-        <div class="kpi-label">Já produzido</div>
-        <div class="kpi-val" style="color:var(--green)">${totalKg.toLocaleString('pt-BR',{maximumFractionDigits:0})} kg</div>
-        <div class="kpi-sub">${diasPassados} dias úteis · ${totalH.toFixed(0)}h</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-icon">🔮</div>
-        <div class="kpi-label">Projeção restante</div>
-        <div class="kpi-val" style="color:var(--blue)">${kgProjetado.toLocaleString('pt-BR',{maximumFractionDigits:0})} kg</div>
-        <div class="kpi-sub">${diasRestantes} dias úteis restantes</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-icon">📊</div>
-        <div class="kpi-label">Total projetado mês</div>
-        <div class="kpi-val" style="color:var(--orange)">${kgTotalMes.toLocaleString('pt-BR',{maximumFractionDigits:0})} kg</div>
-        <div class="kpi-sub">base: ${kghGeral.toFixed(1)} kg/h médio</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-icon">⚡</div>
-        <div class="kpi-label">kg/hora atual</div>
-        <div class="kpi-val">${kghGeral.toFixed(1)}</div>
-        <div class="kpi-sub">todas as máquinas</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-icon">🏭</div>
-        <div class="kpi-label">Máquinas ativas</div>
-        <div class="kpi-val">${maqAtivas}</div>
-        <div class="kpi-sub">de 3 disponíveis</div>
-      </div>
-    </div>
-  </div>`;
+  html+=`<div class="section"><div class="section-header"><div class="section-title">🔮 Projeção Mensal</div><div class="section-badge">${maqAtivas} máq. · 2 turnos</div></div>
+  <div class="kpis" style="margin-bottom:0">
+    <div class="kpi"><div class="kpi-icon">✅</div><div class="kpi-label">Já produzido</div><div class="kpi-val" style="color:var(--green)">${totalKg.toLocaleString('pt-BR',{maximumFractionDigits:0})} kg</div><div class="kpi-sub">${diasPassados} dias úteis</div></div>
+    <div class="kpi"><div class="kpi-icon">🔮</div><div class="kpi-label">Projeção restante</div><div class="kpi-val" style="color:var(--blue)">${kgProjetado.toLocaleString('pt-BR',{maximumFractionDigits:0})} kg</div><div class="kpi-sub">${diasRestantes} dias restantes</div></div>
+    <div class="kpi"><div class="kpi-icon">📊</div><div class="kpi-label">Total projetado</div><div class="kpi-val" style="color:var(--orange)">${kgTotalMes.toLocaleString('pt-BR',{maximumFractionDigits:0})} kg</div><div class="kpi-sub">base: ${totalKgH.toFixed(1)} kg/h</div></div>
+  </div></div>`;
 
   main.innerHTML=html;
 }
 
-
-// ══════════════════════════════════════════════
-//  ABA OPERACIONAL — Primícia
-// ══════════════════════════════════════════════
+// ════════════════════════════════════════
+//  ABA OPERACIONAL
+// ════════════════════════════════════════
 function renderOperacional(){
-  // Apenas dados da Primícia com operador preenchido
-  // Filtra por mês selecionado
+  const HORAS_TURNO_AL = 10;
   const allOpRows = STATE.f2.filter(r => r.operador && r.operador.trim() !== '');
-  const rows = STATE.selMonth
-    ? allOpRows.filter(r => extractMonth(r.data) === STATE.selMonth)
-    : allOpRows;
+  const rows = STATE.selMonth ? allOpRows.filter(r => extractMonth(r.data) === STATE.selMonth) : allOpRows;
   const main = document.getElementById('main');
 
   if(!rows.length){
     main.innerHTML=`<div class="empty" style="padding:80px;text-align:center;color:var(--text3)">
       <div style="font-size:40px;margin-bottom:16px">📋</div>
       <div style="font-size:16px;font-weight:700;color:var(--text2);margin-bottom:8px">Nenhum dado operacional em ${monthLabel(STATE.selMonth)}</div>
-      <div style="font-size:13px">Preencha as colunas máquina, turno, operador e perda na planilha Primícia.</div>
     </div>`;
     return;
   }
 
-  // ── Agrupadores ──────────────────────────────
-  function groupBy(arr, key){
-    return arr.reduce((acc,r)=>{ const k=r[key]||'—'; if(!acc[k])acc[k]={kg:0,mil:0,perda:0,lotes:0}; acc[k].kg+=r.kg; acc[k].mil+=r.mil; acc[k].perda+=r.perda; acc[k].lotes++; return acc; },{});
-  }
+  function groupBy(arr,key){return arr.reduce((acc,r)=>{const k=r[key]||'—';if(!acc[k])acc[k]={kg:0,mil:0,perda:0,lotes:0};acc[k].kg+=r.kg;acc[k].mil+=r.mil;acc[k].perda+=r.perda;acc[k].lotes++;return acc;},{});}
+  const byOp=groupBy(rows,'operador'); const byMaq=groupBy(rows,'maquina'); const byTurno=groupBy(rows,'turno');
+  const totalKg=rows.reduce((s,r)=>s+r.kg,0); const totalMil=rows.reduce((s,r)=>s+r.mil,0);
+  const totalPerda=rows.reduce((s,r)=>s+r.perda,0);
+  const eficiencia=totalKg>0?((totalKg-totalPerda)/totalKg*100):0;
 
-  const byOp  = groupBy(rows,'operador');
-  const byMaq = groupBy(rows,'maquina');
-  const byTurno = groupBy(rows,'turno');
-
-  // ── KPI totais ───────────────────────────────
-  const totalKg    = rows.reduce((s,r)=>s+r.kg,0);
-  const totalMil   = rows.reduce((s,r)=>s+r.mil,0);
-  const totalPerda = rows.reduce((s,r)=>s+r.perda,0);
-  const eficiencia = totalKg>0 ? ((totalKg-totalPerda)/totalKg*100) : 0;
-
-  // ── Média kg/unidade por medida (padrão histórico) ──
-  const mediaPorMed={};
-  const consAll={};
-  [...STATE.f1,...STATE.f2].forEach(r=>{
-    if(!consAll[r.med])consAll[r.med]={kg:0,mil:0};
-    consAll[r.med].kg+=r.kg; consAll[r.med].mil+=r.mil;
-  });
-  Object.keys(consAll).forEach(med=>{
-    const c=consAll[med];
-    if(c.mil>0) mediaPorMed[med]=c.kg/(c.mil*1000);
-  });
-
-  // ── Alertas inteligentes ─────────────────────
-  const HORAS_TURNO_AL = 10;
-
-  const rowsComHoras = calcHorasProporcional(rows, HORAS_TURNO_AL);
-  const f2ComHoras   = calcHorasProporcional(STATE.f2.filter(r=>r.operador&&r.operador.trim()!==''), HORAS_TURNO_AL);
-
-  // Média histórica de kg/hora por medida (base para alertas de produtividade)
-  const mediaKgHAlerta = {};
-  const contMedAl = {};
-  f2ComHoras.forEach(r=>{
-    if(!r.med) return;
-    const kgh = r.kg / r.horasLote;
-    if(!mediaKgHAlerta[r.med]){ mediaKgHAlerta[r.med]=0; contMedAl[r.med]=0; }
-    mediaKgHAlerta[r.med] += kgh;
-    contMedAl[r.med]++;
-  });
-  Object.keys(mediaKgHAlerta).forEach(med=>{
-    mediaKgHAlerta[med] = mediaKgHAlerta[med] / contMedAl[med];
-  });
+  const rowsComHoras=calcHorasProporcional(rows,HORAS_TURNO_AL);
+  const f2ComHoras=calcHorasProporcional(STATE.f2.filter(r=>r.operador&&r.operador.trim()!==''),HORAS_TURNO_AL);
+  const mediaKgHAlerta={};const contMedAl={};
+  f2ComHoras.forEach(r=>{if(!r.med)return;const kgh=r.kg/r.horasLote;if(!mediaKgHAlerta[r.med]){mediaKgHAlerta[r.med]=0;contMedAl[r.med]=0;}mediaKgHAlerta[r.med]+=kgh;contMedAl[r.med]++;});
+  Object.keys(mediaKgHAlerta).forEach(med=>{mediaKgHAlerta[med]=mediaKgHAlerta[med]/contMedAl[med];});
 
   const alertas=[];
-
-  // 1. Lotes com produtividade kg/hora ACIMA da média da medida (>20%)
-  // 2. Lotes com produtividade kg/hora ABAIXO da média da medida (>20%)
   rowsComHoras.forEach(r=>{
-    if(!r.med||!r.kg) return;
-    const kghLote = r.kg / r.horasLote;
-    const mediaMed = mediaKgHAlerta[r.med];
-    if(!mediaMed) return;
-    const desvio = (kghLote - mediaMed) / mediaMed;
-    if(desvio > 0.20){
-      // Alerta expira após 2 dias
-      const [dd2a,mm2a] = r.data.split('/').map(Number);
-      const dataLote2a = new Date(new Date().getFullYear(), mm2a-1, dd2a);
-      const diffDias2a = (new Date() - dataLote2a) / (1000*60*60*24);
-      if(diffDias2a <= 2){
-        alertas.push({
-          tipo:'green', icon:'🟢',
-          titulo:`Lote acima da média — ${r.med} · ${r.data}`,
-          msg:`${r.operador||'—'} na ${r.maquina||'—'} (Turno ${r.turno||'—'}): ${kghLote.toFixed(1)} kg/h vs média ${mediaMed.toFixed(1)} kg/h da medida → <strong>+${(desvio*100).toFixed(0)}% acima</strong>`
-        });
-      }
-    } else if(desvio < -0.20){
-      // Alerta expira após 2 dias
-      const [dd2b,mm2b] = r.data.split('/').map(Number);
-      const dataLote2b = new Date(new Date().getFullYear(), mm2b-1, dd2b);
-      const diffDias2b = (new Date() - dataLote2b) / (1000*60*60*24);
-      if(diffDias2b <= 2){
-        alertas.push({
-          tipo:'red', icon:'🔴',
-          titulo:`Lote abaixo da média — ${r.med} · ${r.data}`,
-          msg:`${r.operador||'—'} na ${r.maquina||'—'} (Turno ${r.turno||'—'}): ${kghLote.toFixed(1)} kg/h vs média ${mediaMed.toFixed(1)} kg/h da medida → <strong>${(desvio*100).toFixed(0)}% abaixo</strong>`
-        });
-      }
+    if(!r.med||!r.kg)return;
+    const kghLote=r.kg/r.horasLote; const mediaMed=mediaKgHAlerta[r.med]; if(!mediaMed)return;
+    const desvio=(kghLote-mediaMed)/mediaMed;
+    const[dd2,mm2]=r.data.split('/').map(Number);
+    const dataLote=new Date(new Date().getFullYear(),mm2-1,dd2);
+    const diffDias=(new Date()-dataLote)/(1000*60*60*24);
+    if(diffDias<=2){
+      if(desvio>0.20) alertas.push({tipo:'green',icon:'🟢',titulo:`Lote acima da média — ${r.med} · ${r.data}`,msg:`${r.operador||'—'}: ${kghLote.toFixed(1)} kg/h vs média ${mediaMed.toFixed(1)} kg/h → +${(desvio*100).toFixed(0)}%`});
+      else if(desvio<-0.20) alertas.push({tipo:'red',icon:'🔴',titulo:`Lote abaixo da média — ${r.med} · ${r.data}`,msg:`${r.operador||'—'}: ${kghLote.toFixed(1)} kg/h vs média ${mediaMed.toFixed(1)} kg/h → ${(desvio*100).toFixed(0)}%`});
     }
   });
+  const perdaMediaGeral=totalKg>0?totalPerda/totalKg*100:0;
+  Object.entries(byOp).forEach(([op,d])=>{const perdaOp=d.kg>0?d.perda/d.kg*100:0;if(perdaOp>perdaMediaGeral*1.3&&d.perda>0) alertas.push({tipo:'yellow',icon:'⚠️',titulo:`${op} — Perda acima da média`,msg:`Perda de ${d.perda.toFixed(1)} kg (${perdaOp.toFixed(1)}%) — média geral é ${perdaMediaGeral.toFixed(1)}%`});});
 
-  // 3. Operador com perda acima da média geral
-  const perdaMediaGeral = totalKg>0 ? totalPerda/totalKg*100 : 0;
-  Object.entries(byOp).forEach(([op,d])=>{
-    const perdaOp = d.kg>0 ? d.perda/d.kg*100 : 0;
-    if(perdaOp > perdaMediaGeral*1.3 && d.perda>0){
-      alertas.push({
-        tipo:'yellow', icon:'⚠️',
-        titulo:`${op} — Perda acima da média`,
-        msg:`Perda de ${d.perda.toFixed(1)} kg (${perdaOp.toFixed(1)}% do produzido) — média geral é ${perdaMediaGeral.toFixed(1)}%`
-      });
-    }
-  });
-
-  // 4. Turno com produtividade muito abaixo
-  const turnoVals = Object.values(byTurno).map(d=>d.kg);
-  const mediaKgTurno = turnoVals.reduce((a,b)=>a+b,0)/(turnoVals.length||1);
-  Object.entries(byTurno).forEach(([turno,d])=>{
-    if(d.kg < mediaKgTurno*0.7 && turnoVals.length>1){
-      alertas.push({
-        tipo:'blue', icon:'🔵',
-        titulo:`Turno ${turno} — Produção abaixo da média`,
-        msg:`Produziu ${d.kg.toFixed(0)} kg — média entre turnos é ${mediaKgTurno.toFixed(0)} kg`
-      });
-    }
-  });
-
-  // Ordena: primeiro vermelhos, depois amarelos, verdes, azuis
-  const ordemTipo = {red:0, yellow:1, green:2, blue:3};
-  alertas.sort((a,b)=>(ordemTipo[a.tipo]||9)-(ordemTipo[b.tipo]||9));
-
-  // ── Sistema de pontuação (bonificação) ───────
-  // 80% eficiência vs média kg/hora da medida + 20% constância (dias únicos)
-  // Cada lote é comparado com a média histórica de kg/hora daquela medida específica
-  // Assim é 100% justo: medida pequena compete com média da medida pequena
-
-  const HORAS_TURNO_OP = 10;
-
-  // Média histórica de kg/hora por medida (todos os lotes da Primícia)
-  // Horas proporcional ao kg para o ranking
-  const f2Rank = calcHorasProporcional(
-    STATE.f2.filter(r=>r.operador&&r.operador.trim()!==''),
-    HORAS_TURNO_OP
-  );
-
-  const mediaKgHPorMed = {};
-  const contMed = {};
-  f2Rank.forEach(r=>{
-    if(!r.med) return;
-    const kgh = r.kg / r.horasLote;
-    if(!mediaKgHPorMed[r.med]){ mediaKgHPorMed[r.med]=0; contMed[r.med]=0; }
-    mediaKgHPorMed[r.med] += kgh;
-    contMed[r.med]++;
-  });
-  Object.keys(mediaKgHPorMed).forEach(med=>{
-    mediaKgHPorMed[med] = mediaKgHPorMed[med] / contMed[med];
-  });
-
-  // Dias únicos por operador (constância)
-  const diasPorOp = {};
-  rows.forEach(r=>{
-    if(!r.operador) return;
-    if(!diasPorOp[r.operador]) diasPorOp[r.operador] = new Set();
-    diasPorOp[r.operador].add(r.data);
-  });
-  const maxDias = Math.max(...Object.keys(diasPorOp).map(op=>diasPorOp[op].size), 1);
-
-  // Índice de eficiência por operador:
-  // Para cada lote: kgh_lote / media_kgh_medida → índice
-  // Média de todos os índices do operador = eficiência final
-  const eficienciaOp = {};
-  const eficienciaDetalhe = {}; // para exibir no rank
-  f2Rank.forEach(r=>{
-    if(!r.operador||!r.med) return;
-    const kghLote = r.kg / r.horasLote;
-    const mediaMed = mediaKgHPorMed[r.med] || kghLote;
-    const indice = mediaMed > 0 ? kghLote / mediaMed : 1;
-    if(!eficienciaOp[r.operador]){ eficienciaOp[r.operador]=[]; }
-    eficienciaOp[r.operador].push(indice);
-  });
-  // Média dos índices de cada operador
-  const efMedia = {};
-  Object.entries(eficienciaOp).forEach(([op,arr])=>{
-    efMedia[op] = arr.reduce((a,b)=>a+b,0)/arr.length;
-  });
-  const maxEf = Math.max(...Object.values(efMedia), 1);
-
-  const ranking = Object.entries(byOp).map(([op,d])=>{
-    const dias = diasPorOp[op] ? diasPorOp[op].size : 0;
-    const ef = efMedia[op] || 0;
-    const pctPerda = d.kg>0 ? d.perda/d.kg*100 : 0;
-    // 80% eficiência vs média da medida + 20% constância
-    const pts = Math.round(
-      (ef / maxEf) * 80 +
-      (dias / maxDias) * 20
-    );
-    return {op, kg:d.kg, mil:d.mil, perda:d.perda, lotes:d.lotes, dias, ef, pctPerda, pts};
+  const f2Rank=calcHorasProporcional(STATE.f2.filter(r=>r.operador&&r.operador.trim()!==''),HORAS_TURNO_AL);
+  const mediaKgHPorMed={};const contMed={};
+  f2Rank.forEach(r=>{if(!r.med)return;const kgh=r.kg/r.horasLote;if(!mediaKgHPorMed[r.med]){mediaKgHPorMed[r.med]=0;contMed[r.med]=0;}mediaKgHPorMed[r.med]+=kgh;contMed[r.med]++;});
+  Object.keys(mediaKgHPorMed).forEach(med=>{mediaKgHPorMed[med]=mediaKgHPorMed[med]/contMed[med];});
+  const diasPorOp={};
+  rows.forEach(r=>{if(!r.operador)return;if(!diasPorOp[r.operador])diasPorOp[r.operador]=new Set();diasPorOp[r.operador].add(r.data);});
+  const maxDias=Math.max(...Object.keys(diasPorOp).map(op=>diasPorOp[op].size),1);
+  const eficienciaOp={};
+  f2Rank.forEach(r=>{if(!r.operador||!r.med)return;const kghLote=r.kg/r.horasLote;const mediaMed=mediaKgHPorMed[r.med]||kghLote;const indice=mediaMed>0?kghLote/mediaMed:1;if(!eficienciaOp[r.operador])eficienciaOp[r.operador]=[];eficienciaOp[r.operador].push(indice);});
+  const efMedia={};Object.entries(eficienciaOp).forEach(([op,arr])=>{efMedia[op]=arr.reduce((a,b)=>a+b,0)/arr.length;});
+  const maxEf=Math.max(...Object.values(efMedia),1);
+  const ranking=Object.entries(byOp).map(([op,d])=>{
+    const dias=diasPorOp[op]?diasPorOp[op].size:0; const ef=efMedia[op]||0;
+    const pts=Math.round((ef/maxEf)*80+(dias/maxDias)*20);
+    return {op,kg:d.kg,mil:d.mil,perda:d.perda,lotes:d.lotes,dias,ef,pctPerda:d.kg>0?d.perda/d.kg*100:0,pts};
   }).sort((a,b)=>b.pts-a.pts);
 
-  // ── HTML ──────────────────────────────────────
-  const medals=['🥇','🥈','🥉'];
-  const posClass=['gold','silver','bronze'];
+  const medals=['🥇','🥈','🥉']; const posClass=['gold','silver','bronze'];
+  const cores=['#E87722','#5b8af5','#2ecc71','#a55eea','#f1c40f'];
 
-  // KPIs
   let html=`<div class="kpis">
-    <div class="kpi"><div class="kpi-icon">⚖️</div><div class="kpi-label">KG Produzido</div><div class="kpi-val">${totalKg.toLocaleString('pt-BR',{maximumFractionDigits:0})} kg</div><div class="kpi-sub">${rows.length} lotes registrados</div></div>
+    <div class="kpi"><div class="kpi-icon">⚖️</div><div class="kpi-label">KG Produzido</div><div class="kpi-val">${totalKg.toLocaleString('pt-BR',{maximumFractionDigits:0})} kg</div><div class="kpi-sub">${rows.length} lotes</div></div>
     <div class="kpi"><div class="kpi-icon">📦</div><div class="kpi-label">Milheiros</div><div class="kpi-val">${totalMil.toLocaleString('pt-BR')}</div><div class="kpi-sub">${(totalMil*1000).toLocaleString('pt-BR')} unidades</div></div>
-    <div class="kpi"><div class="kpi-icon">🗑️</div><div class="kpi-label">Perda Total</div><div class="kpi-val" style="color:var(--red)">${totalPerda.toFixed(1)} kg</div><div class="kpi-sub">${(totalPerda/totalKg*100).toFixed(1)}% do total produzido</div></div>
+    <div class="kpi"><div class="kpi-icon">🗑️</div><div class="kpi-label">Perda Total</div><div class="kpi-val" style="color:var(--red)">${totalPerda.toFixed(1)} kg</div><div class="kpi-sub">${(totalPerda/totalKg*100).toFixed(1)}% do total</div></div>
     <div class="kpi"><div class="kpi-icon">⚡</div><div class="kpi-label">Eficiência Geral</div><div class="kpi-val" style="color:${eficiencia>=95?'var(--green)':eficiencia>=85?'var(--orange)':'var(--red)'}">${eficiencia.toFixed(1)}%</div><div class="kpi-sub">kg útil / kg total</div></div>
     <div class="kpi"><div class="kpi-icon">👥</div><div class="kpi-label">Operadores</div><div class="kpi-val">${Object.keys(byOp).length}</div><div class="kpi-sub">${Object.keys(byMaq).length} máquinas ativas</div></div>
   </div>`;
 
-  // Alertas
   if(alertas.length){
-    html+=`<div class="section"><div class="section-header"><div class="section-title">⚡ Alertas do período</div><div class="section-badge">${alertas.length} alerta${alertas.length>1?'s':''}</div></div>`;
-    alertas.forEach(a=>{
-      html+=`<div class="alert-op ${a.tipo}"><div class="alert-op-icon">${a.icon}</div><div class="alert-op-body"><strong>${a.titulo}</strong>${a.msg}</div></div>`;
-    });
+    html+=`<div class="section"><div class="section-header"><div class="section-title">⚡ Alertas</div><div class="section-badge">${alertas.length}</div></div>`;
+    alertas.forEach(a=>html+=`<div class="alert-op ${a.tipo}"><div class="alert-op-icon">${a.icon}</div><div class="alert-op-body"><strong>${a.titulo}</strong>${a.msg}</div></div>`);
     html+=`</div>`;
   }
 
-  // Pódio bonificação
   if(ranking.length>=2){
-    html+=`<div class="section"><div class="section-header"><div class="section-title">🏆 Pódio — Bonificação</div><div class="section-badge">Eficiência kg/h 80% · Constância 20%</div></div>
-    <div class="table-wrap"><div class="card-body" style="padding:20px">
-    <div class="podio">`;
-    // Ordem pódio: 2º, 1º, 3º
-    const podioOrder = ranking.length>=3 ? [1,0,2] : ranking.length===2 ? [1,0] : [0];
+    html+=`<div class="section"><div class="section-header"><div class="section-title">🏆 Pódio — Bonificação</div><div class="section-badge">Eficiência 80% · Constância 20%</div></div>
+    <div class="table-wrap"><div style="padding:20px"><div class="podio">`;
+    const podioOrder=ranking.length>=3?[1,0,2]:ranking.length===2?[1,0]:[0];
     podioOrder.forEach(i=>{
-      if(!ranking[i]) return;
-      const r=ranking[i];
-      const cls=posClass[i]||'other';
-      const h=i===0?70:i===1?50:35;
-      html+=`<div class="podio-item">
-        <div class="podio-avatar ${cls}">${medals[i]||'🎖️'}</div>
-        <div class="podio-name">${r.op}</div>
-        <div class="podio-pts">${r.pts} pts</div>
-        <div class="podio-base ${cls}"><span>${i===0?'1º':i===1?'2º':'3º'} lugar</span></div>
-      </div>`;
+      if(!ranking[i])return;
+      const r=ranking[i]; const cls=posClass[i]||'other';
+      html+=`<div class="podio-item"><div class="podio-avatar ${cls}">${medals[i]||'🎖️'}</div><div class="podio-name">${r.op}</div><div class="podio-pts">${r.pts} pts</div><div class="podio-base ${cls}"><span>${i===0?'1º':i===1?'2º':'3º'} lugar</span></div></div>`;
     });
     html+=`</div></div></div></div>`;
   }
 
-  // Grid: Ranking operadores + Comparativo turno
   html+=`<div class="op-grid">`;
-
-  // Ranking operadores
-  html+=`<div class="section"><div class="section-header"><div class="section-title">👤 Ranking Operadores</div></div>
-  <div class="rank-list">`;
+  html+=`<div class="section"><div class="section-header"><div class="section-title">👤 Ranking Operadores</div></div><div class="rank-list">`;
   ranking.forEach((r,i)=>{
     const cls=i===0?'gold':i===1?'silver':i===2?'bronze':'other';
-    html+=`<div class="rank-item">
-      <div class="rank-pos ${cls}">${medals[i]||i+1}</div>
-      <div class="rank-info">
-        <div class="rank-name">${r.op}</div>
-        <div class="rank-sub">Ef. ${(r.ef*100).toFixed(1)}% vs média · ${r.dias} dias · ${r.lotes} lotes</div>
-      </div>
-      <div class="rank-score">
-        <div class="rank-pts">${r.pts}</div>
-        <div class="rank-pts-label">pontos</div>
-      </div>
-    </div>`;
+    html+=`<div class="rank-item"><div class="rank-pos ${cls}">${medals[i]||i+1}</div><div class="rank-info"><div class="rank-name">${r.op}</div><div class="rank-sub">Ef. ${(r.ef*100).toFixed(1)}% · ${r.dias} dias · ${r.lotes} lotes</div></div><div class="rank-score"><div class="rank-pts">${r.pts}</div><div class="rank-pts-label">pontos</div></div></div>`;
   });
   html+=`</div></div>`;
 
-  // Comparativo turnos
-  const turnos = Object.entries(byTurno).sort((a,b)=>b[1].kg-a[1].kg);
-  html+=`<div class="section"><div class="section-header"><div class="section-title">🌅 Turno Dia vs Noite</div></div>
-  <div class="turno-compare">`;
+  const turnos=Object.entries(byTurno).sort((a,b)=>b[1].kg-a[1].kg);
+  html+=`<div class="section"><div class="section-header"><div class="section-title">🌅 Turno Dia vs Noite</div></div><div class="turno-compare">`;
   turnos.forEach(([turno,d])=>{
-    const ef = d.kg>0?(d.kg-d.perda)/d.kg*100:0;
-    const icon = turno.toLowerCase().includes('dia')?'☀️':'🌙';
-    html+=`<div class="turno-card">
-      <div class="turno-title">${icon} Turno ${turno}</div>
-      <div class="turno-stat"><span class="turno-stat-label">KG Produzido</span><span class="turno-stat-val">${d.kg.toFixed(0)} kg</span></div>
+    const ef=d.kg>0?(d.kg-d.perda)/d.kg*100:0;
+    const icon=turno.toLowerCase().includes('dia')?'☀️':'🌙';
+    html+=`<div class="turno-card"><div class="turno-title">${icon} Turno ${turno}</div>
+      <div class="turno-stat"><span class="turno-stat-label">KG</span><span class="turno-stat-val">${d.kg.toFixed(0)} kg</span></div>
       <div class="turno-stat"><span class="turno-stat-label">Milheiros</span><span class="turno-stat-val">${d.mil.toLocaleString('pt-BR')}</span></div>
       <div class="turno-stat"><span class="turno-stat-label">Perda</span><span class="turno-stat-val" style="color:var(--red)">${d.perda.toFixed(1)} kg</span></div>
       <div class="turno-stat"><span class="turno-stat-label">Eficiência</span><span class="turno-stat-val" style="color:${ef>=95?'var(--green)':ef>=85?'var(--orange)':'var(--red)'}">${ef.toFixed(1)}%</span></div>
       <div class="turno-stat"><span class="turno-stat-label">Lotes</span><span class="turno-stat-val">${d.lotes}</span></div>
     </div>`;
   });
-  html+=`</div></div>`;
-  html+=`</div>`; // fim op-grid
+  html+=`</div></div></div>`;
 
-  // Produção por máquina (barras horizontais)
-  const maqList = Object.entries(byMaq).sort((a,b)=>b[1].kg-a[1].kg);
-  const maxMaqKg = Math.max(...maqList.map(m=>m[1].kg),1);
-  const cores=['#E87722','#5b8af5','#2ecc71','#a55eea','#f1c40f'];
-  html+=`<div class="op-grid">`;
-
+  const maqList=Object.entries(byMaq).sort((a,b)=>b[1].kg-a[1].kg);
+  const maxMaqKg=Math.max(...maqList.map(m=>m[1].kg),1);
   html+=`<div class="section"><div class="section-header"><div class="section-title">⚙️ Produção por Máquina</div></div>
-  <div class="table-wrap"><div style="padding:16px"><div class="bar-h-wrap">`;
-  maqList.forEach(([maq,d],i)=>{
-    const pct=d.kg/maxMaqKg*100;
-    const ef=d.kg>0?(d.kg-d.perda)/d.kg*100:0;
-    html+=`<div class="bar-h-item">
-      <div class="bar-h-label">${maq}</div>
-      <div class="bar-h-track">
-        <div class="bar-h-fill" style="width:${pct}%;background:${cores[i%cores.length]}">${ef.toFixed(0)}% ef.</div>
-      </div>
-      <div class="bar-h-val">${d.kg.toFixed(0)} kg</div>
-    </div>`;
-  });
-  html+=`</div></div></div></div>`;
-
-  // Tabela detalhada por máquina
-  html+=`<div class="section"><div class="section-header"><div class="section-title">📊 Detalhe por Máquina</div></div>
-  <div class="table-wrap"><table class="data-table"><thead><tr>
-    <th>Máquina</th><th>KG</th><th>Milheiros</th><th>Lotes</th><th>Perda (kg)</th><th>% Perda</th><th>Eficiência</th>
-  </tr></thead><tbody>`;
+  <div class="table-wrap"><table class="data-table"><thead><tr><th>Máquina</th><th>KG</th><th>Milheiros</th><th>Lotes</th><th>Perda (kg)</th><th>% Perda</th><th>Eficiência</th></tr></thead><tbody>`;
   maqList.forEach(([maq,d])=>{
-    const pctPerda=d.kg>0?d.perda/d.kg*100:0;
-    const ef=d.kg>0?(d.kg-d.perda)/d.kg*100:0;
-    html+=`<tr>
-      <td style="font-weight:700">${maq}</td>
-      <td>${d.kg.toFixed(0)}</td>
-      <td>${d.mil.toLocaleString('pt-BR')}</td>
-      <td>${d.lotes}</td>
-      <td style="color:var(--red)">${d.perda.toFixed(1)}</td>
-      <td style="color:${pctPerda<3?'var(--green)':pctPerda<6?'var(--orange)':'var(--red)'}">${pctPerda.toFixed(1)}%</td>
-      <td style="color:${ef>=95?'var(--green)':ef>=85?'var(--orange)':'var(--red)'}"><strong>${ef.toFixed(1)}%</strong></td>
-    </tr>`;
+    const pctPerda=d.kg>0?d.perda/d.kg*100:0; const ef=d.kg>0?(d.kg-d.perda)/d.kg*100:0;
+    html+=`<tr><td style="font-weight:700">${maq}</td><td>${d.kg.toFixed(0)}</td><td>${d.mil.toLocaleString('pt-BR')}</td><td>${d.lotes}</td><td style="color:var(--red)">${d.perda.toFixed(1)}</td><td style="color:${pctPerda<3?'var(--green)':pctPerda<6?'var(--orange)':'var(--red)'}">${pctPerda.toFixed(1)}%</td><td style="color:${ef>=95?'var(--green)':ef>=85?'var(--orange)':'var(--red)'}"><strong>${ef.toFixed(1)}%</strong></td></tr>`;
   });
   html+=`</tbody></table></div></div>`;
-  html+=`</div>`; // fim op-grid
 
-  // Tabela lotes completa
-  html+=`<div class="section"><div class="section-header"><div class="section-title">📋 Todos os Lotes — Operacional</div><div class="section-badge">${rows.length} registros</div></div>
-  <div class="table-wrap"><table class="data-table"><thead><tr>
-    <th>Data</th><th>Medida</th><th>Máquina</th><th>Turno</th><th>Operador</th><th>KG</th><th>Milheiros</th><th>Perda (kg)</th><th>% Perda</th>
-  </tr></thead><tbody>`;
+  html+=`<div class="section"><div class="section-header"><div class="section-title">📋 Todos os Lotes</div><div class="section-badge">${rows.length} registros</div></div>
+  <div class="table-wrap"><table class="data-table"><thead><tr><th>Data</th><th>Medida</th><th>Máquina</th><th>Turno</th><th>Operador</th><th>KG</th><th>Milheiros</th><th>Perda (kg)</th><th>% Perda</th></tr></thead><tbody>`;
   [...rows].reverse().forEach(r=>{
     const pctP=r.kg>0?r.perda/r.kg*100:0;
-    html+=`<tr>
-      <td style="color:var(--text3);font-size:12px">${r.data}</td>
-      <td>${r.med}</td>
+    html+=`<tr><td style="color:var(--text3);font-size:12px">${r.data}</td><td>${r.med}</td>
       <td><span style="font-family:'DM Mono',monospace;font-size:12px;background:var(--orange-dim);color:var(--orange);padding:2px 8px;border-radius:4px">${r.maquina||'—'}</span></td>
-      <td>${r.turno?( r.turno.toLowerCase().includes('dia')?'☀️ '+r.turno:'🌙 '+r.turno):'—'}</td>
-      <td style="font-weight:600">${r.operador||'—'}</td>
-      <td>${r.kg.toFixed(0)}</td>
-      <td>${r.mil.toLocaleString('pt-BR')}</td>
+      <td>${r.turno?(r.turno.toLowerCase().includes('dia')?'☀️ '+r.turno:'🌙 '+r.turno):'—'}</td>
+      <td style="font-weight:600">${r.operador||'—'}</td><td>${r.kg.toFixed(0)}</td><td>${r.mil.toLocaleString('pt-BR')}</td>
       <td style="color:${r.perda>0?'var(--red)':'var(--text3)'}">${r.perda>0?r.perda.toFixed(1):'—'}</td>
-      <td style="color:${pctP<3?'var(--green)':pctP<6?'var(--orange)':'var(--red)'}">${r.perda>0?pctP.toFixed(1)+'%':'—'}</td>
-    </tr>`;
+      <td style="color:${pctP<3?'var(--green)':pctP<6?'var(--orange)':'var(--red)'}">${r.perda>0?pctP.toFixed(1)+'%':'—'}</td></tr>`;
   });
   html+=`</tbody></table></div></div>`;
-
   main.innerHTML=html;
 }
-
 </script>
 </body>
 </html>
